@@ -4,8 +4,14 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+club_one:
+  club: 'VfL Musterhausen'
+  player: player_one
+
+club_two:
+  club: 'Musterhausener TC von 1841 e.V.'
+  player: player_one
+
+club_three:
+  club: 'VfL Musterhausen'
+  player: player_two

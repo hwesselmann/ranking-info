@@ -120,7 +120,7 @@ GEM
     mimemagic (0.3.4)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.14.0)
+    minitest (5.13.0)
     minitest-reporters (1.4.2)
       ansi
       builder
@@ -250,7 +250,7 @@ DEPENDENCIES
   guard-minitest
   jbuilder (~> 2.7)
   listen (>= 3.0.5, < 3.2)
-  minitest
+  minitest (= 5.13.0)
   minitest-reporters
   pg
   puma (~> 4.1)
@@ -268,7 +268,7 @@ DEPENDENCIES
   webpacker (~> 4.0)
 
 RUBY VERSION
-   ruby 2.7.0p0
+   ruby 2.6.5p114
 
 BUNDLED WITH
    2.1.4

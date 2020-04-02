@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.0'
+ruby '2.6.5'
 
 gem 'rails', '~> 6.0.2', '>= 6.0.2.2'
 gem 'bootstrap-sass'
@@ -30,7 +30,7 @@ group :test do
   gem 'selenium-webdriver'
   gem 'webdrivers'
   gem 'rails-controller-testing'
-  gem 'minitest'
+  gem 'minitest', '5.13.0'
   gem 'minitest-reporters'
   gem 'guard'
   gem 'guard-minitest'
