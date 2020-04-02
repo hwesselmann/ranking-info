@@ -1,0 +1,18 @@
+<%= flash[:notice] %>
+<table>
+  <tr>
+    <td>Players in system</td>
+    <td><%= @player_count %></td>
+  <tr>
+  <tr>
+    <td>Rankings in system</td>
+    <td><%= @ranking_count %></td>
+  <tr>
+</table>
+
+<div>
+  <%= form_with(url: {action: :import}, multipart: true) do %>
+    <%= file_field_tag 'file' %>
+    <%= submit_tag "import ranking" %>
+  <% end %>
+</div>

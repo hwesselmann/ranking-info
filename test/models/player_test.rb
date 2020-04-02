@@ -1,17 +1,12 @@
 require 'test_helper'
 class PlayerTest < ActiveSupport::TestCase
-
-  def setup
-    @player = Player.new
-  end
-
   test 'period extraction from filename' do
-    sut = @player.extract_period_from_filename('Junioren_20180331.csv')
+    sut = Player.extract_period_from_filename('Junioren_20180331.csv')
     assert_equal(2018, sut.year)
     assert_equal(3, sut.month)
     assert_equal(31, sut.day)
 
-    sut = @player.extract_period_from_filename('Junioren_20121231.csv')
+    sut = Player.extract_period_from_filename('Junioren_20121231.csv')
     assert_equal(2012, sut.year)
     assert_equal(12, sut.month)
     assert_equal(31, sut.day)
@@ -19,14 +14,14 @@ class PlayerTest < ActiveSupport::TestCase
 
   test 'throw exception for invalid period extraction' do
     exception = assert_raises RuntimeError do
-      @player.extract_period_from_filename('Junioren-20180331.csv')
+      Player.extract_period_from_filename('Junioren-20180331.csv')
     end
     exp = "could not retrieve period part from filename 'Junioren-20180331.csv'"
     assert_equal(exp, exception.message)
   end
 
   test 'import of players from file' do
-    sut = @player.read_players_from_csv('./test/fixtures/files/Junioren_20180331.csv')
+    sut = Player.read_players_from_csv('./test/fixtures/files/Junioren_20180331.csv')
     assert_equal(17, sut.size)
     assert_instance_of(ImportPlayer, sut.fetch(10))
     assert_equal('Eintracht Frankfurt', sut.fetch(0).club)
@@ -44,7 +39,7 @@ class PlayerTest < ActiveSupport::TestCase
     player.current_ranking = 199
     player.current_score = '23,6'
     period_end = Time.new('2019', '3', '31')
-    sut = @player.fill_ranking_for_player('Overall', period_end, player)
+    sut = Player.fill_ranking_for_player('Overall', period_end, player)
 
     assert_instance_of(ImportRanking, sut)
     assert_equal(199, sut.ranking_position)
@@ -89,7 +84,7 @@ class PlayerTest < ActiveSupport::TestCase
     already_in_system.rankings = rankings
 
     # case 1 new ranking not already imported
-    sut = @player.map_and_sync_player(player, already_in_system, period_end)
+    sut = Player.map_and_sync_player(player, already_in_system, period_end)
     assert_equal(already_in_system.lastname, sut.lastname)
     assert_equal(already_in_system.firstname, sut.firstname)
     assert_equal(already_in_system.club, sut.club)
@@ -107,7 +102,7 @@ class PlayerTest < ActiveSupport::TestCase
     ranking.dtb_id = player.dtb_id
     already_in_system.rankings.push(ranking)
     player.rankings = nil
-    sut = @player.map_and_sync_player(player, already_in_system, period_end)
+    sut = Player.map_and_sync_player(player, already_in_system, period_end)
     assert_instance_of(ImportPlayer, sut)
     assert_equal(already_in_system.lastname, sut.lastname)
     assert_equal(already_in_system.firstname, sut.firstname)
@@ -119,7 +114,7 @@ class PlayerTest < ActiveSupport::TestCase
 
     # case 3 new club
     already_in_system.club = 'Musterhausener TV'
-    sut = @player.map_and_sync_player(player, already_in_system, period_end)
+    sut = Player.map_and_sync_player(player, already_in_system, period_end)
     assert_instance_of(ImportPlayer, sut)
     assert_equal(player.club, sut.club)
     assert_equal(1, sut.clubs.size)
@@ -128,12 +123,12 @@ class PlayerTest < ActiveSupport::TestCase
   end
 
   test 'calculation of yob to fetch from db' do
-    sut = @player.calculate_yob_range_to_fetch('2008', 12, Time.new('2019', '03', '31'), 100)
+    sut = Player.calculate_yob_range_to_fetch('2008', 12, Time.new('2019', '03', '31'), 100)
     assert_equal(108, sut.fetch(0))
     assert_equal(107, sut.fetch(1))
     assert_equal(2, sut.size)
 
-    sut = @player.calculate_yob_range_to_fetch('2008', 14, Time.new('2019', '03', '31'), 200)
+    sut = Player.calculate_yob_range_to_fetch('2008', 14, Time.new('2019', '03', '31'), 200)
     assert_equal(208, sut.fetch(0))
     assert_equal(206, sut.fetch(2))
     assert_equal(4, sut.size)
@@ -158,7 +153,7 @@ class PlayerTest < ActiveSupport::TestCase
       in_rankings.push(ranking)
       i += 1
     end
-    sut = @player.sort_rankings_for_age_group(in_rankings, 11, true, false)
+    sut = Player.sort_rankings_for_age_group(in_rankings, 11, true, false)
 
     assert_instance_of(ImportRanking, sut.fetch(0))
     assert_equal(1, sut.fetch(0).ranking_position)
@@ -179,7 +174,7 @@ class PlayerTest < ActiveSupport::TestCase
     assert_equal(2, Player.count)
     assert_equal(4, Ranking.count)
     assert_equal(3, Club.count)
-    @player.import_rankings('./test/fixtures/files/Junioren_20180331.csv')
+    Player.import_rankings('./test/fixtures/files/Junioren_20180331.csv')
     assert_equal(143, Ranking.count)
     assert_equal(19, Player.count)
     assert_equal(4, Club.count)

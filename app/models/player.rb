@@ -7,7 +7,7 @@ class Player < ApplicationRecord
   has_many :rankings, primary_key: 'dtb_id', foreign_key: 'dtb_id'
   has_many :clubs, primary_key: 'dtb_id', foreign_key: 'dtb_id'
 
-  def import_rankings(file)
+  def self.import_rankings(file)
     period_to_import = extract_period_from_filename(file)
     players_to_import = read_players_from_csv(file)
     save_imported_players(players_to_import, period_to_import)
@@ -21,7 +21,7 @@ class Player < ApplicationRecord
   #
   # @return [Date] Ruby Date object containing the extracted period
   #
-  def extract_period_from_filename(filename)
+  def self.extract_period_from_filename(filename)
     logger.debug "extracting period part from file '#{filename}'"
     filename_without_path = filename.split('/').last
     filename_without_extension = filename_without_path.split('.').first
@@ -41,7 +41,7 @@ class Player < ApplicationRecord
   #
   # @return [Array] array of player data sets
   #
-  def read_players_from_csv(file)
+  def self.read_players_from_csv(file)
     logger.debug "reading player data from file '#{file}'"
     input = CSV.read(file, encoding: 'utf-8')
     players = []
@@ -67,7 +67,7 @@ class Player < ApplicationRecord
   # @param [Array] players_to_import players to save
   # @param [Time] period_to_import period for the current data import
   #
-  def save_imported_players(players_to_import, period_to_import)
+  def self.save_imported_players(players_to_import, period_to_import)
     logger.info "Starting to process #{players_to_import.size} player entries for saving"
     count_inserted = 0
     count_updated = 0
@@ -98,7 +98,7 @@ class Player < ApplicationRecord
   #
   # @return [Player] synchronized player object
   #
-  def map_and_sync_player(player, already_in_system, imported_period)
+  def self.map_and_sync_player(player, already_in_system, imported_period)
     player.rankings = [] if player.rankings.nil?
     already_in_system.rankings.each do |ranking|
       player.rankings.push(ranking) unless ranking.date.eql? imported_period
@@ -122,7 +122,7 @@ class Player < ApplicationRecord
   #
   # @return [Ranking] ranking object
   #
-  def fill_ranking_for_player(ranking_type, period_end, player)
+  def self.fill_ranking_for_player(ranking_type, period_end, player)
     logger.debug "creating ranking: player #{player.dtb_id} - #{period_end}"
     ranking = ImportRanking.new
     ranking.age_group = ranking_type
@@ -146,7 +146,7 @@ class Player < ApplicationRecord
   #
   # @return [Array] array containing range to fetch for calculation of rankings
   #
-  def calculate_yob_range_to_fetch(yob, age_group, period, gender_factor)
+  def self.calculate_yob_range_to_fetch(yob, age_group, period, gender_factor)
     classes_of_players_to_retrieve = []
     yob_gender_marker = yob[2, 4].to_i + gender_factor
     i = 0
@@ -167,7 +167,7 @@ class Player < ApplicationRecord
   #
   # @return [Array] sorted rankings for requested age group
   #
-  def sort_rankings_for_age_group(rankings, age_group, is_yob_ranking, is_age_group_ranking)
+  def self.sort_rankings_for_age_group(rankings, age_group, is_yob_ranking, is_age_group_ranking)
     sorted_rankings = []
     last_rank = 0
     start_ranking = 0
@@ -194,7 +194,7 @@ class Player < ApplicationRecord
   #
   # @param [ImportedPlayer] player player to save
   #
-  def save_imported_player(imported_player)
+  def self.save_imported_player(imported_player)
     # as this is a rather rare case we wil make it easy:
     # delete all data for this player and then insert completely
     if Player.where(dtb_id: imported_player.dtb_id).count.positive?
@@ -232,7 +232,7 @@ class Player < ApplicationRecord
   #
   # @return [Time] Ruby time object corresponding to the input
   #
-  def create_time_from_string(input)
+  def self.create_time_from_string(input)
     year = input.last[0, 4]
     month = input.last[4, 2]
     day = input.last[6, 2]
@@ -245,7 +245,7 @@ class Player < ApplicationRecord
   #
   # @param [Time] period_to_import period to calculate a full set of rankings
   #
-  def calculate_rankings(period_to_import)
+  def self.calculate_rankings(period_to_import)
     yob_youngest_age_group = period_to_import.year - 11
     logger.debug "under 11 age group for current calculation has birth year #{yob_youngest_age_group}"
     birth_year_four_digits = yob_youngest_age_group.to_s
@@ -289,7 +289,7 @@ class Player < ApplicationRecord
   #
   # @return [ImportedPlayer] player object or nil
   #
-  def retrieve_player_by_dtb_id(dtb_id)
+  def self.retrieve_player_by_dtb_id(dtb_id)
     # if we cannot find exactly one match we either have
     # no result or the data are corrupt
     return nil if Player.where(dtb_id: dtb_id).count != 1
@@ -332,7 +332,7 @@ class Player < ApplicationRecord
   #
   # @param [Array] updated_rankings array of rankings
   #
-  def save_imported_rankings(updated_rankings)
+  def self.save_imported_rankings(updated_rankings)
     return if updated_rankings.empty?
 
     rankings = Ranking.where(date: updated_rankings.fetch(0).date, age_group: updated_rankings.fetch(0).age_group, age_group_ranking: updated_rankings.fetch(0).age_group_ranking, yob_ranking:  updated_rankings.fetch(0).yob_ranking)
@@ -344,7 +344,7 @@ class Player < ApplicationRecord
     end
   end
 
-  def get_rankings_for_age_range_in_period(classes_to_retrieve, period)
+  def self.get_rankings_for_age_range_in_period(classes_to_retrieve, period)
     classes_to_retrieve.sort!
     rankings = []
     dtb_id_start = classes_to_retrieve.first * 100000
