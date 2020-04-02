@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
   root 'static_pages#home'
-  get 'static_pages/home'
-  get 'static_pages/about'
-  get 'import/info'
-  get 'import/import'
+  get '/about', to: 'static_pages#about'
+  get '/status', to: 'import#info'
+  get '/import', to: 'import#import'
+  get '/players', to: 'players#index'
+  get '/player', to: 'players#show'
   resources :import do
     collection { post :import }
   end
-  resources :players, only: [:show]
 end
