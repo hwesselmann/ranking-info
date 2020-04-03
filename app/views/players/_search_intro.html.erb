@@ -1,0 +1,19 @@
+<div class="card" style="width: 100%;">
+  <div class="card-body">
+    <h5 class="card-title">Spielersuche</h5>
+    <h6 class="card-subtitle mb-2 text-muted">Der direkte Weg zum Spielerprofil</h6>
+    <p class="card-text">
+      Über die Spielersuche kann gezielt nach einer Spielerin oder einem Spieler gesucht werden.
+      Wenn Sie keine Suchkriterien angeben und auf 'suchen' klicken, erhalten Sie alle Spieler,
+      die im System vorhanden sind - diese Liste kann allerdings ziemlich lang sein.
+      <br/><br/>
+      Bei den Suchkriterien stehen die Suche nach der <b>DTB-ID</b>, <b>Nachnamen und Nachnamenteilen</b>
+      oder dem <b>Geburtsjahrgang</b> zur Verfügung. Geben Sie eine DTB-ID ein, wird immer nur nach dieser
+      gesucht. Die Suche nach Nachname und Geburtsjahr sind kombinierbar.
+      <br/><br/>
+      Filterbare Ranglisten und Informationen zu den im System verfügbaren Datenständen sind ebenfalls abrufbar:
+    </p>
+    <%= link_to "Ranglisten", '#', class: 'card-link' %>
+    <%= link_to "Informationen zu verfügbaren Daten", status_path, class: 'card-link' %>
+  </div>
+</div>
