@@ -1,11 +1,4 @@
-@import "bootstrap-sprockets";
-@import "bootstrap";
-
 /* universal */
-
-body {
-  padding-top: 60px;
-}
 
 section {
   overflow: auto;
@@ -41,7 +34,7 @@ h2 {
   margin-bottom: 30px;
   text-align: center;
   font-weight: normal;
-  color: $gray-light;
+  color: #999999;
 }
 
 p {
