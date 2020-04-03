@@ -1,4 +1,20 @@
-<% @players.each do |player| %>
-  <%= player.lastname %>, <%= player.firstname %>  (<%= player.nationality %>)
-  <%= player.dtb_id %> <%= player.club %> / <%= player.federation %><br/>
-<% end %>
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>DTB-ID</th>
+      <th>Nachname, Vorname</th>
+      <th>Nationalität</th>
+      <th>Verein / Verband</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @players.each do |player| %>
+      <tr>
+        <td><%= link_to player.dtb_id, player_path(player.dtb_id) %></td>
+        <td><%= player.lastname %>, <%= player.firstname %></td>
+        <td><%= player.nationality %></td>
+        <td><%= player.club %> / <%= player.federation %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

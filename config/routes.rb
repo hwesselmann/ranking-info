@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   get '/status', to: 'import#info'
   post '/import', to: 'import#import'
   get '/players', to: 'players#index'
-  get '/player/:id', to: 'players#show'
+  get '/player/:id', to: 'players#show', as: :player
   resources :import do
     collection { post :import }
   end
