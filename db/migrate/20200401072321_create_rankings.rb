@@ -8,6 +8,8 @@ class CreateRankings < ActiveRecord::Migration[6.0]
       t.string :score
       t.boolean :age_group_ranking, default: false
       t.boolean :yob_ranking, default: false
+
+      t.timestamps
     end
     add_index :rankings, [:dtb_id, :date]
   end
