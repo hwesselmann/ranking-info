@@ -1,24 +1,21 @@
-# README
+## ranking-info  
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a small web-application aiming at providing accessible information on the German national tennis youth rankings.
 
-Things you may want to cover:
+### Prerequisites  
 
-* Ruby version
+This application is developed using
 
-* System dependencies
+* Ruby 2.6.5
 
-* Configuration
+* Rails 6.0.2.2
 
-* Database creation
+* SQLite3
 
-* Database initialization
+### Database setup  
 
-* How to run the test suite
+To setup a developement database, check config/database.yml and then run __rake db:migrate__
 
-* Services (job queues, cache servers, search engines, etc.)
+### Tests
 
-* Deployment instructions
-
-* ...
+To run the test suites, run __rake test__
