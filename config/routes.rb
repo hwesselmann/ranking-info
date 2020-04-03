@@ -2,9 +2,9 @@ Rails.application.routes.draw do
   root 'static_pages#home'
   get '/about', to: 'static_pages#about'
   get '/status', to: 'import#info'
-  get '/import', to: 'import#import'
+  post '/import', to: 'import#import'
   get '/players', to: 'players#index'
-  get '/player', to: 'players#show'
+  get '/player/:id', to: 'players#show'
   resources :import do
     collection { post :import }
   end

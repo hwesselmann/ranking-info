@@ -1,5 +1,20 @@
-<% provide(:title, "Spieler") %>
+<% provide(:title, 'Spielersuche') %>
 <h1>Spieler</h1>
-<p>
-  Suche und Auswahl
-</p>
+<div>
+  <%= form_tag(players_path, method: 'get') do %>
+    <%= label_tag 'DTB-ID' %><%= search_field_tag 'dtb_id', params[:dtb_id] %>
+    <%= label_tag 'Nachname' %><%= search_field_tag 'lastname', params[:lastname] %>
+    <%= label_tag 'Geburtsjahr' %><%= search_field_tag 'yob', params[:yob] %>
+    <%= submit_tag 'suchen' %>
+  <% end %>
+</div>
+<% if @players.present? %>
+   <%= render 'player_result_list' %>
+<% else %>
+  <% if params[:commit] %>
+    <div>Es wurden keine Spieler für diese Suchkriterien gefunden.</div>
+  <% else %>
+    <div>:: motivierender Text ::</div>
+  <% end %>
+<% end %>
+

@@ -1,0 +1,4 @@
+<% @players.each do |player| %>
+  <%= player.lastname %>, <%= player.firstname %>  (<%= player.nationality %>)
+  <%= player.dtb_id %> <%= player.club %> / <%= player.federation %><br/>
+<% end %>
