@@ -72,7 +72,7 @@ class Player < ApplicationRecord
     count_inserted = 0
     count_updated = 0
     players_to_import.each do |player|
-      existing_player = retrieve_player_by_dtb_id(player.dtb_id)
+      existing_player = Player.where(dtb_id: player.dtb_id).first
       if existing_player.nil?
         rankings = []
         ranking = fill_ranking_for_player('Overall', period_to_import, player)
@@ -81,36 +81,20 @@ class Player < ApplicationRecord
         save_imported_player(player)
         count_inserted += 1
       else
-        updated_player = map_and_sync_player(player, existing_player, period_to_import)
-        save_imported_player(updated_player)
+        # update existing player with new data
+        unless existing_player.club.eql?(player.club)
+          club = Club.new(dtb_id: existing_player.dtb_id, club: existing_player.club)
+          club.save
+          existing_player.club = player.club
+        end
+        ranking = Ranking.new(dtb_id: player.dtb_id, age_group: 'Overall', date: period_to_import, ranking_position: player.current_ranking, score: player.current_score, age_group_ranking: false, yob_ranking: false)
+        ranking.save
+        existing_player.save
+
         count_updated += 1
       end
     end
     logger.info "Finished processing #{players_to_import.size} player entries. (#{count_inserted} new, #{count_updated} updated)"
-  end
-
-  #
-  # Synchronize newly imported player with existing data.
-  #
-  # @param [Player] player newly imported player data
-  # @param [Player] already_in_system data of this player already in the system
-  # @param [Time] imported_period period currently being imported
-  #
-  # @return [Player] synchronized player object
-  #
-  def self.map_and_sync_player(player, already_in_system, imported_period)
-    player.rankings = [] if player.rankings.nil?
-    already_in_system.rankings.each do |ranking|
-      player.rankings.push(ranking) unless ranking.date.eql? imported_period
-    end
-    ranking = fill_ranking_for_player('Overall', imported_period, player)
-    player.rankings.push(ranking)
-    unless already_in_system.club.eql? player.club
-      player.clubs = already_in_system.clubs
-      player.clubs = [] if player.clubs.nil?
-      player.clubs.push(already_in_system.club)
-    end
-    player
   end
 
   #
@@ -247,7 +231,7 @@ class Player < ApplicationRecord
   #
   def self.calculate_rankings(period_to_import)
     yob_youngest_age_group = period_to_import.year - 11
-    logger.debug "under 11 age group for current calculation has birth year #{yob_youngest_age_group}"
+    logger.info "under 11 age group for current calculation has birth year #{yob_youngest_age_group}"
     birth_year_four_digits = yob_youngest_age_group.to_s
 
     # For boys and girls
@@ -283,51 +267,6 @@ class Player < ApplicationRecord
   end
 
   #
-  # Retrieve a complete player object from the datastore by its dtb id.
-  #
-  # @param [Integer] dtb_id dtb id of the player to fetch
-  #
-  # @return [ImportedPlayer] player object or nil
-  #
-  def self.retrieve_player_by_dtb_id(dtb_id)
-    # if we cannot find exactly one match we either have
-    # no result or the data are corrupt
-    return nil if Player.where(dtb_id: dtb_id).count != 1
-
-    player_db_entry = Player.where(dtb_id: dtb_id).first
-    player = ImportPlayer.new
-    player.dtb_id = player_db_entry.dtb_id
-    player.firstname = player_db_entry.firstname
-    player.lastname = player_db_entry.lastname
-    player.club = player_db_entry.club
-    player.federation = player_db_entry.federation
-    player.nationality = player_db_entry.nationality
-
-    ranking_db_entries = Ranking.where(dtb_id: dtb_id).order(date: :desc)
-    rankings = []
-    ranking_db_entries.each do |ranking_entry|
-      ranking = ImportRanking.new
-      ranking.dtb_id = dtb_id
-      ranking.ranking_position = ranking_entry.ranking_position
-      ranking.age_group = ranking_entry.age_group
-      ranking.score = ranking_entry.score
-      ranking.date = ranking_entry.date
-
-      rankings.push(ranking)
-    end
-    player.rankings = rankings
-
-    clubs_from_db = Club.where(dtb_id: dtb_id)
-    clubs = []
-    clubs_from_db.each do |club_entry|
-      clubs.push(club_entry[:club])
-    end
-    player.clubs = clubs
-
-    player
-  end
-
-  #
   # Save a set of rankings for a period. This method assumes all rankings are of the same ranking class.
   #
   # @param [Array] updated_rankings array of rankings
@@ -335,9 +274,6 @@ class Player < ApplicationRecord
   def self.save_imported_rankings(updated_rankings)
     return if updated_rankings.empty?
 
-    rankings = Ranking.where(date: updated_rankings.fetch(0).date, age_group: updated_rankings.fetch(0).age_group, age_group_ranking: updated_rankings.fetch(0).age_group_ranking, yob_ranking:  updated_rankings.fetch(0).yob_ranking)
-    # if there are existing rankings => remove them, we are starting over, as it seems
-    rankings.delete if rankings.count.positive?
     updated_rankings.each do |imported_ranking|
       ranking = Ranking.new(dtb_id: imported_ranking.dtb_id, date: imported_ranking.date, age_group: imported_ranking.age_group, ranking_position: imported_ranking.ranking_position, score: imported_ranking.score, age_group_ranking: imported_ranking.age_group_ranking, yob_ranking: imported_ranking.yob_ranking)
       ranking.save
