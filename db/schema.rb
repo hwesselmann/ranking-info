@@ -32,12 +32,14 @@ ActiveRecord::Schema.define(version: 2020_04_01_072607) do
 
   create_table "rankings", force: :cascade do |t|
     t.integer "dtb_id"
-    t.datetime "date"
+    t.date "date"
     t.string "age_group"
     t.integer "ranking_position"
     t.string "score"
     t.boolean "age_group_ranking", default: false
     t.boolean "yob_ranking", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["dtb_id", "date"], name: "index_rankings_on_dtb_id_and_date"
     t.index ["dtb_id"], name: "index_rankings_on_dtb_id"
   end
