@@ -10,14 +10,14 @@ class PlayersController < ApplicationController
         # fuzzy lastname in yob
         yob_male = params[:yob][2, 4].to_i + 100
         yob_female = yob_male + 100
-        @players = Player.where("lastname LIKE '%#{params[:lastname]}%' AND (dtb_id LIKE '#{yob_male}%' OR dtb_id LIKE '#{yob_female}%')")
+        @players = Player.where("lastname LIKE '%#{params[:lastname]}%' AND (dtb_id LIKE '#{yob_male}%' OR dtb_id LIKE '#{yob_female}%')").order(:lastname, :dtb_id)
       else
-        @players = Player.where("lastname LIKE '%#{params[:lastname]}%'")
+        @players = Player.where("lastname LIKE '%#{params[:lastname]}%'").order(:lastname, :dtb_id)
       end
     elsif params[:yob] && !params[:yob].eql?('')
       yob_male = params[:yob][2, 4].to_i + 100
       yob_female = yob_male + 100
-      @players = Player.where("dtb_id LIKE '#{yob_male}%' OR dtb_id LIKE '#{yob_female}%'")
+      @players = Player.where("dtb_id LIKE '#{yob_male}%' OR dtb_id LIKE '#{yob_female}%'").order(:lastname, :dtb_id)
     elsif params[:commit]
       # search was fired without parameters => show all
       @players = Player.all
