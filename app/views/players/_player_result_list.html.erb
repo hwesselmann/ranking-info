@@ -3,8 +3,9 @@
     <tr>
       <th>DTB-ID</th>
       <th>Nachname, Vorname</th>
-      <th>Nationalität</th>
-      <th>Verein / Verband</th>
+      <th class="center">Nationalität</th>
+      <th>Verein</th>
+      <th class="center">Verband</th>
     </tr>
   </thead>
   <tbody>
@@ -12,8 +13,9 @@
       <tr>
         <td><%= link_to player.dtb_id, player_path(player.dtb_id) %></td>
         <td><%= player.lastname %>, <%= player.firstname %></td>
-        <td><%= player.nationality %></td>
-        <td><%= player.club %> / <%= player.federation %></td>
+        <td class="center"><%= player.nationality %></td>
+        <td><%= player.club %></td>
+        <td class="center"><%= player.federation %></td>
       </tr>
     <% end %>
   </tbody>
