@@ -1,7 +1,7 @@
 class PlayersController < ApplicationController
   def index
     if params[:dtb_id] && !params[:dtb_id].eql?('')
-      @players = Player.where(dtb_id: params[:dtb_id])
+      @players = Player.where("dtb_id LIKE '#{params[:dtb_id]}%'")
       # should return exactly one match => redirect to profile
       redirect_to action: 'show', id: params[:dtb_id] if @players.size == 1
     elsif params[:lastname] && !params[:lastname].eql?('')
