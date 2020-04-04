@@ -2,7 +2,7 @@ class CreateRankings < ActiveRecord::Migration[6.0]
   def change
     create_table :rankings do |t|
       t.integer :dtb_id, index: true
-      t.datetime :date
+      t.date :date
       t.string :age_group
       t.integer :ranking_position
       t.string :score
