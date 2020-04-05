@@ -166,12 +166,15 @@ class Player < ApplicationRecord
       if curr_ranking.ranking_position > last_rank
         last_rank = curr_ranking.ranking_position
         start_ranking = count_up
-        count_up += 1
       end
       curr_ranking.age_group = "U#{age_group}"
       curr_ranking.yob_ranking = is_yob_ranking
       curr_ranking.age_group_ranking = is_age_group_ranking
       curr_ranking.ranking_position = start_ranking
+      # ranking is only counted up for German players,
+      # foreign player get the right position, but are not adding
+      # up to the actual position
+      count_up += 1 if Player.find_by(dtb_id: curr_ranking.dtb_id).nationality.eql?('GER')
       sorted_rankings.push(curr_ranking)
     end
     sorted_rankings
@@ -286,15 +289,15 @@ class Player < ApplicationRecord
     rankings = []
     dtb_id_start = classes_to_retrieve.first * 100_000
     dtb_id_end = classes_to_retrieve.last * 100_000 + 99_999
-    rankings_from_db = Ranking.where(date: period, dtb_id: dtb_id_start...dtb_id_end, age_group: 'Overall').order(:ranking_position, :dtb_id)
+    rankings_from_db = Ranking.where(date: period, dtb_id: dtb_id_start...dtb_id_end, age_group: 'Overall').order(:ranking_position, dtb_id: :desc)
 
     rankings_from_db.each do |ranking_entry|
       ranking = ImportRanking.new
-      ranking.dtb_id = ranking_entry[:dtb_id]
-      ranking.ranking_position = ranking_entry[:ranking_position]
-      ranking.age_group = ranking_entry[:age_group]
-      ranking.score = ranking_entry[:score]
-      ranking.date = ranking_entry[:date]
+      ranking.dtb_id = ranking_entry.dtb_id
+      ranking.ranking_position = ranking_entry.ranking_position
+      ranking.age_group = ranking_entry.age_group
+      ranking.score = ranking_entry.score
+      ranking.date = ranking_entry.date
 
       rankings.push(ranking)
     end

@@ -60,6 +60,11 @@ class PlayerTest < ActiveSupport::TestCase
     assert_equal(208, sut.fetch(0))
     assert_equal(206, sut.fetch(2))
     assert_equal(4, sut.size)
+
+    sut = Player.calculate_yob_range_to_fetch('2008', 16, Time.new('2019', '03', '31'), 200)
+    assert_equal(208, sut.fetch(0))
+    assert_equal(204, sut.fetch(4))
+    assert_equal(6, sut.size)
   end
 
   test 'sorting of rankings' do
@@ -68,7 +73,7 @@ class PlayerTest < ActiveSupport::TestCase
     i = 0
     while i < 25
       ranking = ImportRanking.new
-      ranking.dtb_id = 12_345_678
+      ranking.dtb_id = 10_712_345
       ranking.age_group = 'Overall'
       ranking.yob_ranking = false
       ranking.age_group_ranking = false
@@ -104,7 +109,7 @@ class PlayerTest < ActiveSupport::TestCase
     assert_equal(3, Club.count)
     Player.import_rankings('./test/fixtures/files/Junioren_20180331.csv')
     assert_equal(143, Ranking.count)
-    assert_equal(19, Player.count)
+    assert_equal(18, Player.count)
     assert_equal(4, Club.count)
   end
 end
