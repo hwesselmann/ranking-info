@@ -11,7 +11,13 @@ class Player < ApplicationRecord
     period_to_import = extract_period_from_filename(file)
     players_to_import = read_players_from_csv(file)
     save_imported_players(players_to_import, period_to_import)
-    calculate_rankings(period_to_import)
+    # gender?
+    if players_to_import.fetch(0).dtb_id[0].eql?(1)
+      gender_factor = 100
+    else
+      gender_factor = 200
+    end
+    calculate_rankings(period_to_import, gender_factor)
   end
 
   #
@@ -160,12 +166,12 @@ class Player < ApplicationRecord
       if curr_ranking.ranking_position > last_rank
         last_rank = curr_ranking.ranking_position
         start_ranking = count_up
+        count_up += 1
       end
       curr_ranking.age_group = "U#{age_group}"
       curr_ranking.yob_ranking = is_yob_ranking
       curr_ranking.age_group_ranking = is_age_group_ranking
       curr_ranking.ranking_position = start_ranking
-      count_up += 1
       sorted_rankings.push(curr_ranking)
     end
     sorted_rankings
@@ -207,8 +213,6 @@ class Player < ApplicationRecord
     end
   end
 
-  private
-
   #
   # Use an input string in foramt 'yyyymmdd' to create a Time object
   #
@@ -229,40 +233,37 @@ class Player < ApplicationRecord
   #
   # @param [Time] period_to_import period to calculate a full set of rankings
   #
-  def self.calculate_rankings(period_to_import)
+  def self.calculate_rankings(period_to_import, gender_factor)
     yob_youngest_age_group = period_to_import.year - 11
     logger.info "under 11 age group for current calculation has birth year #{yob_youngest_age_group}"
     birth_year_four_digits = yob_youngest_age_group.to_s
 
-    # For boys and girls
-    [100, 200].each do |gender_factor|
-      # 1. general rankings for all age groups
-      [12, 13, 14, 15, 16, 17, 18].each do |age_group|
-        logger.debug "calculating general rankings for U#{age_group}"
-        classes_of_players_to_retrieve = calculate_yob_range_to_fetch(birth_year_four_digits, age_group, period_to_import, gender_factor)
-        rankings = get_rankings_for_age_range_in_period(classes_of_players_to_retrieve, period_to_import)
-        sorted_rankings = sort_rankings_for_age_group(rankings, age_group, false, false)
-        logger.info "calculated #{sorted_rankings.size} general ranking entries for U#{age_group}"
-        save_imported_rankings(sorted_rankings)
-      end
-      # 2. yob rankings
-      [11, 12, 13, 14, 15, 16, 17, 18].each do |age_group|
-        logger.debug "calculating yob rankings U#{age_group}"
-        classes_of_players_to_retrieve = [(period_to_import.year - age_group).to_s[2, 4].to_i + gender_factor]
-        rankings = get_rankings_for_age_range_in_period(classes_of_players_to_retrieve, period_to_import)
-        sorted_rankings = sort_rankings_for_age_group(rankings, age_group, true, false)
-        logger.info "calculated #{sorted_rankings.size} yob ranking entries for U#{age_group}"
-        save_imported_rankings(sorted_rankings)
-      end
-      # 3. age group rankings
-      [12, 14, 16, 18].each do |age_group|
-        logger.debug "calculating age group rankings U#{age_group}"
-        classes_of_players_to_retrieve = [(period_to_import.year - age_group).to_s[2, 4].to_i + gender_factor, (period_to_import.year - age_group).to_s[2, 4].to_i + gender_factor + 1]
-        rankings = get_rankings_for_age_range_in_period(classes_of_players_to_retrieve, period_to_import)
-        sorted_rankings = sort_rankings_for_age_group(rankings, age_group, false, true)
-        logger.info "calculated #{sorted_rankings.size} age group ranking entries for U#{age_group}"
-        save_imported_rankings(sorted_rankings)
-      end
+    # 1. general rankings for all age groups
+    [12, 13, 14, 15, 16, 17, 18].each do |age_group|
+      logger.debug "calculating general rankings for U#{age_group}"
+      classes_of_players_to_retrieve = calculate_yob_range_to_fetch(birth_year_four_digits, age_group, period_to_import, gender_factor)
+      rankings = get_rankings_for_age_range_in_period(classes_of_players_to_retrieve, period_to_import)
+      sorted_rankings = sort_rankings_for_age_group(rankings, age_group, false, false)
+      logger.info "calculated #{sorted_rankings.size} general ranking entries for U#{age_group}"
+      save_imported_rankings(sorted_rankings)
+    end
+    # 2. yob rankings
+    [11, 12, 13, 14, 15, 16, 17, 18].each do |age_group|
+      logger.debug "calculating yob rankings U#{age_group}"
+      classes_of_players_to_retrieve = [(period_to_import.year - age_group).to_s[2, 4].to_i + gender_factor]
+      rankings = get_rankings_for_age_range_in_period(classes_of_players_to_retrieve, period_to_import)
+      sorted_rankings = sort_rankings_for_age_group(rankings, age_group, true, false)
+      logger.info "calculated #{sorted_rankings.size} yob ranking entries for U#{age_group}"
+      save_imported_rankings(sorted_rankings)
+    end
+    # 3. age group rankings
+    [12, 14, 16, 18].each do |age_group|
+      logger.debug "calculating age group rankings U#{age_group}"
+      classes_of_players_to_retrieve = [(period_to_import.year - age_group).to_s[2, 4].to_i + gender_factor, (period_to_import.year - age_group).to_s[2, 4].to_i + gender_factor + 1]
+      rankings = get_rankings_for_age_range_in_period(classes_of_players_to_retrieve, period_to_import)
+      sorted_rankings = sort_rankings_for_age_group(rankings, age_group, false, true)
+      logger.info "calculated #{sorted_rankings.size} age group ranking entries for U#{age_group}"
+      save_imported_rankings(sorted_rankings)
     end
   end
 
@@ -283,8 +284,8 @@ class Player < ApplicationRecord
   def self.get_rankings_for_age_range_in_period(classes_to_retrieve, period)
     classes_to_retrieve.sort!
     rankings = []
-    dtb_id_start = classes_to_retrieve.first * 100000
-    dtb_id_end = classes_to_retrieve.last * 100000 + 99999
+    dtb_id_start = classes_to_retrieve.first * 100_000
+    dtb_id_end = classes_to_retrieve.last * 100_000 + 99_999
     rankings_from_db = Ranking.where(date: period, dtb_id: dtb_id_start...dtb_id_end, age_group: 'Overall').order(:ranking_position, :dtb_id)
 
     rankings_from_db.each do |ranking_entry|
@@ -300,4 +301,7 @@ class Player < ApplicationRecord
 
     rankings
   end
+
+  private_class_method :create_time_from_string, :calculate_rankings
+  private_class_method :save_imported_rankings, :get_rankings_for_age_range_in_period
 end
