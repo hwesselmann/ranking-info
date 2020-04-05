@@ -74,7 +74,7 @@ class Player < ApplicationRecord
   # @param [Time] period_to_import period for the current data import
   #
   def self.save_imported_players(players_to_import, period_to_import)
-    logger.info "Starting to process #{players_to_import.size} player entries for saving"
+    logger.info "Started processing save for #{players_to_import.size} players"
     count_inserted = 0
     count_updated = 0
     players_to_import.each do |player|
