@@ -10,8 +10,9 @@
 #  String @score
 #  Boolean @age_group_ranking
 #  Boolean @yob_ranking
+#  Boolean @year_end_ranking
 #
 class ImportRanking
   attr_accessor :dtb_id, :date, :age_group, :ranking_position, :score
-  attr_accessor :age_group_ranking, :yob_ranking
+  attr_accessor :age_group_ranking, :yob_ranking, :year_end_ranking
 end

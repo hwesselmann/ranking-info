@@ -36,6 +36,9 @@ class ListingController < ApplicationController
       query += if params[:federation].eql?('') then ""
                else " AND dtb_id IN (SELECT dtb_id FROM players WHERE federation='#{params[:federation]}')"
                end
+      # 6. year end ranking
+      # TODO: implement filter in ui, for now - always false
+      query += " AND year_end_ranking=false"
       # run the query!
       @rankings = Ranking.where(query).order(:ranking_position, :dtb_id)
     end
@@ -48,13 +51,16 @@ class ListingController < ApplicationController
     years = []
     quarters = {}
     available_rankings.each do |ar|
-      years.push((ar.date - 1.day).year.to_s)
+      years.push((ar.date - 1.day).year.to_s) unless ar.date.month.eql?(12)
     end
     years.each do |y|
       q = []
       available_rankings.each do |ar|
         if y.eql?((ar.date - 1.day).year.to_s)
-          q.push([(ar.date - 1.day).strftime('%d.%m.%Y'), (ar.date).strftime('%Y-%m-%d')])
+          # do not show year end ranking dates - they are triggered via checkbox
+          unless ar.date.month.eql?(12) && ar.date.day.eql?(31)
+            q.push([(ar.date - 1.day).strftime('%d.%m.%Y'), (ar.date).strftime('%Y-%m-%d')])
+          end
         end
       end
       quarters[y] = q
