@@ -1,0 +1,42 @@
+<% provide(:title, 'Ranglisten') %>
+<div class="container">
+  <p class="h2 text-left mt-3 mb-3">
+    Ranglisten
+  </p>
+  <%= form_tag(listings_path, method: 'get', class: 'mb-3') do %>
+  <div class="form-row">
+    <div class="col-auto mr-2">
+      <%= label_tag 'quarter', 'Stichtag' %><br/>
+      <%= select_tag(:quarter, grouped_options_for_select(@quarters)) %>
+    </div>
+    <div class="col-auto mr-2">
+      <%= label_tag 'gender', 'Geschlecht' %><br/>
+      <%= select_tag(:gender, options_for_select(['Junioren', 'Juniorinnen'])) %>
+    </div>
+    <div class="col-auto mr-2">
+      <%= label_tag 'age-group', 'Altersklasse' %><br/>
+      <%= select_tag(:age_group, options_for_select(['U11', 'U12', 'U13', 'U14', 'U15', 'U16', 'U17', 'U18']), include_blank: true) %>
+    </div>
+    <div class="col-auto mr-2">
+      <%= label_tag 'age_group_options', 'Extras' %><br/>
+      <%= select_tag(:age_group_options, options_for_select([['nur Geburtsjahrgang', 'only_yob'], ['auch Jüngere einbeziehen', 'include_younger']]), include_blank: true) %>
+    </div>
+    <div class="col-auto mr-2">
+      <%= label_tag 'federation', 'Verband' %><br/>
+      <%= select_tag(:federation, options_for_select(@federations), include_blank: true) %>
+    </div>
+    <div class="col-auto ml-4 mr-2">
+    <br/><%= submit_tag 'Liste abrufen', class: 'btn btn-success mb-2' %>
+    </div>
+  <% end %>
+</div>
+<% if @rankings.present? %>
+  <%= render 'ranking_list' %>
+<% else %>
+  <% if params[:commit] %>
+    <div>Es wurden leider keine Spieler für diese Suchkriterien gefunden.</div>
+  <% else %>
+    <%= render 'list_intro' %>
+  <% end %>
+<% end %>
+

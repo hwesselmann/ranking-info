@@ -1,0 +1,28 @@
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th class="center">#</th>
+      <th class="center">Rang</th>
+      <th>Nachname, Vorname</th>
+      <th class="center">DTB-ID</th>
+      <th class="center">Nationalität</th>
+      <th>Verein</th>
+      <th>Verband</th>
+      <th>Punkte</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @rankings.each_with_index do |ranking, index| %>
+      <tr>
+        <td class="center"><%= index + 1 %></td>
+        <td class="center"><%= ranking.ranking_position %></td>
+        <td><%= ranking.player.lastname %>, <%= ranking.player.firstname %></td>
+        <td class="center"><%= link_to ranking.dtb_id, player_path(ranking.dtb_id) %></td>
+        <td class="center"><%= ranking.player.nationality %></td>
+        <td><%= ranking.player.club %></td>
+        <td><%= ranking.player.federation %></td>
+        <td><%= ranking.score %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

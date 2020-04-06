@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   post '/import', to: 'import#import'
   get '/players', to: 'players#index'
   get '/player/:id', to: 'players#show', as: :player
+  get '/listings', to: 'listing#index'
   resources :import do
     collection { post :import }
   end
