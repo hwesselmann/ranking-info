@@ -3,7 +3,20 @@
     <h5 class="card-title">Ranglisten</h5>
     <h6 class="card-subtitle mb-2 text-muted">Suchen und Filtern - auch in historischen Daten</h6>
     <p class="card-text">
-      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      Hier bekommen Sie direkten zugriff auf die Jugendranglisten - nicht nur aus dem aktuellen Jahr,
+      sondern auch historische Daten. Im Augenblick sind die Such- und Filtermöglichkeiten noch nicht
+      vollständig umgesetzt - neue Filtermöglichkeiten und Suchoptionen werden kontinuierlich hinzugefügt.
+      <br/><br/>
+      Aktuelle Optionen:
+      <ul>
+        <li>Quartal - das anzuzeigende Quartal zum Stcihtag</li>
+        <li>Geschlecht</li>
+        <li>Altersklasse - wird nichts angegeben, wird die Gesamtliste angezeigt. Bei ungeraden Altersklassen 
+        erhält man die Liste nur für diesen Jahrgang (außer es sollen auch Jüngere angezeigt werden)</li>
+        <li>Optionen - Anzeige nur von dem in diesem Quartal gültigen Jahrgangs oder Einbeziehen auch der sonst 
+        nicht berücksichtigten jüngeren Geburtsjahrgänge</li>
+        <li>Verband - Nur Einträge von Spielerinnen und Spielern aus dem ausgewählten Verband</li>
+      </ul>
     </p>
     <%= link_to "Spielersuche", players_path, class: 'card-link' %>
     <%= link_to "Informationen zu verfügbaren Daten", status_path, class: 'card-link' %>
