@@ -242,7 +242,7 @@ class Player < ApplicationRecord
     birth_year_four_digits = yob_youngest_age_group.to_s
 
     # 1. general rankings for all age groups
-    [12, 13, 14, 15, 16, 17, 18].each do |age_group|
+    [11, 12, 13, 14, 15, 16, 17, 18].each do |age_group|
       logger.debug "calculating general rankings for U#{age_group}"
       classes_of_players_to_retrieve = calculate_yob_range_to_fetch(birth_year_four_digits, age_group, period_to_import, gender_factor)
       rankings = get_rankings_for_age_range_in_period(classes_of_players_to_retrieve, period_to_import)

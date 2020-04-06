@@ -51,6 +51,10 @@ class PlayerTest < ActiveSupport::TestCase
   end
 
   test 'calculation of yob to fetch from db' do
+    sut = Player.calculate_yob_range_to_fetch('2008', 11, Time.new('2019', '03', '31'), 100)
+    assert_equal(108, sut.fetch(0))
+    assert_equal(1, sut.size)
+    
     sut = Player.calculate_yob_range_to_fetch('2008', 12, Time.new('2019', '03', '31'), 100)
     assert_equal(108, sut.fetch(0))
     assert_equal(107, sut.fetch(1))
@@ -108,7 +112,7 @@ class PlayerTest < ActiveSupport::TestCase
     assert_equal(4, Ranking.count)
     assert_equal(3, Club.count)
     Player.import_rankings('./test/fixtures/files/Junioren_20180331.csv')
-    assert_equal(143, Ranking.count)
+    assert_equal(148, Ranking.count)
     assert_equal(18, Player.count)
     assert_equal(4, Club.count)
   end
