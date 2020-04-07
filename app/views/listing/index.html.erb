@@ -8,7 +8,7 @@
     <div class="col-auto mr-2">
       <%= label_tag 'quarter', 'Stichtag' %><br/>
       <%= select_tag(:quarter, grouped_options_for_select(@quarters)) %><br/>
-      <%= check_box_tag 'year_end' %> Abschlussrangliste
+      <%= check_box_tag 'year_end', 1, params[:year_end].eql?('1') %> Abschlussrangliste
     </div>
     <div class="col-auto mr-2">
       <%= label_tag 'gender', 'Geschlecht' %><br/>
