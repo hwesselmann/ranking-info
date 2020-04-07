@@ -1,7 +1,11 @@
 class ListingController < ApplicationController
   def index
     @quarters = fetch_available_quarters
-    @federations = %w[WTV TVN TVM TVBB BTV HTV TVSH TVNB]
+    @federations = []
+    players = Player.select(:federation).order(:federation).distinct
+    players.each do |player|
+      @federations.push player.federation
+    end
     if params[:commit]
       # we have a filter request - let's evaluate the params
       query = ''
@@ -37,8 +41,10 @@ class ListingController < ApplicationController
                else " AND dtb_id IN (SELECT dtb_id FROM players WHERE federation='#{params[:federation]}')"
                end
       # 6. year end ranking
-      # TODO: implement filter in ui, for now - always false
-      query += " AND year_end_ranking=false"
+      # if year end lists should be shown and the quarter selected is a Q4...
+      query += if params[:year_end].eql?('1') && params[:quarter].split('-')[1].eql?('01') then " AND year_end_ranking=true"
+               else " AND year_end_ranking=false"
+               end
       # run the query!
       @rankings = Ranking.where(query).order(:ranking_position, :dtb_id)
     end
