@@ -1,7 +1,0 @@
-{
-  "name": "ranking-info",
-  "image": "ruby:2.6.6",
-  "forwardPorts": [3000],
-  "postCreateCommand": "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo 'deb https://dl.yarnpkg.com/debian/ stable main' | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get install -y build-essential nodejs yarn && gem install bundler rake rubocop solargraph reek turbulence flay && bundle install && yarn install --check-files",
-  "extensions": ["editorconfig.editorconfig", "eamodio.gitlens", "rebornix.ruby", "castwide.solargraph", "misogi.ruby-rubocop", "gruntfuggly.todo-tree", "otoniel-isidoro.vscode-ruby-ctags", "pavlitsky.yard", "redhat.vscode-yaml", "mechatroner.rainbow-csv"]
-}
