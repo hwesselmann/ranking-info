@@ -90,7 +90,7 @@ class PlayerTest < ActiveSupport::TestCase
       in_rankings.push(ranking)
       i += 1
     end
-    sut = Player.sort_rankings_for_age_group(in_rankings, 11, true, false)
+    sut = Player.sort_rankings_for_age_group(in_rankings, 11, true, false, false)
 
     assert_instance_of(ImportRanking, sut.fetch(0))
     assert_equal(1, sut.fetch(0).ranking_position)
