@@ -92,6 +92,7 @@ class Player < ApplicationRecord
           club = Club.new(dtb_id: existing_player.dtb_id, club: existing_player.club)
           club.save
           existing_player.club = player.club
+          existing_player.federation = player.federation
         end
         ranking = Ranking.new(dtb_id: player.dtb_id, age_group: 'Overall', date: period_to_import, ranking_position: player.current_ranking, score: player.current_score, age_group_ranking: false, yob_ranking: false, year_end_ranking: false)
         ranking.save
