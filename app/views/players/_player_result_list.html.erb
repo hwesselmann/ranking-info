@@ -13,7 +13,7 @@
       <tr>
         <td><%= link_to player.dtb_id, player_path(player.dtb_id) %></td>
         <td><%= player.lastname %>, <%= player.firstname %></td>
-        <td class="center"><%= player.nationality %></td>
+        <td class="center"><%= image_tag("flags/#{player.nationality.downcase}.svg", alt: "#{player.nationality}", width: "30") %></td>
         <td><%= player.club %></td>
         <td class="center"><%= player.federation %></td>
       </tr>

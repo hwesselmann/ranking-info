@@ -18,7 +18,7 @@
         <td class="center"><%= ranking.ranking_position %></td>
         <td><%= ranking.player.lastname %>, <%= ranking.player.firstname %></td>
         <td class="center"><%= link_to ranking.dtb_id, player_path(ranking.dtb_id) %></td>
-        <td class="center"><%= ranking.player.nationality %></td>
+        <td class="center"><%= image_tag("flags/#{ranking.player.nationality.downcase}.svg", alt: "#{ranking.player.nationality}", width: "30") %></td>
         <td><%= ranking.player.club %></td>
         <td><%= ranking.player.federation %></td>
         <td><%= ranking.score %></td>
