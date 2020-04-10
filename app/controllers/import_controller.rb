@@ -1,8 +1,4 @@
 class ImportController < ApplicationController
-  def redirect(url, text)
-    redirect_to url, notice: text
-  end
-
   def info
     # show some stats
     @player_male_count = Player.where("dtb_id LIKE '1%'").count
@@ -33,9 +29,9 @@ class ImportController < ApplicationController
         file.write(uploaded_file.read)
       end
       Player.import_rankings('public/uploads/' + uploaded_file.original_filename)
-      redirect(status_url, 'new rankings imported!')
+      redirect_to status_url, flash: { info: 'new rankings imported!' }
     else
-      redirect(status_url, "please upload a ranking file")
+      redirect_to status_url, flash: { info: 'please upload a ranking file' }
     end
   end
 end
