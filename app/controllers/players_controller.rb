@@ -27,13 +27,14 @@ class PlayersController < ApplicationController
   end
 
   def show
-    #begin
+    begin
       @player = Player.find_by_dtb_id(params[:id])
       @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
       @current_rankings = get_current_rankings(@player.dtb_id)
-    #rescue
-      #redirect_to players_path, flash: { danger: 'Der Spieler wurde leider nicht gefunden' }
-    #end
+      @complete_rankings = get_complete_rankings(@player.dtb_id).reverse!
+    rescue
+      redirect_to players_path, flash: { danger: 'Der Spieler wurde leider nicht gefunden' }
+    end
   end
 
   private
@@ -73,14 +74,50 @@ class PlayersController < ApplicationController
     rankings
   end
 
-  def try_to_find_current_age_group(dtb_id)
-    current_year = Time.now.year
-    current_age_group = 0
-    [11, 12, 13, 14, 15, 16, 17, 18].each do |ag|
-      if (current_year - ag.to_i).eql?(dtb_id.to_s[1, 2].to_i)
-        current_age_group = ag
+  def get_complete_rankings(dtb_id)
+    db_rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false, age_group_ranking: false, year_end_ranking: false).order(:date, :age_group)
+    rankings = []
+    ranking = {}
+    start_year = 0
+    current_quarter = ''
+    db_rankings.each do |ran|
+      case ran.date.month
+      when 1
+        quarter = 'Q1'
+      when 4
+        quarter = 'Q2'
+      when 7
+        quarter = 'Q3'
+      when 10
+        quarter = 'Q4'
+      end
+      if start_year.eql?(ran.date.year)
+        if current_quarter.eql?(quarter)
+          # same year, same quarter => add age group
+          ranking[ran.age_group] = ran.ranking_position
+        else
+          # same year, other quarter => push and start new
+          rankings.push(ranking)
+          current_quarter = quarter
+          ranking = {}
+          ranking['year'] = ran.date.year
+          ranking['quarter'] = quarter
+          ranking[ran.age_group] = ran.ranking_position
+          ranking['score'] = ran.score
+        end
+      else
+        # different year => check if first run and start new
+        rankings.push(ranking) unless start_year.eql?(0)
+        start_year = ran.date.year
+        current_quarter = quarter
+        ranking = {}
+        ranking['year'] = ran.date.year
+        ranking['quarter'] = quarter
+        ranking[ran.age_group] = ran.ranking_position
+        ranking['score'] = ran.score
       end
     end
-    current_age_group
+    rankings.push(ranking)
+    rankings
   end
 end

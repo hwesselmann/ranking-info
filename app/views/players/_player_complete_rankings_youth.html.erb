@@ -1,9 +1,10 @@
 <span class="h6"><br/>Gesamtverlauf Jugend</span>
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped mt-1">
   <thead class="thead-dark">
     <tr>
       <th>Jahr</th>
       <th>Quartal</th>
+      <th>Punkte</th>
       <th>U11</th>
       <th>U12</th>
       <th>U13</th>
@@ -15,17 +16,20 @@
     </tr>
   </thead>
   <tbody>
-    <tr class="table-primary">
-      <td>U12</td>
-      <td>48</td>
-      <td>160</td>
-      <td>160</td>
-      <td>160</td>
-      <td>160</td>
-      <td>160</td>
-      <td>160</td>
-      <td>160</td>
-      <td>160</td>
-    </tr>
+    <% @complete_rankings.each do |ran| %>
+      <tr>
+        <td><%= ran['year'] %></td>
+        <td><%= ran['quarter'] %></td>
+        <td><%= ran['score'] %></td>
+        <td><%= ran['U11'] %></td>
+        <td><%= ran['U12'] %></td>
+        <td><%= ran['U13'] %></td>
+        <td><%= ran['U14'] %></td>
+        <td><%= ran['U15'] %></td>
+        <td><%= ran['U16'] %></td>
+        <td><%= ran['U17'] %></td>
+        <td><%= ran['U18'] %></td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
