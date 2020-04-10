@@ -1,3 +1,4 @@
+<% provide(:title, "Spielerprofil #{@player.firstname} #{@player.lastname}") %>
 <div class="container">
   <p class="h2 text-left mt-3 mb-3">
    Spielerprofil
@@ -20,13 +21,12 @@
   <div class="row">
     <div class="col">
       <span class="h6"><br/>Aktuelle Position</span>
-      <table class="table table-sm table-striped">
+      <table class="table table-sm table-striped mt-1">
         <thead class="thead-dark">
           <tr>
             <th>Altersklasse</th>
             <th>Rang</th>
-            <th>Vorquartal</th>
-            <th>Änderung</th>
+            <th>Punkte</th>
           </tr>
         </thead>
         <tbody>
@@ -34,43 +34,36 @@
             <td>U12</td>
             <td>48</td>
             <td>160</td>
-            <td>+112</td>
           </tr>
           <tr>
             <td>U13</td>
             <td>160</td>
             <td>160</td>
-            <td></td>
           </tr>
           <tr>
             <td>U14</td>
             <td>192</td>
             <td>216</td>
-            <td>+24</td>
           </tr>
           <tr>
             <td>U15</td>
             <td>192</td>
             <td>216</td>
-            <td>+24</td>
           </tr>
           <tr>
             <td>U16</td>
             <td>192</td>
             <td>216</td>
-            <td>+24</td>
           </tr>
           <tr>
             <td>U17</td>
             <td>192</td>
             <td>216</td>
-            <td>+24</td>
           </tr>
           <tr>
             <td>U18</td>
             <td>192</td>
             <td>216</td>
-            <td>+24</td>
           </tr>
         </tbody>
       </table>
@@ -87,9 +80,69 @@
   <div class="row">
     <div class="col">
       <span class="h6"><br/>Bisherige Vereine</span>
+      <table class="table table-sm mt-1">
+        <thead class="thead-dark">
+          <tr>
+            <th>Verein</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table-primary">
+            <td><%= @player.club %></td>
+          </tr>
+          <% @player.clubs.each do |curr_club| %>
+            <tr>
+              <td><%= curr_club %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
     <div class="col">
       <span class="h6"><br/>Verfügbare Daten</span>
+      <table class="table table-sm mt-1">
+        <thead class="thead-dark">
+          <tr>
+            <th class="center">Jahr</th>
+            <th class="center">Q1</th>
+            <th class="center">Q2</th>
+            <th class="center">Q3</th>
+            <th class="center">Q4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @available_quarters.each do |y, q| %>
+            <tr>
+              <td class="center"><%= y.to_s %></td>
+              <td class="center"><% if q.include? '01.01.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
+              <td class="center"><% if q.include? '01.04.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
+              <td class="center"><% if q.include? '01.07.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
+              <td class="center"><% if q.include? '01.10.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <span class="h6"><br/>Gesamtverlauf Jugend</span>
+      <table class="table table-sm table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>Altersklasse</th>
+            <th>Rang</th>
+            <th>Punkte</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table-primary">
+            <td>U12</td>
+            <td>48</td>
+            <td>160</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

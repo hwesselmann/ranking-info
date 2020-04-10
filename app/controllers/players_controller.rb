@@ -26,5 +26,6 @@ class PlayersController < ApplicationController
 
   def show
     @player = Player.find_by_dtb_id(params[:id])
+    @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
   end
 end
