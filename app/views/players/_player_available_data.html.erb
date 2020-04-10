@@ -1,0 +1,23 @@
+<span class="h6"><br/>Verfügbare Daten</span>
+<table class="table table-sm mt-1">
+  <thead class="thead-dark">
+    <tr>
+      <th class="center">Jahr</th>
+      <th class="center">Q1</th>
+      <th class="center">Q2</th>
+      <th class="center">Q3</th>
+      <th class="center">Q4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @available_quarters.each do |y, q| %>
+      <tr>
+        <td class="center"><%= y.to_s %></td>
+        <td class="center"><% if q.include? '01.01.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
+        <td class="center"><% if q.include? '01.04.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
+        <td class="center"><% if q.include? '01.07.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
+        <td class="center"><% if q.include? '01.10.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
