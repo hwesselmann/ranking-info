@@ -7,11 +7,11 @@
   </thead>
   <tbody>
     <tr class="table-primary">
-      <td><%= @player.club %></td>
+      <td><%= @player.club %> / <%= @player.federation %></td>
     </tr>
     <% @player.clubs.each do |curr_club| %>
       <tr>
-        <td><%= curr_club.club %></td>
+        <td><%= curr_club.club %> / <%= curr_club.federation %></td>
       </tr>
     <% end %>
   </tbody>

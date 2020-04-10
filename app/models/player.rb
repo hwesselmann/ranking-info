@@ -89,7 +89,7 @@ class Player < ApplicationRecord
       else
         # update existing player with new data
         unless existing_player.club.eql?(player.club)
-          club = Club.new(dtb_id: existing_player.dtb_id, club: existing_player.club)
+          club = Club.new(dtb_id: existing_player.dtb_id, club: existing_player.club, federation: existing_player.federation)
           club.save
           existing_player.club = player.club
           existing_player.federation = player.federation
