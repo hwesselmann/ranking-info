@@ -46,7 +46,7 @@ class ListingController < ApplicationController
                else " AND year_end_ranking=false"
                end
       # run the query!
-      @rankings = Ranking.where(query).order(:ranking_position, :dtb_id)
+      @rankings = Ranking.where(query).order(:ranking_position, score: :desc)
     end
   end
 
