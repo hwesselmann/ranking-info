@@ -27,19 +27,18 @@ class PlayersController < ApplicationController
   end
 
   def show
-    begin
+    #begin
       @player = Player.find_by_dtb_id(params[:id])
       @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
       @current_rankings = get_current_rankings(@player.dtb_id)
-    rescue
-      redirect_to players_path, flash: { danger: 'Der Spieler wurde leider nicht gefunden' }
-    end
+    #rescue
+      #redirect_to players_path, flash: { danger: 'Der Spieler wurde leider nicht gefunden' }
+    #end
   end
 
   private
 
   def get_current_rankings(dtb_id)
-    # TODO: too many queries - try something better later on, e.g. a view in the db
     rankings = []
     # 1. get the latest available period for player. If nothing is available => message
     current_quarter = Ranking.select(:date).order(date: :desc).distinct.first.date
@@ -54,9 +53,18 @@ class PlayersController < ApplicationController
           ranking['position'] = current_ranking.ranking_position
           ranking['score'] = current_ranking.score
           # 4. get rankings of period - 1
-          if Ranking.select(:date).order(date: :desc).distinct.size > 1
+          if Ranking.select(:date).where(dtb_id: dtb_id).order(date: :desc).distinct.size > 1
             previous_quarter = Ranking.select(:date).order(date: :desc).distinct[1].date
             # 5. calculate differences
+            prev_ranking = Ranking.find_by(dtb_id: dtb_id, age_group: current_ranking.age_group, date: previous_quarter, yob_ranking: false, age_group_ranking: false, year_end_ranking: false)
+            position_change = prev_ranking.ranking_position - current_ranking.ranking_position
+            ranking['position_change'] = if position_change.positive? then "+#{position_change}"
+                                         else position_change.to_s
+                                         end
+            score_change = current_ranking.score.to_f - prev_ranking.score.to_f
+            ranking['score_change'] = if score_change.positive? then "+#{score_change}"
+                                      else score_change.to_s
+                                      end
           end
           rankings.push(ranking)
         end

@@ -4,15 +4,43 @@
     <tr>
       <th>Altersklasse</th>
       <th>Rang</th>
+      <th></th>
       <th>Punkte</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
+    <% unless @current_rankings.size.positive? %>
+      <tr>
+        <td colspan="5" class="center">Für das aktuelle Quartal existiert kein Eintrag auf der Rangliste.</td>
+    <% end %>
     <% @current_rankings.each_with_index do |cr, index| %>
       <tr <%= "class=table-primary" if index.eql?(0) %>>
         <td><%= cr['age_group'] %></td>
         <td><%= cr['position'] %></td>
+        <td>
+          <% if !cr['position_change'].nil? && cr['position_change'][0].eql?('+') %>
+            <span class="ri-icon-green"><i class="fas fa-caret-up"></i></span>
+             <%= cr['position_change'][1, cr['position_change'].size - 1] %>
+          <% elsif !cr['position_change'].nil? && cr['position_change'][0].eql?('-') %>
+            <span class="ri-icon-red"><i class="fas fa-caret-down"></i></span>
+            <%= cr['position_change'][1, cr['position_change'].size - 1] %>
+          <% else %>
+            <span><i class="fas fa-minus"></i></span>
+          <% end%> 
+        </td>
         <td><%= cr['score'] if index.eql?(0) %></td>
+        <td>
+            <% if index.eql?(0) && !cr['score_change'].nil? && cr['score_change'][0].eql?('+') %>
+              <span class="ri-icon-green"><i class="fas fa-caret-up"></i></span>
+              <%= cr['score_change'][1, cr['score_change'].size - 1] %>
+            <% elsif index.eql?(0) && !cr['score_change'].nil? && cr['score_change'][0].eql?('-') %>
+              <span class="ri-icon-red"><i class="fas fa-caret-down"></i></span>
+              <%= cr['score_change'][1, cr['score_change'].size - 1] %>
+            <% elsif index.eql?(0) && !cr['score_change'].nil? %>
+              <span><i class="fas fa-minus"></i></span>
+            <% end%> 
+        </td>
       </tr>
     <% end %>
   </tbody>
