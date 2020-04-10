@@ -21,7 +21,7 @@ class PlayerTest < ActiveSupport::TestCase
   end
 
   test 'import of players from file' do
-    sut = Player.read_players_from_csv('./test/fixtures/files/Junioren_20180331.csv')
+    sut = Player.read_players_from_csv('./test/fixtures/files/Junioren_20180401.csv')
     assert_equal(17, sut.size)
     assert_instance_of(ImportPlayer, sut.fetch(10))
     assert_equal('Eintracht Frankfurt', sut.fetch(0).club)
@@ -107,11 +107,11 @@ class PlayerTest < ActiveSupport::TestCase
   end
 
   test 'full ranking_file_import' do
-    assert(File.exist?('./test/fixtures/files/Junioren_20180331.csv'))
+    assert(File.exist?('./test/fixtures/files/Junioren_20180401.csv'))
     assert_equal(2, Player.count)
     assert_equal(4, Ranking.count)
     assert_equal(3, Club.count)
-    Player.import_rankings('./test/fixtures/files/Junioren_20180331.csv')
+    Player.import_rankings('./test/fixtures/files/Junioren_20180401.csv')
     assert_equal(148, Ranking.count)
     assert_equal(18, Player.count)
     assert_equal(4, Club.count)
