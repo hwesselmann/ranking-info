@@ -8,24 +8,7 @@ class ImportController < ApplicationController
     @player_male_count = Player.where("dtb_id LIKE '1%'").count
     @player_female_count = Player.where("dtb_id LIKE '2%'").count
     @ranking_count = Ranking.count
-    # available rankings
-    available_rankings = Ranking.select(:date).order(date: :desc).distinct
-    year = 0
-    years = {}
-    quarters = []
-    available_rankings.each do |ar|
-      unless ar.date.year.eql?(year)
-        # new year, shift
-        unless year.eql?(0)
-          years[year.to_s] = quarters.reverse
-          quarters.clear
-        end
-        year = ar.date.year
-      end
-      quarters.push ar.date.strftime('%d.%m.')
-    end
-    years[year.to_s] = quarters.reverse
-    @available_quarters = years
+    @available_quarters = helpers.fetch_available_quarters
 
     # last import
     last_updated = Ranking.order(updated_at: :desc).first
