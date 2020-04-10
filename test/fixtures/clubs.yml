@@ -6,12 +6,15 @@
 #
 club_one:
   club: 'VfL Musterhausen'
+  federation: 'ITV'
   player: player_one
 
 club_two:
   club: 'Musterhausener TC von 1841 e.V.'
+  federation: 'ITV'
   player: player_one
 
 club_three:
   club: 'VfL Musterhausen'
+  federation: 'ITV'
   player: player_two
