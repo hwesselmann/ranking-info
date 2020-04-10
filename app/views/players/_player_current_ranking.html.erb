@@ -2,7 +2,7 @@
 <table class="table table-sm table-striped mt-1">
   <thead class="thead-dark">
     <tr>
-      <th>Altersklasse</th>
+      <th class="center">Altersklasse</th>
       <th>Rang</th>
       <th></th>
       <th>Punkte</th>
@@ -16,7 +16,7 @@
     <% end %>
     <% @current_rankings.each_with_index do |cr, index| %>
       <tr <%= "class=table-primary" if index.eql?(0) %>>
-        <td><%= cr['age_group'] %></td>
+        <td class="center"><%= cr['age_group'] %></td>
         <td><%= cr['position'] %></td>
         <td>
           <% if !cr['position_change'].nil? && cr['position_change'][0].eql?('+') %>
