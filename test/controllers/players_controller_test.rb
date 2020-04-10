@@ -6,4 +6,10 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'title', full_title('Spielersuche')
   end
+
+  test 'should get player profile' do
+    get player_path(10_711_111)
+    assert_response :success
+    assert_select 'title', full_title('Spielerprofil J****n P****y')
+  end
 end
