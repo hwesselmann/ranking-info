@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 2020_04_01_072607) do
   create_table "clubs", force: :cascade do |t|
     t.integer "dtb_id"
     t.string "club"
+    t.string "federation"
     t.index ["dtb_id"], name: "index_clubs_on_dtb_id"
   end
 
