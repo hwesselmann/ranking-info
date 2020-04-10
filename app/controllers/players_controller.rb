@@ -36,19 +36,43 @@ class PlayersController < ApplicationController
     end
   end
 
-  private 
+  private
 
   def get_current_rankings(dtb_id)
-    # 1. get current real age group
+    # TODO: too many queries - try something better later on, e.g. a view in the db
+    rankings = []
+    # 1. get the latest available period for player. If nothing is available => message
+    current_quarter = Ranking.select(:date).order(date: :desc).distinct.first.date
+    # 2. get rankings for that period
+    current_rankings = Ranking.where(dtb_id: dtb_id, date: current_quarter, yob_ranking: false, age_group_ranking: false, year_end_ranking: false).order(:age_group)
+    if current_rankings.size.positive?
+      current_rankings.each do |current_ranking|
+        ranking = {}
+        # 3. fill the initial hash
+        unless current_ranking.age_group.eql?('Overall')
+          ranking['age_group'] = current_ranking.age_group
+          ranking['position'] = current_ranking.ranking_position
+          ranking['score'] = current_ranking.score
+          # 4. get rankings of period - 1
+          if Ranking.select(:date).order(date: :desc).distinct.size > 1
+            previous_quarter = Ranking.select(:date).order(date: :desc).distinct[1].date
+            # 5. calculate differences
+          end
+          rankings.push(ranking)
+        end
+      end
+    end
+    rankings
+  end
 
-    # 2. get the latest available period for player
-
-    # 3. get rankings for that period
-
-    # 4. get rankings for period - 1
-
-    # 5. calculate differences
-
-    # 6. pass to view
+  def try_to_find_current_age_group(dtb_id)
+    current_year = Time.now.year
+    current_age_group = 0
+    [11, 12, 13, 14, 15, 16, 17, 18].each do |ag|
+      if (current_year - ag.to_i).eql?(dtb_id.to_s[1, 2].to_i)
+        current_age_group = ag
+      end
+    end
+    current_age_group
   end
 end

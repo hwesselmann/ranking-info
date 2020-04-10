@@ -8,40 +8,12 @@
     </tr>
   </thead>
   <tbody>
-    <tr class="table-primary">
-      <td>U12</td>
-      <td>48</td>
-      <td>160</td>
-    </tr>
-    <tr>
-      <td>U13</td>
-      <td>160</td>
-      <td>160</td>
-    </tr>
-    <tr>
-      <td>U14</td>
-      <td>192</td>
-      <td>216</td>
-    </tr>
-    <tr>
-      <td>U15</td>
-      <td>192</td>
-      <td>216</td>
-    </tr>
-    <tr>
-      <td>U16</td>
-      <td>192</td>
-      <td>216</td>
-    </tr>
-    <tr>
-      <td>U17</td>
-      <td>192</td>
-      <td>216</td>
-    </tr>
-    <tr>
-      <td>U18</td>
-      <td>192</td>
-      <td>216</td>
-    </tr>
+    <% @current_rankings.each_with_index do |cr, index| %>
+      <tr <%= "class=table-primary" if index.eql?(0) %>>
+        <td><%= cr['age_group'] %></td>
+        <td><%= cr['position'] %></td>
+        <td><%= cr['score'] if index.eql?(0) %></td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
