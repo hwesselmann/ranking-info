@@ -38,5 +38,6 @@ jobs:
         RAILS_ENV: test
       run: |
         gem install bundler:2.1.4
+        apt-get install libsqlite3-dev
         bundle install
         bundle exec rails test
