@@ -32,6 +32,7 @@ class PlayersController < ApplicationController
       @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
       @current_rankings = get_current_rankings(@player.dtb_id)
       @complete_rankings = get_complete_rankings(@player.dtb_id).reverse!
+      @data_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)
     rescue
       redirect_to players_path, flash: { danger: 'Der Spieler wurde leider nicht gefunden' }
     end
@@ -119,5 +120,37 @@ class PlayersController < ApplicationController
     end
     rankings.push(ranking)
     rankings
+  end
+
+  def data_for_last_twelve_months(dtb_id)
+    rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false, age_group_ranking: true, year_end_ranking: false).order(:date, :age_group).limit(4)
+    scores = {}
+    u12_positions = {}
+    u14_positions = {}
+    u16_positions = {}
+    u18_positions = {}
+
+    rankings.each do |ranking|
+      scores[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.score
+      case ranking.age_group
+      when 'U12'
+        u12_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+      when 'U14'
+        u14_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+      when 'U16'
+        u16_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+      when 'U18'
+        u18_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+      end
+    end
+
+    diagram_data = [{ name: 'Punkte', data: scores }]
+
+    diagram_data.push({ name: 'U12', data: u12_positions }) if u12_positions.size.positive?
+    diagram_data.push({ name: 'U14', data: u14_positions }) if u14_positions.size.positive?
+    diagram_data.push({ name: 'U16', data: u16_positions }) if u16_positions.size.positive?
+    diagram_data.push({ name: 'U18', data: u18_positions }) if u18_positions.size.positive?
+
+    diagram_data
   end
 end
