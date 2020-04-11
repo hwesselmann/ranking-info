@@ -16,11 +16,9 @@ class ListingController < ApplicationController
                else " AND dtb_id LIKE '2%'"
                end
       # 3. age group => a value will be used in the query in any case
-      if params[:age_group].nil?
-        query += " AND age_group='Overall'"
-      else
-        query += " AND age_group='#{params[:age_group]}'"
-      end
+      query += if params[:age_group].eql?('') then " AND age_group='Overall'"
+               else " AND age_group='#{params[:age_group]}'"
+               end
       # 4. yob-ranking?
       age_group = params[:age_group][1, 2].to_i
       # U11, U13, U15, U17:
