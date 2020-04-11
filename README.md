@@ -1,4 +1,5 @@
 ## ranking-info  
+![Main](https://github.com/hwesselmann/ranking-info/workflows/Main/badge.svg)
 
 This is a small web-application aiming at providing accessible information on the German national tennis youth rankings.
 
