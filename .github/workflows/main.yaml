@@ -37,5 +37,6 @@ jobs:
       env:
         RAILS_ENV: test
       run: |
+        gem install bundler:2.1.4
         bundle install
         bundle exec rails test
