@@ -7,7 +7,7 @@ This is a small web-application aiming at providing accessible information on th
 
 This application is developed using
 
-* Ruby 2.6.5
+* Ruby 2.6.6
 
 * Rails 6.0.2.2
 
