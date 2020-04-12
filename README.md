@@ -1,5 +1,5 @@
 ## ranking-info  
-![Main](https://github.com/hwesselmann/ranking-info/workflows/Main/badge.svg)
+![Main](https://github.com/hwesselmann/ranking-info/workflows/Test/badge.svg)
 
 This is a small web-application aiming at providing accessible information on the German national tennis youth rankings.
 
@@ -7,7 +7,7 @@ This is a small web-application aiming at providing accessible information on th
 
 This application is developed using
 
-* Ruby 2.6.5
+* Ruby 2.6.6
 
 * Rails 6.0.2.2
 
