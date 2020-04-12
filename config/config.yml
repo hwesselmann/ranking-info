@@ -1,0 +1,26 @@
+development:
+  domain: 'http://localhost:3000'
+  imprint_name: 'Max Mustermann'
+  imprint_street: 'Musterstrasse'
+  imprint_zipcode: '12345'
+  imprint_city: 'Musterstadt'
+  imprint_phone: '0123 4567890'
+  imprint_mail: 'max at muster.de'
+
+test:
+  domain: 'http://localhost:3000'
+  imprint_name: 'Max Mustermann'
+  imprint_street: 'Musterstrasse'
+  imprint_zipcode: '12345'
+  imprint_city: 'Musterstadt'
+  imprint_phone: '0123 4567890'
+  imprint_mail: 'max at muster.de'
+
+production:
+  domain: <%= ENV.fetch("DOMAIN") %>
+  imprint_name: <%= ENV.fetch("IMPRINT_NAME") %>
+  imprint_street: <%= ENV.fetch("IMPRINT_STREET") %>
+  imprint_zipcode: <%= ENV.fetch("IMPRINT_ZIPCODE") %>
+  imprint_city: <%= ENV.fetch("IMPRINT_CITY") %>
+  imprint_phone: <%= ENV.fetch("IMPRINT_PHONE") %>
+  imprint_mail: <%= ENV.fetch("IMPRINT_MAIL") %>
