@@ -176,8 +176,11 @@ class Player < ApplicationRecord
       curr_ranking.ranking_position = start_ranking
       # ranking is only counted up for German players,
       # foreign player get the right position, but are not adding
-      # up to the actual position
-      count_up += 1 if Player.find_by(dtb_id: curr_ranking.dtb_id).nationality.eql?('GER')
+      # up to the actual position, also players with pr do not count
+      if Player.find_by(dtb_id: curr_ranking.dtb_id).nationality.eql?('GER') &&
+         !curr_ranking.score.eql?('0,0')
+        count_up += 1
+      end
       sorted_rankings.push(curr_ranking)
     end
     sorted_rankings
