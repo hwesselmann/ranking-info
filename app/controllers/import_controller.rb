@@ -1,4 +1,6 @@
 class ImportController < ApplicationController
+  before_action :logged_in_user, only: %i[upload import]
+
   def info
     # show some stats
     @player_male_count = Player.where("dtb_id LIKE '1%'").count
@@ -7,14 +9,11 @@ class ImportController < ApplicationController
     @available_quarters = helpers.fetch_available_quarters
 
     # last import
-    last_updated = Ranking.order(updated_at: :desc).first
-    if last_updated.nil?
-      last_updated = ''
-    else
-      # convert to CEST time
-      last_updated = last_updated.updated_at.localtime('+02:00')
-      last_updated = last_updated.strftime('%d.%m.%Y %H:%M')
-    end
+    last_updated_db = Ranking.order(updated_at: :desc).first
+    last_updated = if last_updated_db.nil? then ''
+                   else last_updated_db.updated_at.localtime('+02:00')
+                                       .strftime('%d.%m.%Y %H:%M')
+                   end
     @date_last_updated = last_updated
   end
 
@@ -33,5 +32,15 @@ class ImportController < ApplicationController
     else
       redirect_to status_url, flash: { info: 'please upload a ranking file' }
     end
+  end
+
+  private
+
+  # Confirms a logged-in user.
+  def logged_in_user
+    return if logged_in?
+
+    flash[:danger] = 'Please log in to access import page'
+    redirect_to login_url
   end
 end

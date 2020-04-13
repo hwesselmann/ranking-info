@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   get '/players', to: 'players#index'
   get '/player/:id', to: 'players#show', as: :player
   get '/listings', to: 'listing#index'
+  get '/login', to: 'sessions#new'
+  post '/login', to: 'sessions#create'
+  delete '/logout', to: 'sessions#destroy'
   resources :import do
     collection { post :import }
   end

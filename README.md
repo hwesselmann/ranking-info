@@ -31,6 +31,16 @@ tabula. The file needs to be in the format
 which is the standard order and format tabula (which I am using) is retrieving by default.
 An example file can be found in _test/fixtures/files_
 
+### Importing data / login credentials  
+
+The system has an easy mechanism to upload csv-files for importing into the database. Access to this funtionality is, however, restricted. In order to use it, you need to add a user into the database manually - there is no way of editing this on the ui:
+
+ 1. make sure your database ist up to date by running `rake db:migrate`
+ 2. open a rails console by running `rails console`
+ 3. Add a user by running `User.create(name: 'Example User', email: 'user@example.com', password: 'password', password_confirmation: 'password'` with your preferred data
+
+The password cannot be empty and should be at least 6 characters!
+
 ### Deploy  
 
 If you want to deploy the application, you need to set some environment variables in order to fill required
