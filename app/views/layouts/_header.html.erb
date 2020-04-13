@@ -7,6 +7,12 @@
       <li class="nav-item"><%= link_to "Listen", listings_path, class: 'nav-link' %></li>
       <li class="nav-item"><%= link_to "Status", status_path, class: 'nav-link' %></li>
       <li class="nav-item"><%= link_to "Über", about_path, class: 'nav-link' %></li>
+      <% if logged_in? %>
+        <li class="nav-item"><%= link_to "Import", import_path, class: 'nav-link' %></li>
+        <li><%= link_to "Log out", logout_path, method: :delete, class: 'nav-link' %></li>
+      <% else %>
+          <li class="nav-item"><%= link_to "Log in", login_path, class: 'nav-link' %></li>
+      <% end %>
     </ul>
   </nav>
 </header>

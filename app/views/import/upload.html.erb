@@ -1,15 +1,19 @@
 <% provide(:title, "Upload für Import") %>
 <div class="container">
   <p class="h2 text-left mt-3 mb-5">
-    Upload für Import
+    Upload und Import
   </p>
 </div>
 <div class="container">
   <p>
-    Diese Seite darf nur für den angemeldetn Admin zugänglich sein!
+    :: hilfreicher Text ::
   </p>
-  <%= form_with(url: {action: :import}, multipart: true) do %>
-    <%= file_field_tag 'file' %>
-    <%= submit_tag "import ranking" %>
-  <% end %>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <%= form_with(url: {action: :import}, multipart: true) do %>
+        <%= file_field_tag 'file' %>
+        <%= submit_tag "import ranking" %>
+      <% end %>
+    </div>
+  </div>
 </div>
