@@ -6,13 +6,20 @@
 </div>
 <div class="container">
   <p>
-    :: hilfreicher Text ::
+    <p>Hier können neue Daten in das System geladen werden.
+    Der Import dauert je nach Dateigröße und Systemleistung zwischen 2 und 15 Minuten.
+    Nach Abschluss erhälst Du eine Erfolgsmeldung - hab ein wenig Geduld!
+    </p>
+    <p>
+      Informationen zum Layout der Importdatei findest Du im README, ein Beispiel liegt unter
+      <i>test/fixtures/files</i>.
+    </p>
   </p>
-  <div class="row">
+  <div class="row mt-4">
     <div class="col-md-6 col-md-offset-3">
       <%= form_with(url: {action: :import}, multipart: true) do %>
         <%= file_field_tag 'file' %>
-        <%= submit_tag "import ranking" %>
+        <%= submit_tag 'import ranking', class: 'btn btn-primary' %>
       <% end %>
     </div>
   </div>
