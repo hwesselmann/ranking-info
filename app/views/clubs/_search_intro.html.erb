@@ -1,0 +1,14 @@
+<div class="card" style="width: 100%;">
+  <div class="card-body">
+    <h5 class="card-title">Vereinssuche</h5>
+    <h6 class="card-subtitle mb-2 text-muted">Der direkte Weg zum Spielerprofil</h6>
+    <p class="card-text">
+      Finden Sie alle Vereine, die Spieler auf der Jugendrangliste haben oder hatten, sowie die Anzahl der aktuellen Ranglistenspieler.
+      <br/><br/>
+      Filterbare Ranglisten, Spielerinfos und Informationen zu den im System verfügbaren Datenständen sind ebenfalls abrufbar:
+    </p>
+    <%= link_to "Spielersuche", players_path, class: 'card-link' %>
+    <%= link_to "Ranglisten", listings_path, class: 'card-link' %>
+    <%= link_to "Informationen zu verfügbaren Daten", status_path, class: 'card-link' %>
+  </div>
+</div>

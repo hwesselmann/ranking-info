@@ -1,0 +1,30 @@
+<% provide(:title, params[:id]) %>
+<div class="container">
+  <p class="h2 text-left mt-3 mb-3">
+   Spieler aus dem Verein <b><%= params[:id] %></b>
+  </p>
+  <p>Hier finden Sie alle Spieler aus diesem Verein, die in der aktuellen Periode auf der Rangliste geführt sind.</p>
+  <div>
+    <table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>DTB-ID</th>
+      <th>Nachname, Vorname</th>
+      <th>Position</th>
+      <th>Punkte</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @players.each do |player| %>
+      <tr>
+        <td><%= link_to player[:dtb_id], player_path(player[:dtb_id]) %></td>
+        <td><%= player[:lastname] %>, <%= player[:firstname] %></td>
+        <td><%= player[:rank] %></td>
+        <td><%= player[:score] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+  </div>
+</div>
