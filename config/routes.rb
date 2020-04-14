@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   get '/players', to: 'players#index'
   get '/player/:id', to: 'players#show', as: :player
   get '/listings', to: 'listing#index'
+  get '/clubs', to: 'clubs#index'
+  get '/club/:id', to: 'clubs#show', as: :club, constraints: { id: /.+/ }
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'

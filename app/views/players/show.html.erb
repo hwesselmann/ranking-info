@@ -15,7 +15,7 @@
       DTB-ID <i><%= @player.dtb_id %></i>
     </div>
     <div class="col text-right">
-        <b><%= @player.club %></b> / <i><%= @player.federation %></i>
+        <b><%= link_to @player.club, club_path(@player.club) %></b> / <i><%= @player.federation %></i>
     </div>
   </div>
   <div class="row">

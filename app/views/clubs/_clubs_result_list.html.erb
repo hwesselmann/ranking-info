@@ -1,0 +1,16 @@
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>Vereinsname</th>
+      <th class="center">Anzahl Spieler</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @clubs.each do |club| %>
+      <tr>
+        <td><%= link_to club[:name], club_path(club[:name]) %></td>
+        <td class="center"><%= club[:player_count] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
