@@ -8,23 +8,34 @@ This is a small web-application aiming at providing accessible information on th
 This application is developed using
 
 * Ruby 2.6.6
-
 * Rails 6.0.2.2
+* SQLite3 (for development and test)
+* bundler package manager (for rubygems)
+* Yarn package manager (for web assets)
 
-* SQLite3
+### Setup  
 
-### Database setup  
+To setup a developement environment, run the following steps before starting _rails server_   
 
-To setup a developement database, check config/database.yml and then run __rake db:migrate__
+> \# run database migrations  
+> rake db:migrate  
+> \# install bundle  
+> bundle install  
+> \# install web assets  
+> yarn install --update-files
+
+Now everything is ready for starting a development server!
 
 ### Tests
 
-To run the test suites, run __rake test__
+To run the test suites, run __rake test__  
+
+The project also includes guard and an guard configuration. To start guard and run tests automatically on code changes, simply open a terminal and start __guard__ while in the project folder.
 
 ### Import file format  
 
 To import data in the system, you need to create a csv file from the official ranking list pdf using a tool like
-tabula. The file needs to be in the format   
+tabula. The file needs to be in the format  
 
 > ranking-position, lastname, firstname, nationality, dtb_id federation, club, score
 
