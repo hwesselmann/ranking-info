@@ -124,14 +124,14 @@ class PlayersController < ApplicationController
   end
 
   def data_for_last_twelve_months(dtb_id)
-    rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false, age_group_ranking: true, year_end_ranking: false).order(:date, :age_group).limit(4)
+    rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false, age_group_ranking: true, year_end_ranking: false).order(date: :desc, age_group: :asc).limit(4)
     scores = {}
     u12_positions = {}
     u14_positions = {}
     u16_positions = {}
     u18_positions = {}
 
-    rankings.each do |ranking|
+    rankings.reverse_each do |ranking|
       scores[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.score
       case ranking.age_group
       when 'U12'
