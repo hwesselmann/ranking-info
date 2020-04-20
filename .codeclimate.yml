@@ -2,3 +2,7 @@ plugins:
   rubocop:
     enabled: true
     channel: rubocop-0-80
+  fixme:
+    enabled: true
+  bundler-audit:
+    enabled: true
