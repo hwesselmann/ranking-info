@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+#
+# Controller for import and import status actions.
+#
 class ImportController < ApplicationController
   before_action :logged_in_user, only: %i[upload import]
 
@@ -17,17 +22,16 @@ class ImportController < ApplicationController
     @date_last_updated = last_updated
   end
 
-  def upload
-    # action is just for page navigation
-  end
+  def upload; end
 
   def import
     if params[:file]
-      uploaded_file = params[:file]
-      File.open(Rails.root.join('public', 'uploads', uploaded_file.original_filename), 'wb') do |file|
-        file.write(uploaded_file.read)
+      uploaded = params[:file]
+      File.open(Rails.root.join('public', 'uploads',
+                                uploaded.original_filename), 'wb') do |f|
+        f.write(uploaded.read)
       end
-      Player.import_rankings('public/uploads/' + uploaded_file.original_filename)
+      Player.import_rankings("public/uploads/#{uploaded.original_filename}")
       redirect_to status_url, flash: { info: 'new rankings imported!' }
     else
       redirect_to status_url, flash: { info: 'please upload a ranking file' }
