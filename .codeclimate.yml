@@ -2,7 +2,3 @@ plugins:
   rubocop:
     enabled: true
     channel: rubocop-0-80
-  reek:
-    enabled: true
-  editorconfig:
-    enabled: true
