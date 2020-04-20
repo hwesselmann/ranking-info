@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+
 class PlayerTest < ActiveSupport::TestCase
   test 'period extraction from filename' do
     sut = Player.extract_period_from_filename('Junioren_20180331.csv')
@@ -103,12 +104,14 @@ class PlayerTest < ActiveSupport::TestCase
 
   test 'full ranking_file_import' do
     assert(File.exist?('./test/fixtures/files/Junioren_20180401.csv'))
+    assert(File.exist?('./test/fixtures/files/Juniorinnen_20180401.csv'))
     assert_equal(2, Player.count)
     assert_equal(4, Ranking.count)
     assert_equal(3, Club.count)
     Player.import_rankings('./test/fixtures/files/Junioren_20180401.csv')
-    assert_equal(148, Ranking.count)
-    assert_equal(18, Player.count)
+    Player.import_rankings('./test/fixtures/files/Juniorinnen_20180401.csv')
+    assert_equal(292, Ranking.count)
+    assert_equal(35, Player.count)
     assert_equal(4, Club.count)
   end
 end
