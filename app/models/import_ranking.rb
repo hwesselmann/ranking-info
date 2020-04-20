@@ -14,7 +14,7 @@
 #
 class ImportRanking
   def initialize(dtb_id: '', date: '', age_group: '',
-                 score: '', ranking_position: '')
+                score: '', ranking_position: '')
     @dtb_id = dtb_id
     @date = date
     @age_group = age_group

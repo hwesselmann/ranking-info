@@ -2,8 +2,8 @@
 
 require 'csv'
 
-require_relative 'import/import_player.rb'
-require_relative 'import/import_ranking.rb'
+require_relative 'import_player.rb'
+require_relative 'import_ranking.rb'
 
 #
 # Model for a player on the ranking, includes importing logic
