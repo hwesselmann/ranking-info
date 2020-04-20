@@ -124,7 +124,21 @@ class PlayersController < ApplicationController
   end
 
   def data_for_last_twelve_months(dtb_id)
-    rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false, age_group_ranking: true, year_end_ranking: false).order(date: :desc, age_group: :asc).limit(4)
+    rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false,
+                             age_group_ranking: true, year_end_ranking: false)
+                      .order(date: :desc, age_group: :asc)
+                      .limit(4)
+    collect_diagram_data(rankings)
+  end
+
+  def data_diagram_complete(dtb_id)
+    rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false,
+                             age_group_ranking: false, year_end_ranking: false)
+                      .order(:date, :age_group)
+    collect_diagram_data(rankings)
+  end
+
+  def collect_diagram_data(rankings)
     scores = {}
     u12_positions = {}
     u14_positions = {}
@@ -132,39 +146,6 @@ class PlayersController < ApplicationController
     u18_positions = {}
 
     rankings.reverse_each do |ranking|
-      period = (ranking.date - 1.day).strftime('%d.%m.%Y')
-      scores[period] = ranking.score
-      case ranking.age_group
-      when 'U12'
-        u12_positions[period] = ranking.ranking_position
-      when 'U14'
-        u14_positions[period] = ranking.ranking_position
-      when 'U16'
-        u16_positions[period] = ranking.ranking_position
-      when 'U18'
-        u18_positions[period] = ranking.ranking_position
-      end
-    end
-
-    diagram_data = [{ name: 'Punkte', data: scores }]
-
-    diagram_data.push({ name: 'U12', data: u12_positions }) if u12_positions.size.positive?
-    diagram_data.push({ name: 'U14', data: u14_positions }) if u14_positions.size.positive?
-    diagram_data.push({ name: 'U16', data: u16_positions }) if u16_positions.size.positive?
-    diagram_data.push({ name: 'U18', data: u18_positions }) if u18_positions.size.positive?
-
-    diagram_data
-  end
-
-  def data_diagram_complete(dtb_id)
-    rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false, age_group_ranking: false, year_end_ranking: false).order(:date, :age_group)
-    scores = {}
-    u12_positions = {}
-    u14_positions = {}
-    u16_positions = {}
-    u18_positions = {}
-
-    rankings.each do |ranking|
       period = (ranking.date - 1.day).strftime('%d.%m.%Y')
       scores[period] = ranking.score
       case ranking.age_group
