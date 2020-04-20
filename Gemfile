@@ -34,6 +34,7 @@ group :test do
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
+  gem 'simplecov', '0.17.1', require: false
   gem 'webdrivers'
 end
 
