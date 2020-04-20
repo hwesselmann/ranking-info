@@ -58,7 +58,6 @@ class Player < ApplicationRecord
     input.each do |entry|
       player = create_import_player(entry)
       players.push(player)
-      logger.info "read player data: #{player.firstname} #{player.lastname}"
     end
     players
   end

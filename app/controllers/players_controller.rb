@@ -132,16 +132,17 @@ class PlayersController < ApplicationController
     u18_positions = {}
 
     rankings.reverse_each do |ranking|
-      scores[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.score
+      period = (ranking.date - 1.day).strftime('%d.%m.%Y')
+      scores[period] = ranking.score
       case ranking.age_group
       when 'U12'
-        u12_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+        u12_positions[period] = ranking.ranking_position
       when 'U14'
-        u14_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+        u14_positions[period] = ranking.ranking_position
       when 'U16'
-        u16_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+        u16_positions[period] = ranking.ranking_position
       when 'U18'
-        u18_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+        u18_positions[period] = ranking.ranking_position
       end
     end
 
@@ -164,16 +165,17 @@ class PlayersController < ApplicationController
     u18_positions = {}
 
     rankings.each do |ranking|
-      scores[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.score
+      period = (ranking.date - 1.day).strftime('%d.%m.%Y')
+      scores[period] = ranking.score
       case ranking.age_group
       when 'U12'
-        u12_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+        u12_positions[period] = ranking.ranking_position
       when 'U14'
-        u14_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+        u14_positions[period] = ranking.ranking_position
       when 'U16'
-        u16_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+        u16_positions[period] = ranking.ranking_position
       when 'U18'
-        u18_positions[(ranking.date - 1.day).strftime('%d.%m.%Y')] = ranking.ranking_position
+        u18_positions[period] = ranking.ranking_position
       end
     end
 
