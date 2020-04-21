@@ -6,8 +6,10 @@
 class PlayersController < ApplicationController
   def index
     if params[:dtb_id] && !params[:dtb_id].eql?('')
-      # FIXME: dtb_id non-complete
-      @players = Player.where("dtb_id >= #{params[:dtb_id]}%")
+      dtb_id_start = fill_up_dtb_id(params[:dtb_id].to_i)
+      dtb_id_end = fill_up_dtb_id_end(params[:dtb_id].to_i)
+      @players = Player.where("dtb_id >= #{dtb_id_start}
+                              AND dtb_id <= #{dtb_id_end}")
       # should return exactly one match => redirect to profile
       redirect_to action: 'show', id: params[:dtb_id] if @players.size == 1
     elsif params[:lastname] && !params[:lastname].eql?('')
@@ -49,6 +51,28 @@ class PlayersController < ApplicationController
     rescue
       redirect_to players_path, flash: { danger: 'Der Spieler wurde leider nicht gefunden' }
     end
+  end
+
+  def fill_up_dtb_id(dtb_id_part)
+    return dtb_id_part if dtb_id_part.digits.length.eql?(8)
+
+    dtb_id = dtb_id_part
+    (8 - dtb_id_part.digits.length).times do
+      dtb_id *= 10
+    end
+    dtb_id
+  end
+
+  def fill_up_dtb_id_end(dtb_id_part)
+    return dtb_id_part if dtb_id_part.digits.length.eql?(8)
+
+    dtb_id = dtb_id_part
+    fill = ''
+    (8 - dtb_id_part.digits.length).times do
+      dtb_id *= 10
+      fill += '9'
+    end
+    dtb_id + fill.to_i
   end
 
   private
