@@ -1,8 +1,6 @@
-@import "bootstrap-sprockets";
-@import "bootstrap";
+@import 'bootstrap/scss/bootstrap';
 
 /* universal */
-
 section {
   overflow: auto;
 }
@@ -54,8 +52,6 @@ p {
   text-align: center;   
 }
 
-
-
 /* fa icon colors */
 .ri-icon-green {
   font-size: 1.0em;
@@ -68,7 +64,6 @@ p {
 }
 
 /* miscellaneous */
-
 .debug_dump {
   clear: both;
   float: left;
@@ -78,4 +73,3 @@ p {
   padding: 10px;
   border-radius: 6px;
 }
-
