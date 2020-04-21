@@ -6,7 +6,8 @@
 class PlayersController < ApplicationController
   def index
     if params[:dtb_id] && !params[:dtb_id].eql?('')
-      @players = Player.where("dtb_id LIKE '#{params[:dtb_id]}%'")
+      # FIXME: dtb_id non-complete
+      @players = Player.where("dtb_id >= #{params[:dtb_id]}%")
       # should return exactly one match => redirect to profile
       redirect_to action: 'show', id: params[:dtb_id] if @players.size == 1
     elsif params[:lastname] && !params[:lastname].eql?('')
@@ -16,8 +17,8 @@ class PlayersController < ApplicationController
         yob_male = params[:yob][2, 4].to_i + 100
         yob_female = yob_male + 100
         @players = Player.where("lastname LIKE '%#{params[:lastname]}%'
-                                AND (dtb_id LIKE '#{yob_male}%'
-                                OR dtb_id LIKE '#{yob_female}%')")
+                                AND ((dtb_id >= #{yob_male * 100_000} AND dtb_id <= #{yob_male * 100_000 + 99_999})
+                                OR (dtb_id>= #{yob_female * 100_000} AND dtb_id <= #{yob_female * 100_000 + 99_999}))")
                          .order(:lastname, :dtb_id)
       else
         @players = Player.where("lastname LIKE '%#{params[:lastname]}%'")
@@ -27,8 +28,8 @@ class PlayersController < ApplicationController
     elsif params[:yob] && !params[:yob].eql?('')
       yob_male = params[:yob][2, 4].to_i + 100
       yob_female = yob_male + 100
-      @players = Player.where("dtb_id LIKE '#{yob_male}%'
-                              OR dtb_id LIKE '#{yob_female}%'")
+      @players = Player.where("(dtb_id >= #{yob_male * 100_000} AND dtb_id <= #{yob_male * 100_000 + 99_999})
+                              OR (dtb_id >= #{yob_female * 100_000} AND dtb_id <= #{yob_female * 100_000 + 99_999})")
                        .order(:lastname, :dtb_id)
       redirect_to action: 'show', id: @players[0].dtb_id if @players.size == 1
     elsif params[:commit]
@@ -170,7 +171,7 @@ class PlayersController < ApplicationController
   def data_diagram_complete(dtb_id)
     rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false,
                              age_group_ranking: false, year_end_ranking: false)
-                      .order(:date, :age_group)
+                      .order(date: :desc, age_group: :asc)
     collect_diagram_data(rankings)
   end
 
