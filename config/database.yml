@@ -23,9 +23,8 @@ test:
 production:
   adapter: postgresql
   encoding: unicode
-  # For details on connection pooling, see Rails configuration guide
-  # https://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: db
   database: ranking_info_production
-  username: ranking_info
-  password: <%= ENV['RANKING_INFO_DATABASE_PASSWORD'] %
+  username: postgres
+  password: <%= ENV['RANKING_INFO_DATABASE_PASSWORD'] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
