@@ -171,7 +171,7 @@ class PlayersController < ApplicationController
   def data_diagram_complete(dtb_id)
     rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false,
                              age_group_ranking: false, year_end_ranking: false)
-                      .order(:date, :age_group)
+                      .order(date: :desc, age_group: :asc)
     collect_diagram_data(rankings)
   end
 
