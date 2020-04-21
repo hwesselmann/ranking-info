@@ -73,8 +73,9 @@ class ListingController < ApplicationController
   end
 
   def gender_selected(gender)
-    query = if gender.eql?('Junioren') then " AND dtb_id LIKE '1%'"
-            else " AND dtb_id LIKE '2%'"
+    query = if gender.eql?('Junioren')
+            then ' AND (dtb_id >= 10000000 AND dtb_id <= 19999999)'
+            else ' AND (dtb_id >= 20000000 AND dtb_id <= 29999999)'
             end
     query
   end
