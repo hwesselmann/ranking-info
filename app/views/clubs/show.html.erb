@@ -4,27 +4,25 @@
    Spieler aus dem Verein <b><%= params[:id] %></b>
   </p>
   <p>Hier finden Sie alle Spieler aus diesem Verein, die in der aktuellen Periode auf der Rangliste geführt sind.</p>
-  <div>
-    <table class="table table-striped">
-  <thead class="thead-dark">
-    <tr>
-      <th>DTB-ID</th>
-      <th>Nachname, Vorname</th>
-      <th>Position</th>
-      <th>Punkte</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @players.each do |player| %>
-      <tr>
-        <td><%= link_to player[:dtb_id], player_path(player[:dtb_id]) %></td>
-        <td><%= player[:lastname] %>, <%= player[:firstname] %></td>
-        <td><%= player[:rank] %></td>
-        <td><%= player[:score] %></td>
-      </tr>
+  <div class="container">
+    <div class="row justify-content-md-center border border-dark text-white bg-dark font-weight-bold">
+      <div class="col-3 col-md-3">DTB-ID</div>
+      <div class="col-5 col-md-3">Name</div>
+      <div class="col-2 col-md-3">Position</div>
+      <div class="col-2 col-md-3">Punkte</div>
+    </div>
+    <% @players.each do |key, players| %>
+      <div class="row text-white bg-info">
+        <div class="col-12 col-md-12 border-left border-right border-dark font-weight-bold"><%= key %></div>
+      </div>
+      <% players.each do |item| %>
+        <div class="row justify-content-md-center border-bottom border-dark">
+          <div class="col-3 col-md-3 border-left border-dark"><%= item[:dtb_id] %></div>
+          <div class="col-5 col-md-3"><%= item[:lastname] %>, <%= item[:firstname] %></div>
+          <div class="col-2 col-md-3"><%= item[:rank] %></div>
+          <div class="col-2 col-md-3 border-right border-dark"><%= item[:score] %></div>
+        </div>
+      <% end %>
     <% end %>
-  </tbody>
-</table>
-
   </div>
 </div>
