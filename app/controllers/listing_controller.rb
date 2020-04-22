@@ -22,7 +22,9 @@ class ListingController < ApplicationController
                                params[:age_group_options])
     # 5. federation
     query += federation_selected(params[:federation])
-    # 6. year end ranking
+    # 6. club
+    query += club_selected(params[:club])
+    # 7. year end ranking
     # if year end lists should be shown and the quarter selected is a Q4...
     query += year_end_rankings(params[:year_end], params[:quarter])
     # run the query!
@@ -101,12 +103,20 @@ class ListingController < ApplicationController
   end
 
   def federation_selected(federation)
-    query = if params[:federation].eql?('') then ''
+    query = if federation.eql?('') then ''
             else " AND dtb_id IN
                   (SELECT dtb_id FROM players WHERE
                   federation='#{federation}')"
             end
     query
+  end
+
+  def club_selected(club)
+    query = if club.eql?('') then ''
+            else " AND dtb_id IN
+              (SELECT dtb_id FROM players WHERE
+              club LIKE '%#{club}%')"
+            end
   end
 
   def year_end_rankings(year_end, quarter)

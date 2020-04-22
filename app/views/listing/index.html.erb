@@ -26,8 +26,13 @@
       <%= label_tag 'federation', 'Verband' %><br/>
       <%= select_tag(:federation, options_for_select(@federations, params[:federation] || ''), include_blank: true) %>
     </div>
-    <div class="col-auto ml-4 mr-2">
-    <br/><%= submit_tag 'Liste abrufen', class: 'btn btn-dark mb-2' %>
+    <div class="col-auto mr-2">
+      <%= label_tag 'club', 'Verein' %><br/>
+      <%= search_field_tag 'club', params[:club], class: 'form-control', size: '10', placeholder: 'Verein' %>
+    </div>
+    <div class="col-auto ml-2 mr-2">
+    <%= label_tag 'submit', '_', class: 'text-white' %><br/>
+    <%= submit_tag 'Liste abrufen', class: 'btn btn-dark mb-2' %>
     </div>
   <% end %>
 </div>
