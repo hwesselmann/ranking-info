@@ -17,7 +17,7 @@
       </div>
       <% players.each do |item| %>
         <div class="row justify-content-md-center border-bottom border-dark">
-          <div class="col-3 col-md-3 border-left border-dark"><%= link_to item[:dtb_id], player_path(item[:dtb_id]) %></div>
+          <div class="col-3 col-md-3 border-left border-dark"><%= link_to item[:dtb_id], player_path(item[:dtb_id]), class: 'text-info' %></div>
           <div class="col-5 col-md-3"><%= item[:lastname] %>, <%= item[:firstname] %></div>
           <div class="col-2 col-md-3"><%= item[:rank] %></div>
           <div class="col-2 col-md-3 border-right border-dark"><%= item[:score] %></div>
