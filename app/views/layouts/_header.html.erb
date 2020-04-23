@@ -1,18 +1,18 @@
 <header>
-  <nav class="navbar navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
+  <nav class="navbar navbar-expand-md navbar-dark bg-info">
     <b><%= link_to "Ranking-Info", root_path, class: "navbar-brand" %></b>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item"><%= link_to "Startseite", root_path, class: 'nav-link' %></li>
-      <li class="nav-item"><%= link_to "Spieler", players_path, class: 'nav-link' %></li>
-      <li class="nav-item"><%= link_to "Listen", listings_path, class: 'nav-link' %></li>
-      <li class="nav-item"><%= link_to "Vereine", clubs_path, class: 'nav-link' %></li>
-      <li class="nav-item"><%= link_to "Status", status_path, class: 'nav-link' %></li>
-      <li class="nav-item"><%= link_to "Über", about_path, class: 'nav-link' %></li>
+      <li class="nav-item"><%= link_to "Startseite", root_path, class: 'nav-link text-white' %></li>
+      <li class="nav-item"><%= link_to "Spieler", players_path, class: 'nav-link text-white' %></li>
+      <li class="nav-item"><%= link_to "Listen", listings_path, class: 'nav-link text-white' %></li>
+      <li class="nav-item"><%= link_to "Vereine", clubs_path, class: 'nav-link text-white' %></li>
+      <li class="nav-item"><%= link_to "Status", status_path, class: 'nav-link text-white' %></li>
+      <li class="nav-item"><%= link_to "Über", about_path, class: 'nav-link text-white' %></li>
       <% if logged_in? %>
-        <li class="nav-item"><%= link_to "Import", import_path, class: 'nav-link' %></li>
-        <li><%= link_to "Log out", logout_path, method: :delete, class: 'nav-link' %></li>
+        <li class="nav-item"><%= link_to "Import", import_path, class: 'nav-link text-white' %></li>
+        <li><%= link_to "Log out", logout_path, method: :delete, class: 'nav-link text-white' %></li>
       <% else %>
-          <li class="nav-item"><%= link_to "Log in", login_path, class: 'nav-link' %></li>
+          <li class="nav-item"><%= link_to "Log in", login_path, class: 'nav-link text-white' %></li>
       <% end %>
     </ul>
   </nav>

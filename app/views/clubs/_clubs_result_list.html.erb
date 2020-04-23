@@ -8,7 +8,7 @@
   <tbody>
     <% @clubs.each do |club| %>
       <tr>
-        <td><%= link_to club[:name], club_path(club[:name]) %></td>
+        <td><%= link_to club[:name], club_path(club[:name]), class: 'text-info' %></td>
         <td class="center"><%= club[:player_count] %></td>
       </tr>
     <% end %>

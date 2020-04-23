@@ -11,10 +11,10 @@
   <tbody>
     <% @players.each do |player| %>
       <tr>
-        <td><%= link_to player.dtb_id, player_path(player.dtb_id) %></td>
+        <td><%= link_to player.dtb_id, player_path(player.dtb_id), class: 'text-info' %></td>
         <td><%= player.lastname %>, <%= player.firstname %></td>
         <td class="center"><%= image_tag("flags/#{player.nationality.downcase}.svg", alt: "#{player.nationality}", width: "30") %></td>
-        <td><%= link_to player.club, club_path(player.club) %></td>
+        <td><%= link_to player.club, club_path(player.club), class: 'text-info' %></td>
         <td class="center"><%= player.federation %></td>
       </tr>
     <% end %>
