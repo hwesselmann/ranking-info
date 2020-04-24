@@ -9,9 +9,8 @@ class StaticPagesController < ApplicationController
                           .order(date: :desc)
                           .distinct
                           .last
-                          .date
     @start = if first_import.nil? then 'xx.xx.xxxx'
-             else first_import.strftime('%d.%m.%Y')
+             else first_import.date.strftime('%d.%m.%Y')
              end
   end
 
