@@ -121,7 +121,7 @@ class ListingController < ApplicationController
 
   def year_end_rankings(year_end, quarter)
     query = if year_end.eql?('1') && first_quarter?(quarter)
-            then ' AND year_end_ranking=true"'
+            then ' AND year_end_ranking=true'
             else ' AND year_end_ranking=false'
             end
     query
