@@ -21,11 +21,10 @@ test:
   database: db/test.sqlite3
 
 production:
-  database: db/production.sqlite3
-  #adapter: postgresql
-  #encoding: unicode
-  #host: db
-  #database: ranking_info_production
-  #username: postgres
-  #password: <%= ENV['RANKING_INFO_DATABASE_PASSWORD'] %>
-  #pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  adapter: postgresql
+  encoding: unicode
+  host: db
+  database: ranking_info_production
+  username: postgres
+  password: <%= ENV['RANKING_INFO_DATABASE_PASSWORD'] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
