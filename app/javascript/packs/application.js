@@ -22,4 +22,4 @@ import "jquery";
 import "popper.js";
 import "bootstrap";
 import "highcharts";
-import "stylesheets/custom";
+import "../stylesheets/application"
