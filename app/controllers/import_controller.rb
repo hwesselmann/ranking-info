@@ -32,7 +32,9 @@ class ImportController < ApplicationController
         f.write(uploaded.read)
       end
       Player.import_rankings("public/uploads/#{uploaded.original_filename}")
-      redirect_to status_url, flash: { info: 'new rankings imported!' }
+      redirect_to status_url, flash: { info: "new rankings file
+                                              #{uploaded.original_filename}
+                                              imported!" }
     else
       redirect_to status_url, flash: { info: 'please upload a ranking file' }
     end
