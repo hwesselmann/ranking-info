@@ -16,8 +16,7 @@ COPY . /app
 RUN gem install bundler && \
   bundle config set with 'production' && \
   bundle config set without 'development test' && \
-  bundle install && \
-  yarn install
+  bundle install
 
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
