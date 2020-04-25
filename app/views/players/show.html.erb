@@ -6,7 +6,7 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-    <%= image_tag("flags/#{@player.nationality.downcase}.svg", alt: "#{@player.nationality}", width: "35") %> 
+    <%= image_pack_tag("#{@player.nationality.downcase}.svg", width: "35") %>
     <span class="h4 align-bottom"><%= @player.firstname %> <%= @player.lastname %></span>
     </div>
   </div>
