@@ -21,3 +21,5 @@ require("chartkick").use(require("highcharts"))
 import "jquery";
 import "popper.js";
 import "bootstrap";
+import "highcharts";
+import "stylesheets/custom";
