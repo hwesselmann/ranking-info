@@ -23,6 +23,8 @@ services:
       - IMPRINT_CITY=Hintertupflingen
       - IMPRINT_PHONE=123456789
       - IMPRINT_MAIL="heinz@meinz.org"
+    volumes:
+      - .:/app
     ports:
       - "3000:3000"
     depends_on:
