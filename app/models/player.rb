@@ -111,7 +111,9 @@ class Player < ApplicationRecord
                               score: player.current_score,
                               age_group_ranking: false,
                               yob_ranking: false,
-                              year_end_ranking: false)
+                              year_end_ranking: false,
+                              club: player.club,
+                              federation: player.federation)
         ranking.save
         existing_player.save
 
@@ -141,6 +143,8 @@ class Player < ApplicationRecord
     ranking.age_group_ranking = false
     ranking.yob_ranking = false
     ranking.year_end_ranking = false
+    ranking.club = player.club
+    ranking.federation = player.federation
 
     ranking
   end
@@ -339,7 +343,9 @@ class Player < ApplicationRecord
                 score: imported_ranking.score,
                 age_group_ranking: imported_ranking.age_group_ranking,
                 yob_ranking: imported_ranking.yob_ranking,
-                year_end_ranking: imported_ranking.year_end_ranking)
+                year_end_ranking: imported_ranking.year_end_ranking,
+                club: imported_ranking.club,
+                federation: imported_ranking.federation)
   end
 
   def self.rankings_for_age_range_in_period(classes_to_retrieve, period)
@@ -350,7 +356,8 @@ class Player < ApplicationRecord
     rankings_from_db.each do |re|
       rankings.push(ImportRanking.new(dtb_id: re.dtb_id, date: re.date,
                                       age_group: re.age_group, score: re.score,
-                                      ranking_position: re.ranking_position))
+                                      ranking_position: re.ranking_position,
+                                      club: re.club, federation: re.federation))
     end
     rankings
   end

@@ -104,18 +104,14 @@ class ListingController < ApplicationController
 
   def federation_selected(federation)
     query = if federation.eql?('') then ''
-            else " AND dtb_id IN
-                  (SELECT dtb_id FROM players WHERE
-                  federation='#{federation}')"
+            else " AND federation='#{federation}'"
             end
     query
   end
 
   def club_selected(club)
     query = if club.eql?('') then ''
-            else " AND dtb_id IN
-              (SELECT dtb_id FROM players WHERE
-              club LIKE '%#{club}%')"
+            else " AND club LIKE '%#{club}%')"
             end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_13_101644) do
+ActiveRecord::Schema.define(version: 2020_04_26_091347) do
 
   create_table "clubs", force: :cascade do |t|
     t.integer "dtb_id"
@@ -42,6 +42,8 @@ ActiveRecord::Schema.define(version: 2020_04_13_101644) do
     t.boolean "year_end_ranking", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "club"
+    t.string "federation"
     t.index ["dtb_id", "date"], name: "index_rankings_on_dtb_id_and_date"
     t.index ["dtb_id"], name: "index_rankings_on_dtb_id"
   end
