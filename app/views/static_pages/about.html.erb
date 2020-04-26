@@ -10,7 +10,7 @@
     aktuellen Fassung unter<br/><a href="https://www.dtb-tennis.de/Tennis-National/Ranglisten/Jugend" target="_blank">https://www.dtb-tennis.de/Tennis-National/Ranglisten/Jugend</a><br/>abrufbar ist. 
   </p>
   <p>
-    Die Adresse unserer Website ist: <%= CONFIG['domain'] %>.<br/>
+    Die Adresse unserer Website ist: <%= ENV.fetch("DOMAIN") || CONFIG['domain'] %>.<br/>
     <%= render 'impressum' %>
   </p>
 </div>
