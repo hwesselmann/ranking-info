@@ -1,8 +1,11 @@
 class FederationsController < ApplicationController
   def index
+    @federations = {}
     quarter = Ranking.select(:date).order(date: :desc)
-                     .distinct.first.date
+                     .distinct.first
+    return @federations if quarter.nil?
 
+    quarter = quarter.date
     sql = "SELECT COUNT(dtb_id) AS count, federation, age_group FROM rankings
            WHERE date='#{quarter}'
            AND dtb_id >= 10000000
