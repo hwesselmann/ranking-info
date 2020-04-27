@@ -111,7 +111,7 @@ class ListingController < ApplicationController
 
   def club_selected(club)
     query = if club.eql?('') then ''
-            else " AND club LIKE '%#{club}%')"
+            else " AND LOWER(club) LIKE LOWER('%#{club}%')"
             end
   end
 

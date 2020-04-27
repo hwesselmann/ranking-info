@@ -18,12 +18,12 @@ class PlayersController < ApplicationController
         # fuzzy lastname in yob
         yob_male = params[:yob][2, 4].to_i + 100
         yob_female = yob_male + 100
-        @players = Player.where("lastname LIKE '%#{params[:lastname]}%'
+        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{params[:lastname]}%')
                                 AND ((dtb_id >= #{yob_male * 100_000} AND dtb_id <= #{yob_male * 100_000 + 99_999})
                                 OR (dtb_id>= #{yob_female * 100_000} AND dtb_id <= #{yob_female * 100_000 + 99_999}))")
                          .order(:lastname, :dtb_id)
       else
-        @players = Player.where("lastname LIKE '%#{params[:lastname]}%'")
+        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{params[:lastname]}%')")
                          .order(:lastname, :dtb_id)
       end
       redirect_to action: 'show', id: @players[0].dtb_id if @players.size == 1

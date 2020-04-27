@@ -22,7 +22,8 @@ class ClubsController < ApplicationController
                              .distinct.first.date
     players = Player.where("dtb_id IN (SELECT DISTINCT(dtb_id) FROM rankings
                             WHERE date='#{current_quarter}')
-                            AND club='#{params[:id]}'").order(:lastname)
+                            AND LOWER(club)=LOWER('#{params[:id]}')")
+                    .order(:lastname)
     player_ranking = fill_club_info(players)
     @players = player_ranking
   end
@@ -41,7 +42,7 @@ class ClubsController < ApplicationController
     Player.select(:club)
           .where("dtb_id IN (SELECT DISTINCT(dtb_id)
                                 FROM rankings WHERE date='#{quarter}')
-                                AND club LIKE '%#{club}%'")
+                                AND LOWER(club) LIKE LOWER('%#{club}%')")
           .order(:club)
           .distinct
   end
@@ -70,7 +71,7 @@ class ClubsController < ApplicationController
       age_group = Ranking.find_by(dtb_id: player.dtb_id, date: current_quarter,
                                   yob_ranking: false, age_group_ranking: true,
                                   year_end_ranking: false)
-                          .age_group
+                         .age_group
       case age_group
       when 'U12'
         u12_players.push(player_data)
