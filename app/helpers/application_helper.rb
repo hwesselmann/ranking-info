@@ -45,4 +45,45 @@ module ApplicationHelper
                end
     rankings
   end
+
+  def federation_long_name(short)
+    case short
+    when 'BAD'
+      'Baden'
+    when 'BB'
+      'Berlin-Brandenburg'
+    when 'BTV'
+      'Bayern'
+    when 'HAM'
+      'Hamburg'
+    when 'HTV'
+      'Hessen'
+    when 'RPF'
+      'Rheinland-Pfalz'
+    when 'SLH'
+      'Schleswig-Holstein'
+    when 'STB'
+      'Saarland'
+    when 'STV'
+      'Sachsen'
+    when 'TMV'
+      'Mecklenburg-Vorpommern'
+    when 'TNB'
+      'Niedersachsen-Bremen'
+    when 'TSA'
+      'Sachsen-Anhalt'
+    when 'TTV'
+      'Thüringen'
+    when 'TVM'
+      'Mittelrhein'
+    when 'TVN'
+      'Niederrhein'
+    when 'WTB'
+      'Würtemberg'
+    when 'WTV'
+      'Westfalen'
+    else
+      short
+    end
+  end
 end
