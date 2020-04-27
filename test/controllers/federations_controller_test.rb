@@ -16,10 +16,8 @@ class FederationsControllerTest < ActionDispatch::IntegrationTest
   test 'get player count' do
     sut = FederationsController.new
     federations = sut.player_count_by_federation(sut.current_quarter, 'm')
-    assert_instance_of(ActiveRecord::Result, federations)
     assert_equal(0, federations.count)
     federations = sut.player_count_by_federation(sut.current_quarter, 'w')
-    assert_instance_of(ActiveRecord::Result, federations)
     assert_equal(0, federations.count)
   end
 end
