@@ -41,16 +41,18 @@ class PlayersController < ApplicationController
   end
 
   def show
-    #begin
+    begin
       @player = Player.find_by_dtb_id(params[:id])
       @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
       @current_rankings = get_current_rankings(@player.dtb_id)
       @complete_rankings = get_complete_rankings(@player.dtb_id).reverse!
-      @data_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)
-      @data_diagram_complete = data_diagram_complete(@player.dtb_id)
-    #rescue
-     # redirect_to players_path, flash: { danger: 'Der Spieler wurde leider nicht gefunden' }
-    #end
+      @data_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)[0]
+      @score_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)[1]
+      @data_diagram_complete = data_diagram_complete(@player.dtb_id)[0]
+      @score_diagram_complete = data_diagram_complete(@player.dtb_id)[1]
+    rescue
+      redirect_to players_path, flash: { danger: 'Der Spieler wurde leider nicht gefunden' }
+    end
   end
 
   def fill_up_dtb_id(dtb_id_part)
@@ -190,18 +192,25 @@ class PlayersController < ApplicationController
                              age_group_ranking: true, year_end_ranking: false)
                       .order(date: :desc, age_group: :asc)
                       .limit(4)
-    collect_diagram_data(rankings)
+    diagram_data = []
+    diagram_data.push(collect_diagram_data(rankings))
+    diagram_data.push(collect_score_data(rankings))
+
+    diagram_data
   end
 
   def data_diagram_complete(dtb_id)
     rankings = Ranking.where(dtb_id: dtb_id, yob_ranking: false,
                              age_group_ranking: false, year_end_ranking: false)
                       .order(date: :desc, age_group: :asc)
-    collect_diagram_data(rankings)
+    diagram_data = []
+    diagram_data.push(collect_diagram_data(rankings))
+    diagram_data.push(collect_score_data(rankings))
+
+    diagram_data
   end
 
   def collect_diagram_data(rankings)
-    scores = {}
     u12_pos = {}
     u14_pos = {}
     u16_pos = {}
@@ -209,7 +218,6 @@ class PlayersController < ApplicationController
 
     rankings.reverse_each do |ranking|
       period = (ranking.date - 1.day).strftime('%d.%m.%Y')
-      scores[period] = ranking.score
       case ranking.age_group
       when 'U12'
         u12_pos[period] = ranking.ranking_position
@@ -222,13 +230,24 @@ class PlayersController < ApplicationController
       end
     end
 
-    diagram_data = [{ name: 'Punkte', data: scores }]
-
+    diagram_data = []
     diagram_data.push({ name: 'U12', data: u12_pos }) if u12_pos.size.positive?
     diagram_data.push({ name: 'U14', data: u14_pos }) if u14_pos.size.positive?
     diagram_data.push({ name: 'U16', data: u16_pos }) if u16_pos.size.positive?
     diagram_data.push({ name: 'U18', data: u18_pos }) if u18_pos.size.positive?
 
+    diagram_data
+  end
+
+  def collect_score_data(rankings)
+    scores = {}
+
+    rankings.reverse_each do |ranking|
+      period = (ranking.date - 1.day).strftime('%d.%m.%Y')
+      scores[period] = ranking.score
+    end
+
+    diagram_data = [{ name: 'Punkte', data: scores, vAxis: 0 }]
     diagram_data
   end
 end
