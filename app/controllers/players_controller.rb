@@ -19,8 +19,10 @@ class PlayersController < ApplicationController
         yob_male = params[:yob][2, 4].to_i + 100
         yob_female = yob_male + 100
         @players = Player.where("LOWER(lastname) LIKE LOWER('%#{params[:lastname]}%')
-                                AND ((dtb_id >= #{yob_male * 100_000} AND dtb_id <= #{yob_male * 100_000 + 99_999})
-                                OR (dtb_id>= #{yob_female * 100_000} AND dtb_id <= #{yob_female * 100_000 + 99_999}))")
+                                AND ((dtb_id >= #{yob_male * 100_000}
+                                AND dtb_id <= #{yob_male * 100_000 + 99_999})
+                                OR (dtb_id>= #{yob_female * 100_000}
+                                  AND dtb_id <= #{yob_female * 100_000 + 99_999}))")
                          .order(:lastname, :dtb_id)
       else
         @players = Player.where("LOWER(lastname) LIKE LOWER('%#{params[:lastname]}%')")
@@ -30,8 +32,10 @@ class PlayersController < ApplicationController
     elsif params[:yob] && !params[:yob].eql?('')
       yob_male = params[:yob][2, 4].to_i + 100
       yob_female = yob_male + 100
-      @players = Player.where("(dtb_id >= #{yob_male * 100_000} AND dtb_id <= #{yob_male * 100_000 + 99_999})
-                              OR (dtb_id >= #{yob_female * 100_000} AND dtb_id <= #{yob_female * 100_000 + 99_999})")
+      @players = Player.where("(dtb_id >= #{yob_male * 100_000}
+                              AND dtb_id <= #{yob_male * 100_000 + 99_999})
+                              OR (dtb_id >= #{yob_female * 100_000}
+                              AND dtb_id <= #{yob_female * 100_000 + 99_999})")
                        .order(:lastname, :dtb_id)
       redirect_to action: 'show', id: @players[0].dtb_id if @players.size == 1
     elsif params[:commit]
@@ -51,7 +55,7 @@ class PlayersController < ApplicationController
       @data_diagram_complete = data_diagram_complete(@player.dtb_id)[0]
       @score_diagram_complete = data_diagram_complete(@player.dtb_id)[1]
     rescue
-      redirect_to players_path, flash: { danger: 'Der Spieler wurde leider nicht gefunden' }
+      redirect_to players_path, flash: { danger: 'Spieler nicht gefunden' }
     end
   end
 
@@ -122,9 +126,9 @@ class PlayersController < ApplicationController
                                          year_end_ranking: false)
           position_change = prev_ranking.ranking_position - current_ranking.ranking_position
           ranking['position_change'] = if position_change.positive?
-                                      then "+#{position_change}"
-                                      else position_change.to_s
-                                      end
+                                       then "+#{position_change}"
+                                       else position_change.to_s
+                                       end
           score_change = current_ranking.score.to_f - prev_ranking.score.to_f
           ranking['score_change'] = if score_change.positive?
                                     then "+#{score_change}"
