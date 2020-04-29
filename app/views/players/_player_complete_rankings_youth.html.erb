@@ -1,35 +1,29 @@
 <span class="h6"><br/>Gesamtverlauf Jugend</span>
-<table class="table table-sm table-striped mt-1">
-  <thead class="thead-dark">
-    <tr>
-      <th>Jahr</th>
-      <th>Quartal</th>
-      <th>Punkte</th>
-      <th>U11</th>
-      <th>U12</th>
-      <th>U13</th>
-      <th>U14</th>
-      <th>U15</th>
-      <th>U16</th>
-      <th>U17</th>
-      <th>U18</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @complete_rankings.each do |ran| %>
-      <tr>
-        <td><%= ran['year'] %></td>
-        <td><%= ran['quarter'] %></td>
-        <td><%= ran['score'] %></td>
-        <td><%= ran['U11'] %></td>
-        <td><%= ran['U12'] %></td>
-        <td><%= ran['U13'] %></td>
-        <td><%= ran['U14'] %></td>
-        <td><%= ran['U15'] %></td>
-        <td><%= ran['U16'] %></td>
-        <td><%= ran['U17'] %></td>
-        <td><%= ran['U18'] %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div class="container mt-1">
+  <div class="row justify-content-md-center border border-dark text-white bg-dark font-weight-bold p-1">
+    <div class="col-2 col-sm-2"><i class="far fa-calendar-alt"></i></div>
+    <div class="col-2 col-sm-2"><i class="fas fa-poll"></i></div>
+    <div class="col-1 col-sm-1">U11</div>
+    <div class="col-1 col-sm-1">U12</div>
+    <div class="col-1 col-sm-1">U13</div>
+    <div class="col-1 col-sm-1">U14</div>
+    <div class="col-1 col-sm-1">U15</div>
+    <div class="col-1 col-sm-1">U16</div>
+    <div class="col-1 col-sm-1">U17</div>
+    <div class="col-1 col-sm-1">U18</div>
+  </div>
+  <% @complete_rankings.each_with_index do |ran, index| %>
+    <div class="row <%= 'striped' unless index.even? %>">
+      <div class="col-2 col-sm-2"><%= ran['year'] %>/<%= ran['quarter'] %></div>
+      <div class="col-2 col-sm-2"><%= ran['score'] %></div>
+      <div class="col-1 col-sm-1"><%= ran['U11'] %></div>
+      <div class="col-1 col-sm-1"><%= ran['U12'] %></div>
+      <div class="col-1 col-sm-1"><%= ran['U13'] %></div>
+      <div class="col-1 col-sm-1"><%= ran['U14'] %></div>
+      <div class="col-1 col-sm-1"><%= ran['U15'] %></div>
+      <div class="col-1 col-sm-1"><%= ran['U16'] %></div>
+      <div class="col-1 col-sm-1"><%= ran['U17'] %></div>
+      <div class="col-1 col-sm-1"><%= ran['U18'] %></div>
+    </div>
+  <% end %>
+</div>

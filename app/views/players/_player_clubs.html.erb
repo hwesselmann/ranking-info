@@ -1,18 +1,18 @@
 <span class="h6"><br/>Bisherige Vereine</span>
-<table class="table table-sm mt-1">
-  <thead class="thead-dark">
-    <tr>
-      <th>Verein</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="table-primary">
-      <td><%= @player.club %> / <%= @player.federation %></td>
-    </tr>
-    <% @player.clubs.each do |curr_club| %>
-      <tr>
-        <td><%= curr_club.club %> / <%= curr_club.federation %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div class="container mt-1">
+  <div class="row justify-content-md-center border border-dark text-white bg-dark font-weight-bold p-1">
+    <div class="col col-md-3">Verein</div>
+  </div>
+  <div class="row bg-info font-weight-bold text-white p-1">
+    <div class="col">
+      <%= @player.club %> / <%= @player.federation %>
+    </div>
+  </div>
+  <% @player.clubs.each do |curr_club| %>
+    <div class="row p-1">
+      <div class="col">
+        <%= curr_club.club %> / <%= curr_club.federation %>
+      </div>
+    </div>
+  <% end %>
+</div>
