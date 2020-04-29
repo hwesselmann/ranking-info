@@ -11,38 +11,38 @@
     </div>
   </div>
   <div class="row">
-    <div class="col">
+    <div class="col-md-12">
       DTB-ID <i><%= @player.dtb_id %></i>
     </div>
-    <div class="col text-right">
+    <div class="col-md-12 text-right">
         <b><%= link_to @player.club, club_path(@player.club), class: 'text-info' %></b> / <i><%= @player.federation %></i>
     </div>
   </div>
   <div class="row">
-    <div class="col">
+    <div class="col-md-6">
       <%= render 'player_current_ranking' %>
     </div>
-    <div class="col">
+    <div class="col-md-6">
       <%= render 'player_chart_current' %>
     </div>
   </div>
   <div class="row">
-    <div class="col">
+    <div class="col-md-6">
+      <%= render 'player_chart_current_score' %>
+    </div>
+    <div class="col-md-6">
       <%= render 'player_clubs' %>
       <%= render 'player_available_data' %>
     </div>
-    <div class="col">
-      <%= render 'player_chart_current_score' %>
-    </div>
   </div>
   <div class="row">
-    <div class="col">
+    <div class="col-md-12">
       <%= render 'player_chart_complete' %>
       <%= render 'player_chart_complete_score' %>
     </div>
   </div>
   <div class="row">
-    <div class="col">
+    <div class="col-md-12">
       <%= render 'player_complete_rankings_youth' %>
     </div>
   </div>
