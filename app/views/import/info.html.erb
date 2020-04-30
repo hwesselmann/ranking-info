@@ -7,22 +7,18 @@
   <p class="h5 text-left mt-3">
     Anzahl Datensätze im System
   </p>
-  <table class="table table-sm table-striped mb-3">
-    <thead class="thead-dark">
-      <tr>
-        <th class="center">Spielerinnen</th>
-        <th class="center">Spieler</th>
-        <th class="center">Einzelrankings</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="center"><%= @player_female_count %></td>
-        <td class="center"><%= @player_male_count %></td>
-        <td class="center"><%= @ranking_count %></td>
-      <tr>
-    </tbody>
-  </table>
+  <div class="container">
+    <div class="row justify-content-md-center text-white bg-dark font-weight-bold p-2">
+      <div class="col-4 col-md-4 center">Spielerinnen</div>
+      <div class="col-4 col-md-4 center">Spieler</div>
+      <div class="col-4 col-md-4 center">Einzelrankings</div>
+    </div>
+    <div class="row justify-content-md-center mb-3 p-2">
+      <div class="col-4 col-md-4 center"><%= @player_female_count %></div>
+      <div class="col-4 col-md-4 center"><%= @player_male_count %></div>
+      <div class="col-4 col-md-4 center"><%= @ranking_count %></div>
+    </div>
+  </div>
 
   <p class="h5 text-left mt-3">
     Verfügbare Quartale
@@ -36,26 +32,24 @@
       </i></small>
     </span>
   </p>
-  <table class="table table-sm table-striped mb-3">
-    <thead class="thead-dark">
-      <tr>
-        <th class="center">Jahr</th>
-        <th class="center">01.01.*</th>
-        <th class="center">01.04.**</th>
-        <th class="center">01.07.***</th>
-        <th class="center">01.10.****</th>
-      </tr>
-    </thead>
-    <tbody>
-    <% @available_quarters.each do |y, q| %>
-      <tr>
-        <td class="center"><%= y.to_s %></td>
-        <td class="center"><% if q.include? '01.01.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
-        <td class="center"><% if q.include? '01.04.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
-        <td class="center"><% if q.include? '01.07.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
-        <td class="center"><% if q.include? '01.10.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></td>
-      </tr>
+  <div class="container mb-3">
+    <div class="row justify-content-md-center text-white bg-dark font-weight-bold p-2">
+      <div class="col-4 col-md-4 center">Jahr</div>
+      <div class="col-2 col-md-2 center">Q1*</div>
+      <div class="col-2 col-md-2 center">Q2**</div>
+      <div class="col-2 col-md-2 center">Q3***</div>
+      <div class="col-2 col-md-2 center">Q4****</div>
+    </div>
+    <% if @available_quarters.size.positive? %>
+      <% @available_quarters.each do |y, q| %>
+        <div class="row <%= 'striped' unless y.to_i.even? %> justify-content-md-center p-2">
+          <div class="col-4 col-md-4 center"><%= y.to_s %></div>
+          <div class="col-2 col-md-2 center"><% if q.include? '01.01.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
+          <div class="col-2 col-md-2 center"><% if q.include? '01.04.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
+          <div class="col-2 col-md-2 center"><% if q.include? '01.07.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
+          <div class="col-2 col-md-2 center"><% if q.include? '01.10.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
+        </div>
+      <% end %>
     <% end %>
-    </tbody>
-  </table>
+  </div>
 </div>
