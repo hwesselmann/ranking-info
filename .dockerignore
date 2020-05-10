@@ -1,0 +1,7 @@
+.git
+.github
+.dockerignore
+.codeclimate.yml
+.editorconfig
+Guardfile
+README.md
