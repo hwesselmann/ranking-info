@@ -1,22 +1,24 @@
-<table class="table table-striped">
-  <thead class="thead-dark">
-    <tr>
-      <th>DTB-ID</th>
-      <th>Nachname, Vorname</th>
-      <th class="center">Nationalität</th>
-      <th>Verein</th>
-      <th class="center">Verband</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @players.each do |player| %>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead class="thead-dark">
       <tr>
-        <td><%= link_to player.dtb_id, player_path(player.dtb_id), class: 'text-info' %></td>
-        <td><%= player.lastname %>, <%= player.firstname %></td>
-        <td class="center"><%= image_pack_tag("#{player.nationality.downcase}.svg", width: "30") %></td>
-        <td><%= link_to player.club, club_path(player.club), class: 'text-info' %></td>
-        <td class="center"><%= player.federation %></td>
+        <th>DTB-ID</th>
+        <th>Nachname, Vorname</th>
+        <th class="center">Nationalität</th>
+        <th>Verein</th>
+        <th class="center">Verband</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @players.each do |player| %>
+        <tr>
+          <td><%= link_to player.dtb_id, player_path(player.dtb_id), class: 'text-info' %></td>
+          <td><%= player.lastname %>, <%= player.firstname %></td>
+          <td class="center"><%= image_pack_tag("#{player.nationality.downcase}.svg", width: "30") %></td>
+          <td><%= link_to player.club, club_path(player.club), class: 'text-info' %></td>
+          <td class="center"><%= player.federation %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

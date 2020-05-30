@@ -1,28 +1,30 @@
-<table class="table table-striped">
-  <thead class="thead-dark">
-    <tr>
-      <th class="center">#</th>
-      <th class="center">Rang</th>
-      <th>Nachname, Vorname</th>
-      <th class="center">DTB-ID</th>
-      <th class="center">Nationalität</th>
-      <th>Verein</th>
-      <th>Verband</th>
-      <th>Punkte</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @rankings.each_with_index do |ranking, index| %>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead class="thead-dark">
       <tr>
-        <td class="center"><%= index + 1 %></td>
-        <td class="center"><%= ranking.ranking_position %></td>
-        <td><%= ranking.player.lastname %>, <%= ranking.player.firstname %></td>
-        <td class="center"><%= link_to ranking.dtb_id, player_path(ranking.dtb_id), class: 'text-info' %></td>
-        <td class="center"><%= image_pack_tag("#{ranking.player.nationality.downcase}.svg", width: "30") %></td>
-        <td><%= link_to ranking.club, club_path(ranking.club), class: 'text-info' %></td>
-        <td><%= ranking.federation %></td>
-        <td><%= ranking.score %></td>
+        <th class="center">#</th>
+        <th class="center">Rang</th>
+        <th>Nachname, Vorname</th>
+        <th class="center">DTB-ID</th>
+        <th class="center">Nationalität</th>
+        <th>Verein</th>
+        <th>Verband</th>
+        <th>Punkte</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @rankings.each_with_index do |ranking, index| %>
+        <tr>
+          <td class="center"><%= index + 1 %></td>
+          <td class="center"><%= ranking.ranking_position %></td>
+          <td><%= ranking.player.lastname %>, <%= ranking.player.firstname %></td>
+          <td class="center"><%= link_to ranking.dtb_id, player_path(ranking.dtb_id), class: 'text-info' %></td>
+          <td class="center"><%= image_pack_tag("#{ranking.player.nationality.downcase}.svg", width: "30") %></td>
+          <td><%= link_to ranking.club, club_path(ranking.club), class: 'text-info' %></td>
+          <td><%= ranking.federation %></td>
+          <td><%= ranking.score %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

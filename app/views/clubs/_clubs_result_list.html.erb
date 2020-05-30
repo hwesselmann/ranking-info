@@ -1,16 +1,18 @@
-<table class="table table-striped">
-  <thead class="thead-dark">
-    <tr>
-      <th>Vereinsname</th>
-      <th class="center">Anzahl Spieler</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @clubs.each do |club| %>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead class="thead-dark">
       <tr>
-        <td><%= link_to club[:name], club_path(club[:name]), class: 'text-info' %></td>
-        <td class="center"><%= club[:player_count] %></td>
+        <th>Vereinsname</th>
+        <th class="center">Anzahl Spieler</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @clubs.each do |club| %>
+        <tr>
+          <td><%= link_to club[:name], club_path(club[:name]), class: 'text-info' %></td>
+          <td class="center"><%= club[:player_count] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
