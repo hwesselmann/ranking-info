@@ -199,7 +199,7 @@ class Player < ApplicationRecord
       # foreign player get the right position, but are not adding
       # up to the actual position, also players with pr do not count
       if Player.find_by(dtb_id: curr_ranking.dtb_id).nationality.eql?('GER') &&
-         !curr_ranking.score.eql?('0,0')
+         !curr_ranking.score.eql?('0,0') && !curr_ranking.score.eql?('PR')
         count_up += 1
       end
       sorted_rankings.push(curr_ranking)
