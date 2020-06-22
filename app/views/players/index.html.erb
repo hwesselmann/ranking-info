@@ -1,9 +1,9 @@
 <% provide(:title, 'Spielersuche') %>
 <% provide(:meta_content, "Suchen von Spielern, die im verfügbaren Datenbestand eine Platzierung auf der Deutschen Tennis-Jugendrangliste hatten.") %>
 <div class="container">
-  <p class="h2 text-left mt-3 mb-3">
+  <h1 class="title is-4 has-text-left mb-3 mt-3">
     Spielersuche
-  </p>
+  </h1>
   <%= form_tag(players_path, method: 'get', class: 'mb-3') do %>
   <div class="form-row">
     <div class="col-auto">

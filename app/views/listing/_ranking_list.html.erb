@@ -1,6 +1,6 @@
-<div class="table-responsive mb-2">
-  <table class="table table-striped">
-    <thead class="thead-dark">
+<div class="table-container mb-2">
+  <table class="table is-striped is-fullwidth">
+    <thead>
       <tr>
         <th class="center">#</th>
         <th class="center">Rang</th>
@@ -18,9 +18,9 @@
           <td class="center"><%= index + 1 %></td>
           <td class="center"><%= ranking.ranking_position %></td>
           <td><%= ranking.player.lastname %>, <%= ranking.player.firstname %></td>
-          <td class="center"><%= link_to ranking.dtb_id, player_path(ranking.dtb_id), class: 'text-info' %></td>
+          <td class="center"><%= link_to ranking.dtb_id, player_path(ranking.dtb_id), class: 'has-text-info' %></td>
           <td class="center"><%= image_pack_tag("#{ranking.player.nationality.downcase}.svg", width: "30") %></td>
-          <td><%= link_to ranking.club, club_path(ranking.club), class: 'text-info' %></td>
+          <td><%= link_to ranking.club, club_path(ranking.club), class: 'has-text-info' %></td>
           <td><%= ranking.federation %></td>
           <td><%= ranking.score %></td>
         </tr>
