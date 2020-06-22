@@ -1,8 +1,8 @@
 <% provide(:title, "Upload und Import") %>
 <div class="container">
-  <p class="h2 text-left mt-3 mb-5">
+  <h1 class="title is-4 has-text-left mb-3 mt-3">
     Upload und Import
-  </p>
+  </h1>
 </div>
 <div class="container">
   <p>
@@ -15,15 +15,33 @@
       <i>test/fixtures/files</i>.
     </p>
   </p>
-  <div class="row mt-4">
-    <div class="col-md-6 col-md-offset-3">
-      <%= form_with(url: {action: :import}, multipart: true) do %>
-        <div class="form-group">
-          <%= file_field_tag 'file', class: 'form-control-md' %>
-        </div>
-        <%= submit_tag 'upload & import', class: 'btn btn-primary' %>
-        <div class="input-group mb-3">
-      <% end %>
+  <%= form_with(url: {action: :import}, multipart: true) do %>
+    <div class="field is-horizontal mt-3 mb-3">
+      <div id="file-upload" class="file has-name">
+        <label class="file-label">
+          <%= file_field_tag 'file', class: 'file-input' %>
+          <span class="file-cta">
+            <span class="file-icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span class="file-label">
+              Datei auswählen…
+            </span>
+          </span>
+          <span class="file-name">Datei</span>
+        </label>
+      </div>
+      <%= submit_tag 'upload & import', class: 'button is-link is-info ml-2' %>
     </div>
-  </div>
+  <% end %>
 </div>
+
+<script>
+  const fileInput = document.querySelector('#file-upload input[type=file]');
+  fileInput.onchange = () => {
+    if (fileInput.files.length > 0) {
+      const fileName = document.querySelector('#file-upload .file-name');
+      fileName.textContent = fileInput.files[0].name;
+    }
+  }
+</script>
