@@ -1,16 +1,16 @@
 <% provide(:title, 'Vereinssuche') %>
 <% provide(:meta_content, "Suche nach Vereinen mit Spielerinnen und Spielern auf der aktuellen Deutschen Tennis-Jugendrangliste.") %>
 <div class="container">
-  <p class="h2 text-left mt-3 mb-3">
+  <h1 class="title is-4 has-text-left mb-3 mt-3">
     Vereinssuche
-  </p>
+  </h1>
   <%= form_tag(clubs_path, method: 'get', class: 'mb-3') do %>
-  <div class="form-row">
-    <div class="col-auto">
-    <%= search_field_tag 'club', params[:club], class: 'form-control mb-2 mr-sm-3', placeholder: 'Vereinsname' %>
+  <div class="field is-horizontal">
+    <div class="control is-expanded mr-2">
+      <%= search_field_tag 'club', params[:club], class: 'input is-small mb-2', placeholder: 'Vereinsname' %>
     </div>
-    <div class="col-auto">
-    <%= submit_tag 'suchen', class: 'btn btn-dark mb-2' %>
+    <div class="control">
+      <%= submit_tag 'suchen', class: 'button is-link is-small mb-2 is-info' %>
     </div>
   </div>
   <% end %>

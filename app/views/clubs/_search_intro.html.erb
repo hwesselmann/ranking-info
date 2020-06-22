@@ -1,15 +1,15 @@
 <div class="card" style="width: 100%;">
-  <div class="card-body">
-    <h5 class="card-title">Vereinssuche</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Der direkte Weg zum Spielerprofil</h6>
-    <p class="card-text">
-      Finden Sie alle Vereine, die Spieler auf der Jugendrangliste haben oder hatten, sowie die Anzahl der aktuellen Ranglistenspieler.
-      <br/><br/>
-      Filterbare Ranglisten, Spielerinfos und Informationen zu den im System verfügbaren Datenständen sind ebenfalls abrufbar:
-    </p>
-    <%= link_to "Spielersuche", players_path, class: 'card-link text-info' %>
-    <%= link_to "Ranglisten", listings_path, class: 'card-link text-info' %>
-    <%= link_to "Verbandsstatistik", federations_path, class: 'card-link text-info' %>
-    <%= link_to "Informationen zu verfügbaren Daten", status_path, class: 'card-link text-info' %>
+  <header class="card-header">
+    <span class="card-header-title">Vereinssuche</span>
+  </header>
+  <div class="card-content">
+    Finden Sie alle Vereine, die Spieler auf der Jugendrangliste haben oder hatten, sowie die Anzahl der aktuellen Ranglistenspieler.
+    <br/><br/>
+    Filterbare Ranglisten, Spielerinfos und Informationen zu den im System verfügbaren Datenständen sind ebenfalls abrufbar:
   </div>
+  <footer class="card-footer">
+    <%= link_to "Spielersuche", players_path, class: 'card-footer-item has-text-info' %>
+    <%= link_to "Ranglisten", listings_path, class: 'card-footer-item has-text-info' %>
+    <%= link_to "Verbandsstatistik", federations_path, class: 'card-footer-item has-text-info' %>
+  </footer>
 </div>
