@@ -1,6 +1,6 @@
-<div class="table-responsive">
-  <table class="table table-striped">
-    <thead class="thead-dark">
+<div class="table-container">
+  <table class="table is-striped">
+    <thead>
       <tr>
         <th>Vereinsname</th>
         <th class="center">Anzahl Spieler</th>
@@ -9,7 +9,7 @@
     <tbody>
       <% @clubs.each do |club| %>
         <tr>
-          <td><%= link_to club[:name], club_path(club[:name]), class: 'text-info' %></td>
+          <td><%= link_to club[:name], club_path(club[:name]), class: 'has-text-info' %></td>
           <td class="center"><%= club[:player_count] %></td>
         </tr>
       <% end %>

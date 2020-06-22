@@ -1,39 +1,51 @@
 <% provide(:title, 'Ranglisten') %>
 <% provide(:meta_content, "Durchsuchbare und filterbare Version der Deutschen Tennis-Jugendrangliste.") %>
 <div class="container">
-  <p class="h2 text-left mt-3 mb-3">
+  <h1 class="title is-3 has-text-left mb-3 mt-3">
     Ranglisten
-  </p>
-  <%= form_tag(listings_path, method: 'get', class: 'mb-3') do %>
-  <div class="form-row">
-    <div class="col-auto mr-2">
-      <%= label_tag 'quarter', 'Stichtag' %><br/>
-      <%= select_tag(:quarter, grouped_options_for_select(@quarters, params[:quarter] || @quarters.first)) %><br/>
-      <%= check_box_tag 'year_end', 1, params[:year_end].eql?('1') %> Abschlussrangliste
+  </h1>
+  <%= form_tag(listings_path, method: 'get', class: 'mb-4') do %>
+  <div class="field is-horizontal">
+    <div class="control">
+    <%= label_tag 'quarter', 'Stichtag', class: 'label is-small' %>
+      <div class="select is-small">
+        <%= select_tag(:quarter, grouped_options_for_select(@quarters, params[:quarter] || @quarters.first)) %>
+      </div><br>
+      <label class="checkbox is-small">
+        <%= check_box_tag 'year_end', 1, params[:year_end].eql?('1') %> Abschlussrangliste
+      </label>
     </div>
-    <div class="col-auto mr-2">
-      <%= label_tag 'gender', 'Geschlecht' %><br/>
-      <%= select_tag(:gender, options_for_select(['Junioren', 'Juniorinnen'], params[:gender] || 'Junioren' )) %>
+    <div class="control mr-2">
+      <%= label_tag 'gender', 'Geschlecht', class: 'label is-small' %>
+      <div class="select is-small">
+        <%= select_tag(:gender, options_for_select(['Junioren', 'Juniorinnen'], params[:gender] || 'Junioren' )) %>
+      </div>
     </div>
-    <div class="col-auto mr-2">
-      <%= label_tag 'age-group', 'Altersklasse' %><br/>
-      <%= select_tag(:age_group, options_for_select(['U11', 'U12', 'U13', 'U14', 'U15', 'U16', 'U17', 'U18'], params[:age_group] || '' ), include_blank: true) %>
+    <div class="control mr-2">
+      <%= label_tag 'age-group', 'Altersklasse', class: 'label is-small' %>
+      <div class="select is-small">
+        <%= select_tag(:age_group, options_for_select(['U11', 'U12', 'U13', 'U14', 'U15', 'U16', 'U17', 'U18'], params[:age_group] || '' ), include_blank: true) %>
+      </div>
     </div>
-    <div class="col-auto mr-2">
-      <%= label_tag 'age_group_options', 'Extras' %><br/>
-      <%= select_tag(:age_group_options, options_for_select([['nur Geburtsjahrgang', 'only_yob'], ['auch Jüngere einbeziehen', 'include_younger']], params[:age_group_options] || ''), include_blank: true) %>
+    <div class="control mr-2">
+      <%= label_tag 'age_group_options', 'Extras', class: 'label is-small' %>
+      <div class="select is-small">
+        <%= select_tag(:age_group_options, options_for_select([['nur Geburtsjahrgang', 'only_yob'], ['auch Jüngere einbeziehen', 'include_younger']], params[:age_group_options] || ''), include_blank: true) %>
+      </div>
     </div>
-    <div class="col-auto mr-2">
-      <%= label_tag 'federation', 'Verband' %><br/>
-      <%= select_tag(:federation, options_for_select(@federations, params[:federation] || ''), include_blank: true) %>
+    <div class="coontrol mr-2">
+      <%= label_tag 'federation', 'Verband', class: 'label is-small' %>
+      <div class="select is-small">
+        <%= select_tag(:federation, options_for_select(@federations, params[:federation] || ''), include_blank: true) %>
+      </div>
     </div>
-    <div class="col-auto mr-2">
-      <%= label_tag 'club', 'Verein' %><br/>
-      <%= search_field_tag 'club', params[:club], class: 'form-control', size: '10', placeholder: 'Verein' %>
+    <div class="control is-expanded mr-2">
+      <%= label_tag 'club', 'Verein', class: 'label is-small' %>
+      <%= search_field_tag 'club', params[:club], class: 'input is-small', size: '10', placeholder: 'Verein' %>
     </div>
-    <div class="col-auto ml-2 mr-2">
-    <%= label_tag 'submit', '_', class: 'text-white' %><br/>
-    <%= submit_tag 'Liste abrufen', class: 'btn btn-info mb-2' %>
+    <div class="control ml-2 mr-2">
+    <%= label_tag 'submit', '_', class: 'has-text-white label is-small' %>
+    <%= submit_tag 'Liste abrufen', class: 'button is-link is-small mb-2 is-info' %>
     </div>
   <% end %>
 </div>

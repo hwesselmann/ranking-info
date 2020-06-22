@@ -1,56 +1,55 @@
 <% provide(:title, "Status") %>
 <% provide(:meta_content, "Informationen zu den im System verfügbaren Datenständen") %>
 <div class="container">
-  <p class="h2 text-left mt-3 mb-0">
+  <h1 class="title is-3 has-text-left mb-3 mt-3">
     Status & Datenbestand
-  </p>
-  <span class="small text-muted">letztes Update: <%= @date_last_updated %></span>
-  <p class="h5 text-left mt-3">
+  </h1>
+  <div class="subtitle is-6 pt-1 pl-1">
+    <small>letztes Update: <%= @date_last_updated %></small>
+  </div>
+  <h5 class="title is-5 has-text-left mt-3">
     Anzahl Datensätze im System
-  </p>
-  <div class="container">
-    <div class="row justify-content-md-center text-white bg-dark font-weight-bold p-2">
-      <div class="col-4 col-md-4 center">Spielerinnen</div>
-      <div class="col-4 col-md-4 center">Spieler</div>
-      <div class="col-4 col-md-4 center">Einzelrankings</div>
-    </div>
-    <div class="row justify-content-md-center mb-3 p-2">
-      <div class="col-4 col-md-4 center"><%= @player_female_count %></div>
-      <div class="col-4 col-md-4 center"><%= @player_male_count %></div>
-      <div class="col-4 col-md-4 center"><%= @ranking_count %></div>
-    </div>
+  </h5>
+  <div class="columns has-background-dark has-text-light has-text-weight-bold">
+      <div class="column is-4 center">Spielerinnen</div>
+      <div class="column is-4 center">Spieler</div>
+      <div class="column is-4 center">Einzelrankings</div>
+  </div>
+  <div class="columns">
+    <div class="column is-4 center"><%= @player_female_count %></div>
+    <div class="column is-4 center"><%= @player_male_count %></div>
+    <div class="column is-4 center"><%= @ranking_count %></div>
   </div>
 
-  <p class="h5 text-left mt-3">
+  <h5 class="title is-5 text-left mt-3">
     Verfügbare Quartale
-    <span class="text-muted">
-      <small><i>
-        <br/>
+  </h5>
+  <div class="subtitle is-6">
+    <small> 
+      <i>
         * Stichtag 31.12.
         ** Stichtag 31.03.
         *** Stichtag 30.06.
         **** Stichtag 30.09.
-      </i></small>
-    </span>
-  </p>
-  <div class="container mb-3">
-    <div class="row justify-content-md-center text-white bg-dark font-weight-bold p-2">
-      <div class="col-4 col-md-4 center">Jahr</div>
-      <div class="col-2 col-md-2 center">Q1*</div>
-      <div class="col-2 col-md-2 center">Q2**</div>
-      <div class="col-2 col-md-2 center">Q3***</div>
-      <div class="col-2 col-md-2 center">Q4****</div>
-    </div>
-    <% if @available_quarters.size.positive? %>
-      <% @available_quarters.each do |y, q| %>
-        <div class="row <%= 'striped' unless y.to_i.even? %> justify-content-md-center p-2">
-          <div class="col-4 col-md-4 center"><%= y.to_s %></div>
-          <div class="col-2 col-md-2 center"><% if q.include? '01.01.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
-          <div class="col-2 col-md-2 center"><% if q.include? '01.04.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
-          <div class="col-2 col-md-2 center"><% if q.include? '01.07.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
-          <div class="col-2 col-md-2 center"><% if q.include? '01.10.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
-        </div>
-      <% end %>
-    <% end %>
+      </i>
+    </small>
   </div>
+  <div class="columns has-background-dark has-text-light has-text-weight-bold mt-3">    
+    <div class="column is-4 center">Jahr</div>
+    <div class="column is-2 center">Q1*</div>
+    <div class="column is-2 center">Q2**</div>
+    <div class="column is-2 center">Q3***</div>
+    <div class="column is-2 center">Q4****</div>
+  </div>
+  <% if @available_quarters.size.positive? %>
+    <% @available_quarters.each do |y, q| %>
+      <div class="columns <%= 'striped' unless y.to_i.even? %>">
+        <div class="column is-4 center"><%= y.to_s %></div>
+        <div class="column is-2 center"><% if q.include? '01.01.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
+        <div class="column is-2 center"><% if q.include? '01.04.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
+        <div class="column is-2 center"><% if q.include? '01.07.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
+        <div class="column is-2 center"><% if q.include? '01.10.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %></div>
+      </div>
+    <% end %>
+  <% end %>
 </div>

@@ -1,27 +1,27 @@
-<span class="h6"><br/>Verfügbare Daten</span>
-<div class="container mt-1">
-  <div class="row justify-content-md-center border border-dark text-white bg-dark font-weight-bold p-1">
-    <div class="col-4 col-md-4">Jahr</div>
-    <div class="col-2 col-md-2">Q1</div>
-    <div class="col-2 col-md-2">Q2</div>
-    <div class="col-2 col-md-2">Q3</div>
-    <div class="col-2 col-md-2">Q4</div>
+<span class="title is-6"><br/>Verfügbare Daten</span>
+<div class="container mt-3">
+  <div class="columns has-text-white has-background-dark has-text-weight-bold">
+    <div class="column is-4">Jahr</div>
+    <div class="column is-2">Q1</div>
+    <div class="column is-2">Q2</div>
+    <div class="column is-2">Q3</div>
+    <div class="column is-2">Q4</div>
   </div>
   <% @available_quarters.each do |y, q| %>
-    <div class="row border-bottom p-1">
-      <div class="col-4 col-md-4">
+    <div class="columns">
+      <div class="column is-4">
         <%= y.to_s %>
       </div>
-      <div class="col-2 col-md-2">
+      <div class="column is-2">
         <% if q.include? '01.01.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %>
       </div>
-      <div class="col-2 col-md-2">
+      <div class="column is-2">
         <% if q.include? '01.04.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %>
       </div>
-      <div class="col-2 col-md-2">
+      <div class="column is-2">
         <% if q.include? '01.07.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %>
       </div>
-      <div class="col-2 col-md-2 center">
+      <div class="column is-2">
         <% if q.include? '01.10.' %><span class="ri-icon-green"><i class="fas fa-check-circle"></i></span><% end %>
       </div>
     </div>
