@@ -1,8 +1,9 @@
-<div class="card" style="width: 100%;">
-  <div class="card-body">
-    <h5 class="card-title">Spielersuche</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Der direkte Weg zum Spielerprofil</h6>
-    <p class="card-text">
+<div class="card">
+  <header class="card-header">
+    <span class="card-header-title">Spielersuche</span>
+  </header>
+  <div class="card-content">
+    <h6 class="subtitle is-6 mb-2">Der direkte Weg zum Spielerprofil</h6>
       Über die Spielersuche kann gezielt nach einer Spielerin oder einem Spieler gesucht werden.
       Wenn Sie keine Suchkriterien angeben und auf 'suchen' klicken, erhalten Sie alle Spieler,
       die im System vorhanden sind - diese Liste kann allerdings ziemlich lang sein.
@@ -12,10 +13,10 @@
       gesucht. Die Suche nach Nachname und Geburtsjahr sind kombinierbar.
       <br/><br/>
       Filterbare Ranglisten und Informationen zu den im System verfügbaren Datenständen sind ebenfalls abrufbar:
-    </p>
-    <%= link_to "Ranglisten", listings_path, class: 'card-link text-info' %>
-    <%= link_to "Vereinsuche", clubs_path, class: 'card-link text-info' %>
-    <%= link_to "Verbandsstatistik", federations_path, class: 'card-link text-info' %>
-    <%= link_to "Informationen zu verfügbaren Daten", status_path, class: 'card-link text-info' %>
   </div>
+  <footer class="card-footer">
+    <%= link_to "Ranglisten", listings_path, class: 'card-footer-item has-text-info' %>
+    <%= link_to "Vereinsuche", clubs_path, class: 'card-footer-item has-text-info' %>
+    <%= link_to "Verbandsstatistik", federations_path, class: 'card-footer-item has-text-info' %>
+  </footer>
 </div>

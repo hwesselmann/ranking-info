@@ -5,18 +5,19 @@
     Spielersuche
   </h1>
   <%= form_tag(players_path, method: 'get', class: 'mb-3') do %>
-  <div class="form-row">
-    <div class="col-auto">
-    <%= search_field_tag 'dtb_id', params[:dtb_id], class: 'form-control mb-2 mr-sm-3', placeholder: 'DTB-ID' %>
-    </div>
-    <div class="col-auto">
-    <%= search_field_tag 'lastname', params[:lastname], class: 'form-control mb-2 mr-sm-3', placeholder: 'Nachname' %>
-    </div>
-    <div class="col-auto">
-    <%= search_field_tag 'yob', params[:yob], class: 'form-control mb-2 mr-sm-3', placeholder: 'Geburtsjahr' %>
-    </div>
-    <div class="col-auto">
-    <%= submit_tag 'suchen', class: 'btn btn-info mb-2' %>
+    <div class="field is-horizontal">
+      <div class="control mr-2">
+        <%= search_field_tag 'dtb_id', params[:dtb_id], class: 'input is-small mb-2', placeholder: 'DTB-ID' %>
+      </div>
+      <div class="control mr-2">
+        <%= search_field_tag 'lastname', params[:lastname], class: 'input is-small mb-2', placeholder: 'Nachname' %>
+      </div>
+      <div class="control mr-2">
+        <%= search_field_tag 'yob', params[:yob], class: 'input is-small mb-2', placeholder: 'Geburtsjahr' %>
+      </div>
+      <div class="control mr-2">
+        <%= submit_tag 'suchen', class: 'button is-link is-small mb-2 is-info' %>
+      </div>
     </div>
   <% end %>
 </div>

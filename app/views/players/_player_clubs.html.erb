@@ -1,16 +1,16 @@
-<span class="h6"><br/>Bisherige Vereine</span>
-<div class="container mt-1">
-  <div class="row justify-content-md-center border border-dark text-white bg-dark font-weight-bold p-1">
-    <div class="col col-md-3">Verein</div>
+<span class="title is-6"><br/>Bisherige Vereine</span>
+<div class="container mt-3">
+  <div class="columns has-text-white has-background-dark has-text-weight-bold">
+    <div class="column">Verein</div>
   </div>
-  <div class="row bg-info font-weight-bold text-white p-1">
-    <div class="col">
+  <div class="columns has-background-info-light has-text-weight-bold">
+    <div class="column">
       <%= @player.club %> / <%= @player.federation %>
     </div>
   </div>
   <% @player.clubs.each do |curr_club| %>
-    <div class="row p-1">
-      <div class="col">
+    <div class="columns">
+      <div class="column">
         <%= curr_club.club %> / <%= curr_club.federation %>
       </div>
     </div>

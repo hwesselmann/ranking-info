@@ -1,6 +1,6 @@
-<div class="table-responsive mb-3">
-  <table class="table table-striped">
-    <thead class="thead-dark">
+<div class="table-container mb-3">
+  <table class="table is-striped is-fullwidth">
+    <thead>
       <tr>
         <th>DTB-ID</th>
         <th>Nachname, Vorname</th>
@@ -12,10 +12,10 @@
     <tbody>
       <% @players.each do |player| %>
         <tr>
-          <td><%= link_to player.dtb_id, player_path(player.dtb_id), class: 'text-info' %></td>
+          <td><%= link_to player.dtb_id, player_path(player.dtb_id), class: 'has-text-info' %></td>
           <td><%= player.lastname %>, <%= player.firstname %></td>
           <td class="center"><%= image_pack_tag("#{player.nationality.downcase}.svg", width: "30") %></td>
-          <td><%= link_to player.club, club_path(player.club), class: 'text-info' %></td>
+          <td><%= link_to player.club, club_path(player.club), class: 'has-text-info' %></td>
           <td class="center"><%= player.federation %></td>
         </tr>
       <% end %>
