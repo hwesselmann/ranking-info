@@ -1,52 +1,48 @@
 <% provide(:title, 'Verbandsdaten') %>
 <% provide(:meta_content, "Statistik zu den Spielern und Spielerinnen auf der aktuellen Deutschen Tennis-Jugendrangliste nach Altersgruppe und Landesverband.") %>
 <div class="container">
-  <p class="h2 text-left mt-3 mb-3">
+  <h1 class="title is-4 has-text-left mb-3 mt-3">
    Daten zu den Landesverbänden
-  </p>
+  </h1>
   <p>
     Hier finden Sie Daten, wie viele Spielerinnen und Spieler 
     der DTB Landesverbände nach Altersklasse in der aktuellen Periode
     auf der Rangliste geführt sind.
   </p>
 
-  <div class="table-responsive">
-    <table class="table table-sm table-striped">
-      <thead class="thead-dark">
-        <tr>
-          <th>Verband</th>
-          <th colspan="2" class="center">U12</th>
-          <th colspan="2" class="center">U14</th>
-          <th colspan="2" class="center">U16</th>
-          <th colspan="2" class="center">U18</th>
+  <div class="table-container mt-3 mb-3">
+    <table class="table is-striped is-fullwidth">
+      <tr class="has-background-dark has-text-light has-text-weight-bold">
+        <td>Verband</td>
+        <td colspan="2" class="center">U12</td>
+        <td colspan="2" class="center">U14</td>
+        <td colspan="2" class="center">U16</td>
+        <td colspan="2" class="center">U18</td>
+      </tr>
+      <tr class="table-info">
+        <td></td>
+        <td class="center border-left"><i class="fas fa-mars"></i></td>
+        <td class="center border-right"><i class="fas fa-venus"></i></td>
+        <td class="center"><i class="fas fa-mars"></i></td>
+        <td class="center border-right"><i class="fas fa-venus"></i></td>
+        <td class="center"><i class="fas fa-mars"></i></td>
+        <td class="center border-right"><i class="fas fa-venus"></i></td>
+        <td class="center"><i class="fas fa-mars"></i></td>
+        <td class="center border-right"><i class="fas fa-venus"></i></td>
+      </tr>
+      <% @federations.each do |key, fed| %>
+        <tr class=border-bottom>
+          <td class="border-left"><%= federation_long_name(key) %></td>
+          <td class="center"><%= fed['U12m'] || 0 %></td>
+          <td class="center border-right"><%= fed['U12w'] || 0 %></td>
+          <td class="center"><%= fed['U14m'] || 0 %></td>
+          <td class="center border-right"><%= fed['U14w'] || 0 %></td>
+          <td class="center"><%= fed['U16m'] || 0 %></td>
+          <td class="center border-right"><%= fed['U16w'] || 0 %></td>
+          <td class="center"><%= fed['U18m'] || 0 %></td>
+          <td class="center border-right"><%= fed['U18w'] || 0 %></td>
         </tr>
-      </thead>
-      <tbody>
-        <tr class="table-info">
-          <td></td>
-          <td class="center border-left"><i class="fas fa-mars"></i></td>
-          <td class="center border-right"><i class="fas fa-venus"></i></td>
-          <td class="center"><i class="fas fa-mars"></i></td>
-          <td class="center border-right"><i class="fas fa-venus"></i></td>
-          <td class="center"><i class="fas fa-mars"></i></td>
-          <td class="center border-right"><i class="fas fa-venus"></i></td>
-          <td class="center"><i class="fas fa-mars"></i></td>
-          <td class="center border-right"><i class="fas fa-venus"></i></td>
-        </tr>
-        <% @federations.each do |key, fed| %>
-          <tr class=border-bottom>
-            <td class="border-left"><%= federation_long_name(key) %></td>
-            <td class="center"><%= fed['U12m'] || 0 %></td>
-            <td class="center border-right"><%= fed['U12w'] || 0 %></td>
-            <td class="center"><%= fed['U14m'] || 0 %></td>
-            <td class="center border-right"><%= fed['U14w'] || 0 %></td>
-            <td class="center"><%= fed['U16m'] || 0 %></td>
-            <td class="center border-right"><%= fed['U16w'] || 0 %></td>
-            <td class="center"><%= fed['U18m'] || 0 %></td>
-            <td class="center border-right"><%= fed['U18w'] || 0 %></td>
-          </tr>
-        <% end %>
-      </tbody>
+      <% end %>
     </table>
   </div>
 </div>
