@@ -1,6 +1,6 @@
 <span class="title is-6"><br/>Gesamtverlauf Jugend</span>
 <div class="container mt-3">
-  <div class="columns has-text-white has-background-dark has-text-weight-bold">
+  <div class="columns is-mobile has-text-white has-background-dark has-text-weight-bold">
     <div class="column is-2"><i class="far fa-calendar-alt"></i></div>
     <div class="column is-2"><i class="fas fa-poll"></i></div>
     <div class="column is-1">U11</div>
@@ -13,7 +13,7 @@
     <div class="column is-1">U18</div>
   </div>
   <% @complete_rankings.each_with_index do |ran, index| %>
-    <div class="columns <%= 'striped' unless index.even? %>">
+    <div class="columns is-mobile <%= 'striped' unless index.even? %>">
       <div class="column is-2"><%= ran['year'] %>/<%= ran['quarter'] %></div>
       <div class="column is-2"><%= ran['score'] %></div>
       <div class="column is-1"><%= ran['U11'] %></div>

@@ -5,7 +5,7 @@
    Spielerprofil
   </h1>
 <div class="container">
-  <div class="columns">
+  <div class="columns is-mobile">
     <div class="column is-6">
       <%= image_pack_tag("#{@player.nationality.downcase}.svg", width: "35") %>
       <span class="title is-4"><%= @player.firstname %> <%= @player.lastname %></span>

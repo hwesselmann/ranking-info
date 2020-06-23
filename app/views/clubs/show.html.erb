@@ -5,18 +5,18 @@
    Spieler aus dem Verein <i><%= params[:id] %></i>
   </h1>
   <p>Hier finden Sie alle Spieler aus diesem Verein, die in der aktuellen Periode auf der Rangliste geführt sind.</p>
-  <div class="columns mt-3 has-background-dark has-text-light has-text-weight-bold">
+  <div class="columns is-mobile mt-3 has-background-dark has-text-light has-text-weight-bold">
     <div class="column is-3">DTB-ID</div>
     <div class="column is-5">Name</div>
     <div class="column is-2">Position</div>
     <div class="column is-2">Punkte</div>
   </div>
     <% @players.each do |key, players| %>
-      <div class="columns has-text-white has-background-info">
+      <div class="columns is-mobile has-text-white has-background-info">
         <div class="column is-12 has-text-weight-bold"><%= key %></div>
       </div>
       <% players.each do |item| %>
-        <div class="columns">
+        <div class="columns is-mobile">
           <div class="column is-3"><%= link_to item[:dtb_id], player_path(item[:dtb_id]), class: 'has-text-info' %></div>
           <div class="column is-5"><%= item[:lastname] %>, <%= item[:firstname] %></div>
           <div class="column is-2"><%= item[:rank] %></div>

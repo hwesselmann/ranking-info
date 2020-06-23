@@ -1,15 +1,15 @@
 <span class="title is-6"><br/>Bisherige Vereine</span>
 <div class="container mt-3">
-  <div class="columns has-text-white has-background-dark has-text-weight-bold">
+  <div class="columns is-mobile has-text-white has-background-dark has-text-weight-bold">
     <div class="column">Verein</div>
   </div>
-  <div class="columns has-background-info-light has-text-weight-bold">
+  <div class="columns is-mobile has-background-info-light has-text-weight-bold">
     <div class="column">
       <%= @player.club %> / <%= @player.federation %>
     </div>
   </div>
   <% @player.clubs.each do |curr_club| %>
-    <div class="columns">
+    <div class="columns is-mobile">
       <div class="column">
         <%= curr_club.club %> / <%= curr_club.federation %>
       </div>
