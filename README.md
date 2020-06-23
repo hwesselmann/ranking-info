@@ -1,9 +1,10 @@
-## ranking-info  
+# ranking-info  
+
 ![Main](https://github.com/hwesselmann/ranking-info/workflows/Test/badge.svg) [![Test Coverage](https://api.codeclimate.com/v1/badges/bdc191d3fb1a692f0603/test_coverage)](https://codeclimate.com/github/hwesselmann/ranking-info/test_coverage) [![Maintainability](https://api.codeclimate.com/v1/badges/bdc191d3fb1a692f0603/maintainability)](https://codeclimate.com/github/hwesselmann/ranking-info/maintainability)
 
 This is a small web-application aiming at providing accessible information on the German national tennis youth rankings.
 
-### Prerequisites  
+## Prerequisites  
 
 This application is developed using
 
@@ -13,9 +14,9 @@ This application is developed using
 * bundler package manager (for rubygems)
 * Yarn package manager (for web assets)
 
-### Setup  
+## Setup  
 
-To setup a developement environment, run the following steps before starting _rails server_   
+To setup a developement environment, run the following steps before starting _rails server_  
 
 > \# run database migrations  
 > rake db:migrate  
@@ -26,13 +27,13 @@ To setup a developement environment, run the following steps before starting _ra
 
 Now everything is ready for starting a development server!
 
-### Tests
+## Tests
 
 To run the test suites, run __rake test__  
 
 The project also includes guard and an guard configuration. To start guard and run tests automatically on code changes, simply open a terminal and start __guard__ while in the project folder.
 
-### Import file format  
+## Import file format  
 
 To import data in the system, you need to create a csv file from the official ranking list pdf using a tool like
 tabula. The file needs to be in the format  
@@ -42,7 +43,7 @@ tabula. The file needs to be in the format
 which is the standard order and format tabula (which I am using) is retrieving by default.
 An example file can be found in _test/fixtures/files_
 
-### Importing data / login credentials  
+## Importing data / login credentials  
 
 The system has an easy mechanism to upload csv-files for importing into the database. Access to this funtionality is, however, restricted. In order to use it, you need to add a user into the database manually - there is no way of editing this on the ui:
 
@@ -52,16 +53,16 @@ The system has an easy mechanism to upload csv-files for importing into the data
 
 The password cannot be empty and should be at least 6 characters!
 
-### Deploy  
+## Deploy  
 
-#### Docker
+### Docker
 
 The project includes a Dockerfile and a docker-compose configuration to run a production environment. To start the stack, you need adapt docker-compose.yml to fit your needs, build the image and run `DATABASE_PASSWORD=your_password docker-compose up` to set a password for the postgresql container and the application. Next you need to run the database migrations and add an admin user (see above).  
 The docker image is rather big at the moment due to some build dependencies for required gems (~ 1.3GB).
 
 After starting the stack, you can access the application by calling `http://127.0.0.1:3000` in a browser.
 
-#### Standalone
+### Standalone
 
 If you want to deploy the application standalone, you need to set some environment variables in order to fill required
 information for the imprint on the about page. You can also hardcode the values in config/config.yml.
@@ -72,4 +73,4 @@ information for the imprint on the about page. You can also hardcode the values 
 * IMPRINT_ZIPCODE - zip code for imprint
 * IMPRINT_CITY - city for imprint
 * IMPRINT_PHONE - phone number for imprint
-* IMPRINT_MAIL - email address for imprint
+* IMPRINT_MAIL - email address for imprint  
