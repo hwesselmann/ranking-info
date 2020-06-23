@@ -1,46 +1,43 @@
 <% provide(:title, "Spielerprofil #{@player.firstname} #{@player.lastname}") %>
 <% provide(:meta_content, "Spielerprofil mit Ranglistenverlauf für #{@player.firstname} #{@player.lastname}") %>
-<div class="container">
-  <h1 class="title is-3 has-text-left mb-3 mt-3">
-   Spielerprofil
-  </h1>
-<div class="container">
-  <div class="columns is-mobile">
-    <div class="column is-6">
-      <%= image_pack_tag("#{@player.nationality.downcase}.svg", width: "35") %>
-      <span class="title is-4"><%= @player.firstname %> <%= @player.lastname %></span>
-      <br/><small>DTB-ID <i><%= @player.dtb_id %></i></small>
-    </div>
-    <div class="column is-6 has-text-right">
-      <b><%= link_to @player.club, club_path(@player.club), class: 'has-text-info' %></b> / <i><%= @player.federation %></i>
-    </div>
+<h1 class="title is-3 has-text-left mb-3 mt-3">
+  Spielerprofil
+</h1>
+<div class="columns is-mobile">
+  <div class="column is-6">
+    <%= image_pack_tag("#{@player.nationality.downcase}.svg", width: "35") %>
+    <span class="title is-4"><%= @player.firstname %> <%= @player.lastname %></span>
+    <br/><small>DTB-ID <i><%= @player.dtb_id %></i></small>
   </div>
-  <div class="columns">
-    <div class="column is-6">
-      <%= render 'player_current_ranking' %>
-    </div>
-    <div class="column is-6">
-      <%= render 'player_chart_current' %>
-    </div>
+  <div class="column is-6 has-text-right">
+    <b><%= link_to @player.club, club_path(@player.club), class: 'has-text-info' %></b> / <i><%= @player.federation %></i>
   </div>
-  <div class="columns">
-    <div class="column is-6">
-      <%= render 'player_chart_current_score' %>
-    </div>
-    <div class="column is-6">
-      <%= render 'player_clubs' %>
-      <%= render 'player_available_data' %>
-    </div>
+</div>
+<div class="columns">
+  <div class="column is-6">
+    <%= render 'player_current_ranking' %>
   </div>
-  <div class="column">
-    <div class="column is-12">
-      <%= render 'player_chart_complete' %>
-      <%= render 'player_chart_complete_score' %>
-    </div>
+  <div class="column is-6">
+    <%= render 'player_chart_current' %>
   </div>
-  <div class="column mb-3">
-    <div class="column is-12">
-      <%= render 'player_complete_rankings_youth' %>
-    </div>
+</div>
+<div class="columns">
+  <div class="column is-6">
+    <%= render 'player_chart_current_score' %>
+  </div>
+  <div class="column is-6">
+    <%= render 'player_clubs' %>
+    <%= render 'player_available_data' %>
+  </div>
+</div>
+<div class="column">
+  <div class="column is-12">
+    <%= render 'player_chart_complete' %>
+    <%= render 'player_chart_complete_score' %>
+  </div>
+</div>
+<div class="column mb-3">
+  <div class="column is-12">
+    <%= render 'player_complete_rankings_youth' %>
   </div>
 </div>

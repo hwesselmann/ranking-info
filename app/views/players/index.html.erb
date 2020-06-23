@@ -1,26 +1,24 @@
 <% provide(:title, 'Spielersuche') %>
 <% provide(:meta_content, "Suchen von Spielern, die im verfügbaren Datenbestand eine Platzierung auf der Deutschen Tennis-Jugendrangliste hatten.") %>
-<div class="container">
-  <h1 class="title is-4 has-text-left mb-3 mt-3">
-    Spielersuche
-  </h1>
-  <%= form_tag(players_path, method: 'get', class: 'mb-3') do %>
-    <div class="field is-horizontal">
-      <div class="control mr-2">
-        <%= search_field_tag 'dtb_id', params[:dtb_id], class: 'input is-small mb-2', placeholder: 'DTB-ID' %>
-      </div>
-      <div class="control mr-2">
-        <%= search_field_tag 'lastname', params[:lastname], class: 'input is-small mb-2', placeholder: 'Nachname' %>
-      </div>
-      <div class="control mr-2">
-        <%= search_field_tag 'yob', params[:yob], class: 'input is-small mb-2', placeholder: 'Geburtsjahr' %>
-      </div>
-      <div class="control mr-2">
-        <%= submit_tag 'suchen', class: 'button is-link is-small mb-2 is-info' %>
-      </div>
+<h1 class="title is-3 has-text-left mb-3 mt-3">
+  Spielersuche
+</h1>
+<%= form_tag(players_path, method: 'get', class: 'mb-3') do %>
+  <div class="field is-horizontal">
+    <div class="control mr-2">
+      <%= search_field_tag 'dtb_id', params[:dtb_id], class: 'input is-small mb-2', placeholder: 'DTB-ID' %>
     </div>
-  <% end %>
-</div>
+    <div class="control mr-2">
+      <%= search_field_tag 'lastname', params[:lastname], class: 'input is-small mb-2', placeholder: 'Nachname' %>
+    </div>
+    <div class="control mr-2">
+      <%= search_field_tag 'yob', params[:yob], class: 'input is-small mb-2', placeholder: 'Geburtsjahr' %>
+    </div>
+    <div class="control mr-2">
+      <%= submit_tag 'suchen', class: 'button is-link is-small mb-2 is-info' %>
+    </div>
+  </div>
+<% end %>
 <% if @players.present? %>
    <%= render 'player_result_list' %>
 <% else %>

@@ -1,6 +1,5 @@
 <% provide(:meta_content, "Ranglisteninformationen - Der Anlaufpunkt zur Deutschen Tennis-Jugendrangliste") %>
-<div class="container">
-  <section class="hero">
+<section class="hero">
   <div class="hero-body">
     <div class="container">
       <h1 class="title">Willkommen bei Ranking-Info</h1>
@@ -8,27 +7,26 @@
     </div>
   </div>
 </section>
-  <div class="card">
-    <header class="card-header">
-      <span class="card-header-title">Ranglisteninformationen</span>
-    </header>
-    <div class="card-content">
-      Hier finden Sie eine filterbare Version der Deutschen Jugendranglisten. Die Daten werden manuell auf
-      Basis der offiziellen Listen des Deutschen Tennisbundes eingepflegt.<br/>
-      Der Vorteil zu den offiziellen Listen? Es ist nicht nur das aktuelle Quartal und die Liste zum 
-      Jahresabschluss verfügbar, es sind alle importierten Daten seit dem <%= @start %> enthalten!
-      <br/><br/>
-      Wie steht ein Spieler insgesamt da? Wie in seinem Geburtsjahrgang? Wie war die Entwicklung in den letzten Quartalen?
-      Wo stehe ich in meinem Jahrgang in meinem Verband?<br/>
-      Diese Fragen möchte <i>Ranking-Info</i> beantworten.
-      <br/><br/>
-      Viel Spaß beim Stöbern!
-    </div>
-    <footer class="card-footer">
-      <%= link_to "Spielersuche", players_path, class: 'card-footer-item' %>
-      <%= link_to "Ranglisten", listings_path, class: 'card-footer-item' %>
-      <%= link_to "Vereinsuche", clubs_path, class: 'card-footer-item' %>
-      <%= link_to "Verbandsstatistik", federations_path, class: 'card-footer-item' %>
-    </footer>
+<div class="card">
+  <header class="card-header">
+    <span class="card-header-title">Ranglisteninformationen</span>
+  </header>
+  <div class="card-content">
+    Hier finden Sie eine filterbare Version der Deutschen Jugendranglisten. Die Daten werden manuell auf
+    Basis der offiziellen Listen des Deutschen Tennisbundes eingepflegt.<br/>
+    Der Vorteil zu den offiziellen Listen? Es ist nicht nur das aktuelle Quartal und die Liste zum 
+    Jahresabschluss verfügbar, es sind alle importierten Daten seit dem <%= @start %> enthalten!
+    <br/><br/>
+    Wie steht ein Spieler insgesamt da? Wie in seinem Geburtsjahrgang? Wie war die Entwicklung in den letzten Quartalen?
+    Wo stehe ich in meinem Jahrgang in meinem Verband?<br/>
+    Diese Fragen möchte <i>Ranking-Info</i> beantworten.
+    <br/><br/>
+    Viel Spaß beim Stöbern!
   </div>
+  <footer class="card-footer">
+    <%= link_to "Spielersuche", players_path, class: 'card-footer-item' %>
+    <%= link_to "Ranglisten", listings_path, class: 'card-footer-item' %>
+    <%= link_to "Vereinsuche", clubs_path, class: 'card-footer-item' %>
+    <%= link_to "Verbandsstatistik", federations_path, class: 'card-footer-item' %>
+  </footer>
 </div>
