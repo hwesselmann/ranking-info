@@ -8,7 +8,7 @@ This is a small web-application aiming at providing accessible information on th
 This application is developed using
 
 * Ruby 2.6.6
-* Rails 6.0.2.2
+* Rails 6.0.3.1
 * SQLite3 (for development and test)
 * bundler package manager (for rubygems)
 * Yarn package manager (for web assets)
