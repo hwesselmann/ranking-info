@@ -4,9 +4,9 @@
       <tr>
         <th>DTB-ID</th>
         <th>Nachname, Vorname</th>
-        <th class="center">Nationalität</th>
+        <th class="center is-hidden-mobile">Nationalität</th>
         <th>Verein</th>
-        <th class="center">Verband</th>
+        <th class="center is-hidden-mobile">Verband</th>
       </tr>
     </thead>
     <tbody>
@@ -14,9 +14,9 @@
         <tr>
           <td><%= link_to player.dtb_id, player_path(player.dtb_id), class: 'has-text-info' %></td>
           <td><%= player.lastname %>, <%= player.firstname %></td>
-          <td class="center"><%= image_pack_tag("#{player.nationality.downcase}.svg", width: "30") %></td>
+          <td class="center is-hidden-mobile"><%= image_pack_tag("#{player.nationality.downcase}.svg", width: "30") %></td>
           <td><%= link_to player.club, club_path(player.club), class: 'has-text-info' %></td>
-          <td class="center"><%= player.federation %></td>
+          <td class="center is-hidden-mobile"><%= player.federation %></td>
         </tr>
       <% end %>
     </tbody>

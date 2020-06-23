@@ -2,26 +2,26 @@
   <table class="table is-striped is-fullwidth">
     <thead>
       <tr>
-        <th class="center">#</th>
+        <th class="center is-hidden-mobile">#</th>
         <th class="center">Rang</th>
         <th>Nachname, Vorname</th>
         <th class="center">DTB-ID</th>
-        <th class="center">Nationalität</th>
-        <th>Verein</th>
-        <th>Verband</th>
+        <th class="center is-hidden-mobile">Nationalität</th>
+        <th class="is-hidden-mobile">Verein</th>
+        <th class="is-hidden-mobile">Verband</th>
         <th>Punkte</th>
       </tr>
     </thead>
     <tbody>
       <% @rankings.each_with_index do |ranking, index| %>
         <tr>
-          <td class="center"><%= index + 1 %></td>
+          <td class="center is-hidden-mobile"><%= index + 1 %></td>
           <td class="center"><%= ranking.ranking_position %></td>
           <td><%= ranking.player.lastname %>, <%= ranking.player.firstname %></td>
           <td class="center"><%= link_to ranking.dtb_id, player_path(ranking.dtb_id), class: 'has-text-info' %></td>
-          <td class="center"><%= image_pack_tag("#{ranking.player.nationality.downcase}.svg", width: "30") %></td>
-          <td><%= link_to ranking.club, club_path(ranking.club), class: 'has-text-info' %></td>
-          <td><%= ranking.federation %></td>
+          <td class="center is-hidden-mobile"><%= image_pack_tag("#{ranking.player.nationality.downcase}.svg", width: "30") %></td>
+          <td class="is-hidden-mobile"><%= link_to ranking.club, club_path(ranking.club), class: 'has-text-info' %></td>
+          <td class="is-hidden-mobile"><%= ranking.federation %></td>
           <td><%= ranking.score %></td>
         </tr>
       <% end %>
