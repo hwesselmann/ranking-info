@@ -10,7 +10,6 @@ gem 'jbuilder', '~> 2.7'
 gem 'puma', '~> 4.3'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.1'
 gem 'sass-rails', '>= 6'
-gem 'turbolinks', '~> 5'
 gem 'webpacker', '~> 4.0'
 
 group :development, :test do
