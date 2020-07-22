@@ -14,6 +14,10 @@ This application is developed using
 * bundler package manager (for rubygems)
 * Yarn package manager (for web assets)
 
+<a href="https://bulma.io">
+  <img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="24">
+</a>
+
 ## Setup  
 
 To setup a developement environment, run the following steps before starting _rails server_  
@@ -73,4 +77,5 @@ information for the imprint on the about page. You can also hardcode the values 
 * IMPRINT_ZIPCODE - zip code for imprint
 * IMPRINT_CITY - city for imprint
 * IMPRINT_PHONE - phone number for imprint
-* IMPRINT_MAIL - email address for imprint  
+* IMPRINT_MAIL - email address for imprint 
+
