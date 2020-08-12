@@ -6,31 +6,35 @@
 class PlayersController < ApplicationController
   def index
     if params[:dtb_id] && !params[:dtb_id].eql?('')
-      dtb_id_start = fill_up_dtb_id(params[:dtb_id].to_i)
-      dtb_id_end = fill_up_dtb_id_end(params[:dtb_id].to_i)
+      search_dtb_id = params[:dtb_id].strip
+      dtb_id_start = fill_up_dtb_id(search_dtb_id.to_i)
+      dtb_id_end = fill_up_dtb_id_end(search_dtb_id.to_i)
       @players = Player.where("dtb_id >= #{dtb_id_start}
                               AND dtb_id <= #{dtb_id_end}")
       # should return exactly one match => redirect to profile
-      redirect_to action: 'show', id: params[:dtb_id] if @players.size == 1
+      redirect_to action: 'show', id: search_dtb_id if @players.size == 1
     elsif params[:lastname] && !params[:lastname].eql?('')
       # fuzzy!
+      s_lastname = params[:lastname].strip
       if params[:yob] && !params[:yob].eql?('')
         # fuzzy lastname in yob
-        yob_male = params[:yob][2, 4].to_i + 100
+        s_yob = params[:yob].strip
+        yob_male = s_yob[2, 4].to_i + 100
         yob_female = yob_male + 100
-        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{params[:lastname]}%')
+        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{s_lastname}%')
                                 AND ((dtb_id >= #{yob_male * 100_000}
                                 AND dtb_id <= #{yob_male * 100_000 + 99_999})
                                 OR (dtb_id>= #{yob_female * 100_000}
                                   AND dtb_id <= #{yob_female * 100_000 + 99_999}))")
                          .order(:lastname, :dtb_id)
       else
-        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{params[:lastname]}%')")
+        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{s_lastname}%')")
                          .order(:lastname, :dtb_id)
       end
       redirect_to action: 'show', id: @players[0].dtb_id if @players.size == 1
     elsif params[:yob] && !params[:yob].eql?('')
-      yob_male = params[:yob][2, 4].to_i + 100
+      s_yob = params[:yob].strip
+      yob_male = s_yob[2, 4].to_i + 100
       yob_female = yob_male + 100
       @players = Player.where("(dtb_id >= #{yob_male * 100_000}
                               AND dtb_id <= #{yob_male * 100_000 + 99_999})
