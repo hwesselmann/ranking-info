@@ -1,26 +1,73 @@
-FROM ruby:2.6.6-slim
+# build stage
+FROM ruby:2.6.6-alpine as build
 
-# https://yarnpkg.com/lang/en/docs/install/#debian-stable
-RUN apt-get update -qq && apt-get install -y curl gnupg2 nodejs postgresql-client libpq-dev && \
-  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-  apt-get update -qq && apt-get install -y build-essential patch zlib1g-dev liblzma-dev && \
-  apt-get install -y yarn imagemagick
+RUN apk add --update --no-cache \
+    build-base \
+    postgresql-dev \
+    git \
+    imagemagick \
+    nodejs-current \
+    yarn \
+    tzdata \
+    sqlite-dev
 
-ENV APP_PATH=/app
-RUN mkdir $APP_PATH
-WORKDIR $APP_PATH
+WORKDIR /app
 
-COPY . /app
+ENV SECRET_KEY_BASE rankingInfo
 
-RUN gem install bundler && \
-  bundle config set with 'production' && \
-  bundle config set without 'development test' && \
-  bundle install
+# Install gems
+ADD Gemfile* /app/
+RUN gem install bundler
+RUN bundle config --global frozen true \
+ && bundle config --local without development:test \
+ && bundle install --jobs=4 \
+ # Remove unneeded files (cached *.gem, *.o, *.c)
+ && rm -rf /usr/local/bundle/cache/*.gem \
+ && find /usr/local/bundle/gems/ -name "*.c" -delete \
+ && find /usr/local/bundle/gems/ -name "*.o" -delete
 
-COPY entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
+# Install yarn packages
+COPY package.json yarn.lock /app/
+RUN yarn install
+
+# Add the Rails app
+ADD . /app
+
+# Precompile assets
+RUN RAILS_ENV=production bundle exec rake assets:precompile
+
+# Remove folders not needed in resulting image
+RUN rm -rf node_modules tmp/cache app/assets vendor/assets lib/assets spec
+
+# final image
+FROM ruby:2.6.6-alpine
+LABEL maintainer="hauke@h-dawg.de"
+
+# Add Alpine packages
+RUN apk add --update --no-cache \
+    postgresql-client \
+    imagemagick \
+    tzdata \
+    file
+
+# Add user
+RUN addgroup -g 1000 -S app \
+ && adduser -u 1000 -S app -G app
+USER app
+
+# Copy app with gems from former build stage
+COPY --from=build /usr/local/bundle/ /usr/local/bundle/
+COPY --from=build --chown=app:app /app /app
+
+WORKDIR /app
+
+ENV SECRET_KEY_BASE rankingInfo
+
+# Save timestamp of image building
+RUN date -u > BUILD_TIME
+
+RUN rm -f /app/tmp/pids/server.pid
+ENTRYPOINT ["bash"]
 EXPOSE 3000
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
