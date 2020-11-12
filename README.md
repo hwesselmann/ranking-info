@@ -62,7 +62,6 @@ The password cannot be empty and should be at least 6 characters!
 ### Docker
 
 The project includes a Dockerfile and a docker-compose configuration to run a production environment. To start the stack, you need adapt docker-compose.yml to fit your needs, build the image and run `DATABASE_PASSWORD=your_password docker-compose up` to set a password for the postgresql container and the application. Next you need to run the database migrations and add an admin user (see above).  
-The docker image is rather big at the moment due to some build dependencies for required gems (~ 1.3GB).
 
 After starting the stack, you can access the application by calling `http://127.0.0.1:3000` in a browser.
 
