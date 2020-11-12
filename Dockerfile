@@ -67,7 +67,7 @@ ENV SECRET_KEY_BASE rankingInfo
 RUN date -u > BUILD_TIME
 
 RUN rm -f /app/tmp/pids/server.pid
-ENTRYPOINT ["bash"]
+ENTRYPOINT ["sh"]
 EXPOSE 3000
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
