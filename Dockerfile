@@ -66,8 +66,8 @@ ENV SECRET_KEY_BASE rankingInfo
 # Save timestamp of image building
 RUN date -u > BUILD_TIME
 
-RUN rm -f /app/tmp/pids/server.pid
-ENTRYPOINT ["sh"]
 EXPOSE 3000
 
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD rm -f tmp/pids/server.pid \
+  && bundle exec rails db:migrate \
+  && bundle exec rails s -b 0.0.0.0 -p 3000
