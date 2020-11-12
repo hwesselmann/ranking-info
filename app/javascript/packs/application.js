@@ -1,4 +1,11 @@
-import '../src/add-eu-banner'
+import CookiesEuBanner from 'cookies-eu-banner';
+import 'cookies-eu-banner/css/cookies-eu-banner.default.css'
+
+document.addEventListener('DOMContentLoaded', () => {
+  new CookiesEuBanner(() => {
+    console.log('Cookies EU Banner accepted');
+  }, true)
+});
 // This file is automatically compiled by Webpack, along with any other files
 // present in this directory. You're encouraged to place your actual application logic in
 // a relevant structure within app/javascript and only use these pack files to reference
