@@ -50,14 +50,9 @@ RUN apk add --update --no-cache \
     tzdata \
     file
 
-# Add user
-RUN addgroup -g 1000 -S app \
- && adduser -u 1000 -S app -G app
-USER app
-
 # Copy app with gems from former build stage
-COPY --from=build --chown=app:app /usr/local/bundle/ /usr/local/bundle/
-COPY --from=build --chown=app:app /app /app
+COPY --from=build /usr/local/bundle/ /usr/local/bundle/
+COPY --from=build /app /app
 
 WORKDIR /app
 
