@@ -56,7 +56,7 @@ RUN addgroup -g 1000 -S app \
 USER app
 
 # Copy app with gems from former build stage
-COPY --from=build /usr/local/bundle/ /usr/local/bundle/
+COPY --from=build --chown=app:app /usr/local/bundle/ /usr/local/bundle/
 COPY --from=build --chown=app:app /app /app
 
 WORKDIR /app
