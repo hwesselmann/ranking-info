@@ -37,7 +37,7 @@ ADD . /app
 RUN RAILS_ENV=production bundle exec rake assets:precompile
 
 # Remove folders not needed in resulting image
-RUN rm -rf node_modules tmp/cache app/assets vendor/assets lib/assets spec
+RUN rm -rf node_modules tmp/cache vendor/assets lib/assets spec
 
 # final image
 FROM ruby:2.6.6-alpine
