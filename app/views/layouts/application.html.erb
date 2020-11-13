@@ -17,6 +17,10 @@
     <%= render 'layouts/shim' %>
   </head>
   <body>
+    <div id="cookies-eu-banner" style="display: none;">
+      Diese Webseite benutzt Cookies. Für weitere Informationen schaut bitte in den Bereich Datenschutz im Menüpunkt 'Über'.
+      <button id="cookies-eu-accept">OK</button>
+    </div>
     <%= render 'layouts/header' %>
     <div class="container is-fluid">
       <% flash.each do |message_type, message| %>
