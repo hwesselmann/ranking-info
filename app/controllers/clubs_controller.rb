@@ -18,13 +18,12 @@ class ClubsController < ApplicationController
   end
 
   def show
-    current_quarter = Ranking.select(:date).order(date: :desc)
-                             .distinct.first.date
+    quarter = current_quarter
     players = Player.where("dtb_id IN (SELECT DISTINCT(dtb_id) FROM rankings
-                            WHERE date='#{current_quarter}')
+                            WHERE date='#{quarter}')
                             AND LOWER(club)=LOWER('#{params[:id]}')")
                     .order(:lastname)
-    player_ranking = fill_club_info(players)
+    player_ranking = fill_club_info(players, quarter)
     @players = player_ranking
   end
 
@@ -54,25 +53,16 @@ class ClubsController < ApplicationController
           .count
   end
 
-  def fill_club_info(players)
+  def fill_club_info(players, quarter)
     player_ranking = {}
     u12_players = []
     u14_players = []
     u16_players = []
     u18_players = []
     players.each do |player|
-      ranking = Ranking.find_by(dtb_id: player.dtb_id,
-                                age_group: 'Overall',
-                                date: current_quarter)
-      player_data = { dtb_id: player.dtb_id, lastname: player.lastname,
-                      firstname: player.firstname, score: ranking.score,
-                      rank: ranking.ranking_position }
-      # find age group ranking for player and push to group
-      age_group = Ranking.find_by(dtb_id: player.dtb_id, date: current_quarter,
-                                  yob_ranking: false, age_group_ranking: true,
-                                  year_end_ranking: false)
-                         .age_group
-      case age_group
+      player_data = fetch_basic_player_data(player, quarter)
+
+      case player_data[:age]
       when 'U12'
         u12_players.push(player_data)
       when 'U14'
@@ -89,5 +79,18 @@ class ClubsController < ApplicationController
     player_ranking['U18'] = u18_players unless u18_players.empty?
 
     player_ranking
+  end
+
+  def fetch_basic_player_data(player, quarter)
+    ranking = Ranking.find_by(dtb_id: player.dtb_id,
+                              age_group: 'Overall',
+                              date: quarter)
+    age_group = Ranking.find_by(dtb_id: player.dtb_id, date: quarter,
+                                yob_ranking: false, age_group_ranking: true,
+                                year_end_ranking: false)
+                       .age_group
+    { dtb_id: player.dtb_id, lastname: player.lastname,
+      firstname: player.firstname, score: ranking.score,
+      rank: ranking.ranking_position, age: age_group }
   end
 end
