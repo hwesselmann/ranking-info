@@ -10,7 +10,7 @@ module ApplicationHelper
     if page_title.empty?
       base_title
     else
-      page_title + ' | ' + base_title
+      "#{page_title} | #{base_title}"
     end
   end
 
@@ -36,14 +36,13 @@ module ApplicationHelper
   end
 
   def load_rankings(dtb_id)
-    rankings = if dtb_id.eql?('')
-               then Ranking.select(:date).order(date: :desc).distinct
-               else Ranking.select(:date)
-                           .where(dtb_id: dtb_id)
-                           .order(date: :desc)
-                           .distinct
-               end
-    rankings
+    if dtb_id.eql?('')
+    then Ranking.select(:date).order(date: :desc).distinct
+    else Ranking.select(:date)
+                .where(dtb_id: dtb_id)
+                .order(date: :desc)
+                .distinct
+    end
   end
 
   def federation_long_name(short)
