@@ -27,14 +27,12 @@ class ImportController < ApplicationController
   def import
     if params[:file]
       uploaded = params[:file]
-      File.open(Rails.root.join('public', 'uploads',
-                                uploaded.original_filename), 'wb') do |f|
+      File.open(Rails.root.join('public', 'uploads', uploaded.original_filename), 'wb') do |f|
         f.write(uploaded.read)
       end
       Player.import_rankings("public/uploads/#{uploaded.original_filename}")
       redirect_to status_url, flash: { info: "new rankings file
-                                              #{uploaded.original_filename}
-                                              imported!" }
+                                              #{uploaded.original_filename} imported!" }
     else
       redirect_to status_url, flash: { info: 'please upload a ranking file' }
     end

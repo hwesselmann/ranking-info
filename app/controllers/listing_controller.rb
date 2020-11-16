@@ -75,52 +75,47 @@ class ListingController < ApplicationController
   end
 
   def gender_selected(gender)
-    query = if gender.eql?('Junioren')
-            then ' AND (dtb_id >= 10000000 AND dtb_id <= 19999999)'
-            else ' AND (dtb_id >= 20000000 AND dtb_id <= 29999999)'
-            end
-    query
+    if gender.eql?('Junioren')
+    then ' AND (dtb_id >= 10000000 AND dtb_id <= 19999999)'
+    else ' AND (dtb_id >= 20000000 AND dtb_id <= 29999999)'
+    end
   end
 
   def age_group_selected(age_group)
-    query = if age_group.eql?('') then " AND age_group='Overall'"
-            else " AND age_group='#{params[:age_group]}'"
-            end
-    query
+    if age_group.eql?('') then " AND age_group='Overall'"
+    else " AND age_group='#{params[:age_group]}'"
+    end
   end
 
   def age_group_options(age_group, age_group_options)
-    query = if age_group_options.eql?('') && age_group.even?
-            then ' AND yob_ranking=false AND age_group_ranking=true'
-            elsif age_group_options.eql?('') && age_group.odd?
-            then ' AND yob_ranking=true AND age_group_ranking=false'
-            elsif age_group_options.eql?('only_yob')
-            then ' AND yob_ranking=true AND age_group_ranking=false'
-            elsif age_group_options.eql?('include_younger')
-            then ' AND yob_ranking=false AND age_group_ranking=false'
-            end
-    query
+    if age_group_options.eql?('') && age_group.even?
+    then ' AND yob_ranking=false AND age_group_ranking=true'
+    elsif age_group_options.eql?('') && age_group.odd?
+    then ' AND yob_ranking=true AND age_group_ranking=false'
+    elsif age_group_options.eql?('only_yob')
+    then ' AND yob_ranking=true AND age_group_ranking=false'
+    elsif age_group_options.eql?('include_younger')
+    then ' AND yob_ranking=false AND age_group_ranking=false'
+    end
   end
 
   def federation_selected(federation)
-    query = if federation.eql?('') then ''
-            else " AND federation='#{federation}'"
-            end
-    query
+    if federation.eql?('') then ''
+    else " AND federation='#{federation}'"
+    end
   end
 
   def club_selected(club)
-    query = if club.eql?('') then ''
-            else " AND LOWER(club) LIKE LOWER('%#{club}%')"
-            end
+    if club.eql?('') then ''
+    else " AND LOWER(club) LIKE LOWER('%#{club}%')"
+    end
   end
 
   def year_end_rankings(year_end, quarter)
-    query = if year_end.eql?('1') && first_quarter?(quarter)
-            then ' AND year_end_ranking=true'
-            else ' AND year_end_ranking=false'
-            end
-    query
+    if year_end.eql?('1') && first_quarter?(quarter)
+    then ' AND year_end_ranking=true'
+    else ' AND year_end_ranking=false'
+    end
   end
 
   def first_quarter?(quarter)

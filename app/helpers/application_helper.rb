@@ -3,14 +3,14 @@
 #
 # Rails application helper.
 #
-module ApplicationHelper
+module ApplicationHelper  
   # Returns the full title on a per-page basis.
   def full_title(page_title = '')
     base_title = 'Ranking-Info'
     if page_title.empty?
       base_title
     else
-      page_title + ' | ' + base_title
+      "#{page_title} | #{base_title}"
     end
   end
 
@@ -36,54 +36,21 @@ module ApplicationHelper
   end
 
   def load_rankings(dtb_id)
-    rankings = if dtb_id.eql?('')
-               then Ranking.select(:date).order(date: :desc).distinct
-               else Ranking.select(:date)
-                           .where(dtb_id: dtb_id)
-                           .order(date: :desc)
-                           .distinct
-               end
-    rankings
+    if dtb_id.eql?('')
+    then Ranking.select(:date).order(date: :desc).distinct
+    else Ranking.select(:date)
+                .where(dtb_id: dtb_id)
+                .order(date: :desc)
+                .distinct
+    end
   end
 
   def federation_long_name(short)
-    case short
-    when 'BAD'
-      'Baden'
-    when 'BB'
-      'Berlin-Brandenburg'
-    when 'BTV'
-      'Bayern'
-    when 'HAM'
-      'Hamburg'
-    when 'HTV'
-      'Hessen'
-    when 'RPF'
-      'Rheinland-Pfalz'
-    when 'SLH'
-      'Schleswig-Holstein'
-    when 'STB'
-      'Saarland'
-    when 'STV'
-      'Sachsen'
-    when 'TMV'
-      'Mecklenburg-Vorpommern'
-    when 'TNB'
-      'Niedersachsen-Bremen'
-    when 'TSA'
-      'Sachsen-Anhalt'
-    when 'TTV'
-      'Thüringen'
-    when 'TVM'
-      'Mittelrhein'
-    when 'TVN'
-      'Niederrhein'
-    when 'WTB'
-      'Würtemberg'
-    when 'WTV'
-      'Westfalen'
-    else
-      short
-    end
+    fed = { BAD: 'Baden', BB: 'Berlin-Brandenburg', BTV: 'Bayern', HAM: 'Hamburg',
+            HTV: 'Hessen', RPF: 'Rheinland-Pfalz', SLH: 'Schleswig-Holstein',
+            STB: 'Saarland', STV: 'Sachsen', TMV: 'Mecklenburg-Vorpommern',
+            TNB: 'Niedersachsen-Bremen', TSA: 'Sachsen-Anhalt', TTV: 'Thüringen',
+            TVM: 'Mittelrhein', TVN: 'Niederrhein', WTB: 'Würtemberg', WTV: 'Westfalen' }
+    fed[short.to_sym] || short
   end
 end
