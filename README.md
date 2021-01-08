@@ -9,7 +9,7 @@ This is a small web-application aiming at providing accessible information on th
 This application is developed using
 
 * Ruby 2.6.6
-* Rails 6.0.3.1
+* Rails 6.0.3.4
 * SQLite3 (for development and test)
 * bundler package manager (for rubygems)
 * Yarn package manager (for web assets)
@@ -53,7 +53,7 @@ The system has an easy mechanism to upload csv-files for importing into the data
 
  1. make sure your database ist up to date by running `rake db:migrate`
  2. open a rails console by running `rails console`
- 3. Add a user by running `User.create(name: 'Example User', email: 'user@example.com', password: 'password', password_confirmation: 'password'` with your preferred data
+ 3. Add a user by running `User.create(name: 'Example User', email: 'user@example.com', password: 'password', password_confirmation: 'password')` with your preferred data
 
 The password cannot be empty and should be at least 6 characters!
 
