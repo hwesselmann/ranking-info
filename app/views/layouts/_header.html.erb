@@ -1,7 +1,10 @@
 <header>
   <nav class="navbar is-dark is-info" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <strong><%= link_to "Ranking-Info", root_path, class: "navbar-item has-text-white is-size-5" %></strong>
+    <%= link_to root_path, class: 'navbar-item' do %>
+      <%= image_pack_tag("ri-logo.png") %>
+    <% end %>
+    
     <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicMenu">
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
