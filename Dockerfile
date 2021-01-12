@@ -56,6 +56,8 @@ COPY --from=build /app /app
 
 WORKDIR /app
 
+RUN mkdir public/uploads && chmod 777 public/uploads
+
 ENV SECRET_KEY_BASE rankingInfo
 
 # Save timestamp of image building
