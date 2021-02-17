@@ -9,7 +9,10 @@ RUN apk add --update --no-cache \
     nodejs-current \
     yarn \
     tzdata \
-    sqlite-dev
+    sqlite-dev \
+    python2 \
+    make \
+    g++
 
 WORKDIR /app
 
