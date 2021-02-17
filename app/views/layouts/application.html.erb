@@ -17,16 +17,16 @@
     <%= render 'layouts/shim' %>
   </head>
   <body>
-    <div id="cookies-eu-banner" style="display: none;">
-      Diese Webseite benutzt Cookies. Für weitere Informationen schaut bitte in den Bereich Datenschutz im Menüpunkt 'Über'.
-      <button id="cookies-eu-accept">OK</button>
-    </div>
     <%= render 'layouts/header' %>
     <div class="container is-fluid">
       <% flash.each do |message_type, message| %>
         <div class="alert alert-<%= message_type %> mt-2"><%= message %></div>
       <% end %>
       <%= yield %>
+      <div id="cookies-eu-banner" style="display: none;">
+        Diese Webseite benutzt Cookies. Für weitere Informationen schaut bitte in den Bereich Datenschutz.
+        <button id="cookies-eu-accept">OK</button>
+      </div>
       <%= debug(params) if Rails.env.development? %>
     </div>
   </body>
