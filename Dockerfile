@@ -19,7 +19,7 @@ WORKDIR /app
 ENV SECRET_KEY_BASE rankingInfo
 
 # Install gems
-ADD Gemfile* /app/
+COPY Gemfile* /app/
 RUN gem install bundler
 RUN bundle config --global frozen true \
  && bundle config --local without development:test \
@@ -34,7 +34,7 @@ COPY package.json yarn.lock /app/
 RUN yarn install
 
 # Add the Rails app
-ADD . /app
+COPY . /app
 
 # Precompile assets
 RUN RAILS_ENV=production bundle exec rake assets:precompile
