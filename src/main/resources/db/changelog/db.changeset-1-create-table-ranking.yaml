@@ -1,0 +1,169 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: hwesselmann
+      changes:
+        - createTable:
+            tableName: ranking
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: dtbid
+                  type: int
+                  constraints:
+                    - unique: true
+              - column:
+                  name: firstname
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastname
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: federation
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: club
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nationality
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: period
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: yob
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: points
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rankOverall
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rankU18
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU18c
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU18y
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU17c
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU17y
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU16
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU16c
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU16y
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU15c
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU15y
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU14
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU14c
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU14y
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU13c
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU13y
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU12
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU12c
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU12y
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rankU11y
+                  type: int
+                  constraints:
+                    nullable: true
+        - createIndex:
+            columns:
+              - column:
+                  name: dtbid
+                  type: int
+                  descending: false
+            indexName: idx_dtbid_player
+            tableName: player
+            unique: true

@@ -5,19 +5,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class Ranking {
     private int id;
-    private String period;
     private String dtbId;
-    private String yob;
     private String firstname;
     private String lastname;
-    private String club;
     private String federation;
+    private String club;
+    private String nationality;
+    private LocalDate period;
+    private int yob;
     private String points;
 
     // rankings for each age group
