@@ -1,16 +1,1 @@
-package de.hdawg.tennis.rankinginfo.controller;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-
-@Slf4j
-@Controller
-public class RankingController {
-
-    @GetMapping("/listings")
-    public String getRankingList(Model model) {
-        return "listing";
-    }
-}
+package de.hdawg.tennis.rankinginfo.controller;import de.hdawg.tennis.rankinginfo.model.Ranking;import de.hdawg.tennis.rankinginfo.repository.RankingRepository;import lombok.RequiredArgsConstructor;import lombok.extern.slf4j.Slf4j;import org.springframework.stereotype.Controller;import org.springframework.ui.Model;import org.springframework.web.bind.annotation.GetMapping;import java.util.List;@Slf4j@RequiredArgsConstructor@Controllerpublic class RankingController {    private final RankingRepository rankingRepository;    @GetMapping("/listings")    public String getRankingList(Model model) {        List<Ranking> rankings = rankingRepository.retrieveRankingListItems();        model.addAttribute(rankings);        return "listing";    }}
