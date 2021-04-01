@@ -1,8 +1,8 @@
 spring:
   application:
-    name: ranglisteninfo
+    name: ranking-info
   profiles:
-    active: local_dev,log-console-info
+    active: log-console-info
   h2:
     console:
       enabled: true
@@ -24,8 +24,3 @@ management:
   server:
     port: 9000
     address: 127.0.0.1
----
-spring:
-  profiles: local_dev
-import:
-  folder: /src/test/resources
