@@ -49,6 +49,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: gender
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
                   name: yob
                   type: int
                   constraints:
