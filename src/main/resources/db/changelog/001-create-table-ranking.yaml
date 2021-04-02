@@ -163,12 +163,3 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: true
-        - createIndex:
-            columns:
-              - column:
-                  name: dtbid
-                  type: int
-                  descending: false
-            indexName: idx_dtbid_player
-            tableName: player
-            unique: true
