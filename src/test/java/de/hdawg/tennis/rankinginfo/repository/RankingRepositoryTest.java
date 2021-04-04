@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,8 +16,9 @@ public class RankingRepositoryTest {
     RankingRepository rankingRepository;
 
     @Test
-    public void noRankingsInDatabase() {
-        List<Ranking> rankings = rankingRepository.retrieveRankingListItems(LocalDate.now(), false, "U14", null, "");
-        assertEquals(Collections.emptyList(), rankings);
+    public void fetchRankingsFromDatabase() {
+        List<Ranking> rankings = rankingRepository.retrieveRankingListItems("2020-03-31", true, "U14", null, "");
+        assertEquals(2, rankings.size());
+        assertEquals("21,3", rankings.get(0).getPoints());
     }
 }

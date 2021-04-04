@@ -16,7 +16,7 @@ public class Ranking {
     private String dtbId;
     private String firstname;
     private String lastname;
-    private String federation;
+    private Federation federation;
     private String club;
     private String nationality;
     private LocalDate period;

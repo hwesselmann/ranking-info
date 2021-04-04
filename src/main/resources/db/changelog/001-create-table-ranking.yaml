@@ -30,7 +30,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: federation
-                  type: varchar(50)
+                  type: varchar(3)
                   constraints:
                     nullable: false
               - column:
