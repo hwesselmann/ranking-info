@@ -19,7 +19,7 @@ public class RankingRepositoryTest {
 
     @Test
     public void noRankingsInDatabase() {
-        List<Ranking> rankings = rankingRepository.retrieveRankingListItems(LocalDate.now(), false, false, "U14", null, "");
+        List<Ranking> rankings = rankingRepository.retrieveRankingListItems(LocalDate.now(), false, "U14", null, "");
         assertEquals(Collections.emptyList(), rankings);
     }
 }

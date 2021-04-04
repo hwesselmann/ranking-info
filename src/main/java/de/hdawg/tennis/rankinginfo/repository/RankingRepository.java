@@ -22,14 +22,13 @@ public class RankingRepository {
      * Fetch rankings by applying search criteria if applicable.
      *
      * @param period the period a ranking list is requested for
-     * @param yearEndRanking flag to determine if year-end rankings should be used
      * @param gender 'Juniorinnen' or 'Junioren'
      * @param ageGroup age group to fetch rankings for including modifiers
      * @param federation filter for a specific federation
      * @param club filter for clubs
      * @return a list of requested rankings (in the right order)
      */
-    public List<Ranking> retrieveRankingListItems(LocalDate period, boolean yearEndRanking, boolean gender, String ageGroup, Federation federation, String club) {
+    public List<Ranking> retrieveRankingListItems(LocalDate period, boolean gender, String ageGroup, Federation federation, String club) {
         return Collections.emptyList();
     }
 
