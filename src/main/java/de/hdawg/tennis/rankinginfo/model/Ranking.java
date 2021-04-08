@@ -20,6 +20,7 @@ public class Ranking {
     private String club;
     private String nationality;
     private LocalDate period;
+    // true => male, false => female
     private boolean gender;
     private int yob;
     private String points;
