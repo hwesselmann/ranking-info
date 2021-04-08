@@ -8,23 +8,23 @@ public class FederationTest {
 
     @Test
     public void testLongName() {
-        assertEquals("", Federation.NONE.getLongname());
-        assertEquals("Baden", Federation.BAD.getLongname());
-        assertEquals("Berlin-Brandenburg", Federation.BB.getLongname());
-        assertEquals("Bayern", Federation.BTV.getLongname());
-        assertEquals("Hamburg", Federation.HAM.getLongname());
-        assertEquals("Hessen", Federation.HTV.getLongname());
-        assertEquals("Rheinland-Pfalz", Federation.RPF.getLongname());
-        assertEquals("Schleswig-Holstein", Federation.SLH.getLongname());
-        assertEquals("Saarland", Federation.STB.getLongname());
-        assertEquals("Sachsen", Federation.STV.getLongname());
-        assertEquals("Mecklenburg-Vorpommern", Federation.TMV.getLongname());
-        assertEquals("Niedersachsen-Bremen", Federation.TNB.getLongname());
-        assertEquals("Sachsen-Anhalt", Federation.TSA.getLongname());
-        assertEquals("Thüringen", Federation.TTV.getLongname());
-        assertEquals("Mittelrhein", Federation.TVM.getLongname());
-        assertEquals("Niederrhein", Federation.TVN.getLongname());
-        assertEquals("Würtemberg", Federation.WTB.getLongname());
-        assertEquals("Westfalen", Federation.WTV.getLongname());
+        assertEquals("", Federation.NONE.getLongName());
+        assertEquals("Baden", Federation.BAD.getLongName());
+        assertEquals("Berlin-Brandenburg", Federation.BB.getLongName());
+        assertEquals("Bayern", Federation.BTV.getLongName());
+        assertEquals("Hamburg", Federation.HAM.getLongName());
+        assertEquals("Hessen", Federation.HTV.getLongName());
+        assertEquals("Rheinland-Pfalz", Federation.RPF.getLongName());
+        assertEquals("Schleswig-Holstein", Federation.SLH.getLongName());
+        assertEquals("Saarland", Federation.STB.getLongName());
+        assertEquals("Sachsen", Federation.STV.getLongName());
+        assertEquals("Mecklenburg-Vorpommern", Federation.TMV.getLongName());
+        assertEquals("Niedersachsen-Bremen", Federation.TNB.getLongName());
+        assertEquals("Sachsen-Anhalt", Federation.TSA.getLongName());
+        assertEquals("Thüringen", Federation.TTV.getLongName());
+        assertEquals("Mittelrhein", Federation.TVM.getLongName());
+        assertEquals("Niederrhein", Federation.TVN.getLongName());
+        assertEquals("Würtemberg", Federation.WTB.getLongName());
+        assertEquals("Westfalen", Federation.WTV.getLongName());
     }
 }
