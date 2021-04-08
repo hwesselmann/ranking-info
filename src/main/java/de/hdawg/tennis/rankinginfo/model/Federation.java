@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum Federation {
+    NONE(""),
     BAD("Baden"),
     BB("Berlin-Brandenburg"),
     BTV("Bayern"),
@@ -24,5 +25,5 @@ public enum Federation {
     WTV("Westfalen");
 
     @Getter
-    private final String longname;
+    private final String longName;
 }

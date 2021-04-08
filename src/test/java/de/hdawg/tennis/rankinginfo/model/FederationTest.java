@@ -7,7 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FederationTest {
 
     @Test
-    public void testLongname() {
+    public void testLongName() {
+        assertEquals("", Federation.NONE.getLongname());
         assertEquals("Baden", Federation.BAD.getLongname());
         assertEquals("Berlin-Brandenburg", Federation.BB.getLongname());
         assertEquals("Bayern", Federation.BTV.getLongname());
