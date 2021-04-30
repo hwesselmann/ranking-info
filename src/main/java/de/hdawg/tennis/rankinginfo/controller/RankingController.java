@@ -38,14 +38,11 @@ public class RankingController {
      * @return view name to render
      */
     @PostMapping("/listings")
-    public String getRankingListing(@RequestParam(name = "quarter") String period, @RequestParam(name = "gender") String gender, @RequestParam(name = "age_group") int ageGroup, @RequestParam(name = "age_group_options", required = false) String ageGroupOptions, @RequestParam(name = "federation", required = false) String federation, @RequestParam(name = "club", required = false) String club, Model model) {
+    public String getRankingListing(@RequestParam(name = "quarter") String period, @RequestParam(name = "gender") String gender, @RequestParam(name = "age_group") String ageGroup, @RequestParam(name = "age_group_options", required = false) String ageGroupOptions, @RequestParam(name = "federation", required = false) String federation, @RequestParam(name = "club", required = false) String club, Model model) {
         log.debug("search triggered - processing search params");
         // TODO period and year-end-marker
-        boolean selectedGender = "Junioren".equals(gender);
 
-        assert (ageGroup >= 11 && ageGroup <= 18);
-        String selectedAgeGroup = "U" + ageGroup;
-        selectedAgeGroup += applyAgeGroupOptions(ageGroup, ageGroupOptions);
+        assert (ageGroup.length() == 3);
 
         Federation selectedFederation = Federation.NONE;
         if (!federation.isEmpty()) {
@@ -54,19 +51,9 @@ public class RankingController {
         // TODO club if present
         // is there an automatic mechanism to avoid sql injection?
 
-        List<Ranking> rankings = rankingRepository.retrieveRankingListItems("", selectedGender, selectedAgeGroup, selectedFederation, "BVH Tennis");
+        List<Ranking> rankings = rankingRepository.retrieveRankingListItems("", gender, ageGroup, selectedFederation, "BVH Tennis");
         model.addAttribute(rankings);
 
         return "listing/listingResult";
-    }
-
-    String applyAgeGroupOptions(int ageGroup, String ageGroupOptions) {
-        if ("include_younger".equals(ageGroupOptions)) {
-            return "c";
-        }
-        if ("only_yob".equals(ageGroupOptions) || ageGroup % 2 != 0) {
-            return "y";
-        }
-        return "";
     }
 }

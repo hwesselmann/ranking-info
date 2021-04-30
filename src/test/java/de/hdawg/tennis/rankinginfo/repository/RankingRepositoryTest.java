@@ -17,8 +17,8 @@ public class RankingRepositoryTest {
 
     @Test
     public void fetchRankingsFromDatabase() {
-        List<Ranking> rankings = rankingRepository.retrieveRankingListItems("2020-03-31", true, "Overall", null, "");
-        assertEquals(2, rankings.size());
-        assertEquals("21,3", rankings.get(0).getPoints());
+        List<Ranking> rankings = rankingRepository.retrieveRankingListItems("2020-03-31", "m", "all", null, "");
+        assertEquals(21, rankings.size());
+        assertEquals("213", rankings.get(0).getPoints());
     }
 }

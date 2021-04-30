@@ -50,7 +50,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: gender
-                  type: boolean
+                  type: varchar(1)
                   constraints:
                     nullable: false
               - column:
@@ -64,102 +64,24 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: rankOverall
+                  name: rank
                   type: int
                   constraints:
                     nullable: false
               - column:
-                  name: rankU18
-                  type: int
+                  name: agegroup
+                  type: varchar(3)
                   constraints:
-                    nullable: true
+                    nullable: false
               - column:
-                  name: rankU18c
-                  type: int
-                  constraints:
-                    nullable: true
+                  name: include_all_players
+                  type: boolean
+                  defaultValue: false
               - column:
-                  name: rankU18y
-                  type: int
-                  constraints:
-                    nullable: true
+                  name: only_yob_players
+                  type: boolean
+                  defaultValue: false
               - column:
-                  name: rankU17c
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU17y
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU16
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU16c
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU16y
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU15c
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU15y
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU14
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU14c
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU14y
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU13c
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU13y
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU12
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU12c
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU12y
-                  type: int
-                  constraints:
-                    nullable: true
-              - column:
-                  name: rankU11y
-                  type: int
-                  constraints:
-                    nullable: true
+                  name: end_of_year_ranking
+                  type: boolean
+                  defaultValue: false
