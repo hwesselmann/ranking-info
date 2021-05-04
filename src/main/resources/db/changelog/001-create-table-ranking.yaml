@@ -16,8 +16,6 @@ databaseChangeLog:
               - column:
                   name: dtbid
                   type: int
-                  constraints:
-                    - unique: true
               - column:
                   name: firstname
                   type: varchar(50)

@@ -27,10 +27,12 @@ public class RankingRepository {
      * @return a list of requested rankings (in the right order)
      */
     public List<Ranking> retrieveRankingListItems(String period, String gender, String ageGroup, Federation federation, String club) {
-        // TODO also respect federation and club params in the query if set
         String sql = "select * from ranking where period=? and gender=? and agegroup=?";
         if (!federation.equals(Federation.NONE)) {
             sql += " and federation='" + federation + "'";
+        }
+        if (!club.isEmpty()) {
+            sql += " and club LIKE '%" + club.strip() + "%'";
         }
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Ranking ranking = new Ranking();
