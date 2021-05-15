@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Ranglisten | Ranking-Info</title>
+    <meta name="description" content="Durchsuchbare und filterbare Version der Deutschen Tennis-Jugendrangliste.">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <meta name="csrf-param" content="authenticity_token"/>
+    <meta name="csrf-token"
+          content="zjFMZmSPc9swdCg58i35qrkHYN63gzdIXUfhh8637FUdTLafDltBzJtSDrd9OWu6qpDAZLIdYGNPOSErrFey7Q=="/>
+
+
+    <link rel="stylesheet" media="all" href="/packs/css/application-e2d95b3b.css"/>
+    <script src="/packs/js/application-7c201659c849ea64381f.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <script src="https://kit.fontawesome.com/8eb0664b18.js" crossorigin="anonymous"></script>
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/r29/html5.min.js">
+    </script>
+    <![endif]-->
+
+</head>
+<body>
+<header>
+    <nav class="navbar is-dark is-info" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/packs/media/images/ri-logo-eaf17403a383195f2cf41efebdf1760a.png"/>
+            </a>
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicMenu">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicMenu" class="navbar-menu">
+            <div class="navbar-start">
+            </div>
+
+            <div class="navbar-end">
+                <a class="navbar-item" href="/players">Spieler</a>
+                <a class="navbar-item" href="/listings">Listen</a>
+                <a class="navbar-item" href="/clubs">Vereine</a>
+                <a class="navbar-item" href="/federations">Verbände</a>
+                <a class="navbar-item" href="/status">Status</a>
+                <a class="navbar-item" href="/help">Hilfe</a>
+                <a class="navbar-item" href="/privacy">Datenschutz</a>
+                <a class="navbar-item" href="/about">Über</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container is-fluid">
+    <h1 class="title is-3 has-text-left mb-3 mt-3">
+        Ranglisten
+    </h1>
+    <form class="mb-4" action="/listings" accept-charset="UTF-8" method="get">
+        <div class="field is-horizontal">
+            <div class="control">
+                <label class="label is-small" for="quarter">Stichtag</label>
+                <div class="select is-small">
+                    <select name="quarter" id="quarter">
+                        <optgroup label="2021">
+                            <option value="2021-04-01">31.03.2021</option>
+                        </optgroup>
+                        <optgroup label="2020">
+                            <option value="2021-01-01">31.12.2020</option>
+                            <option value="2020-10-01">30.09.2020</option>
+                            <option value="2020-04-01">31.03.2020</option>
+                        </optgroup>
+                        <optgroup label="2019">
+                            <option value="2020-01-01">31.12.2019</option>
+                            <option value="2019-10-01">30.09.2019</option>
+                            <option value="2019-07-01">30.06.2019</option>
+                            <option value="2019-04-01">31.03.2019</option>
+                        </optgroup>
+                        <optgroup label="2018">
+                            <option value="2019-01-01">31.12.2018</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <br>
+                <label class="checkbox is-small">
+                    <input type="checkbox" name="year_end" id="year_end" value="1"/> Abschlussrangliste
+                </label>
+            </div>
+            <div class="control mr-2">
+                <label class="label is-small" for="gender">Geschlecht</label>
+                <div class="select is-small">
+                    <select name="gender" id="gender">
+                        <option selected="selected" value="Junioren">Junioren</option>
+                        <option value="Juniorinnen">Juniorinnen</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control mr-2">
+                <label class="label is-small" for="age-group">Altersklasse</label>
+                <div class="select is-small">
+                    <select name="age_group" id="age_group">
+                        <option value="" label=" "></option>
+                        <option value="U11">U11</option>
+                        <option value="U12">U12</option>
+                        <option value="U13">U13</option>
+                        <option value="U14">U14</option>
+                        <option value="U15">U15</option>
+                        <option value="U16">U16</option>
+                        <option value="U17">U17</option>
+                        <option value="U18">U18</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control mr-2">
+                <label class="label is-small" for="age_group_options">Extras</label>
+                <div class="select is-small">
+                    <select name="age_group_options" id="age_group_options">
+                        <option value="" label=" "></option>
+                        <option value="only_yob">nur Geburtsjahrgang</option>
+                        <option value="include_younger">auch Jüngere einbeziehen</option>
+                    </select>
+                </div>
+            </div>
+            <div class="coontrol mr-2">
+                <label class="label is-small" for="federation">Verband</label>
+                <div class="select is-small">
+                    <select name="federation" id="federation">
+                        <option value="" label=" "></option>
+                        <option value="BAD">BAD</option>
+                        <option value="BB">BB</option>
+                        <option value="BTV">BTV</option>
+                        <option value="HAM">HAM</option>
+                        <option value="HTV">HTV</option>
+                        <option value="RPF">RPF</option>
+                        <option value="SLH">SLH</option>
+                        <option value="STB">STB</option>
+                        <option value="STV">STV</option>
+                        <option value="TMV">TMV</option>
+                        <option value="TNB">TNB</option>
+                        <option value="TSA">TSA</option>
+                        <option value="TTV">TTV</option>
+                        <option value="TVM">TVM</option>
+                        <option value="TVN">TVN</option>
+                        <option value="WTB">WTB</option>
+                        <option value="WTV">WTV</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control is-expanded mr-2">
+                <label class="label is-small" for="club">Verein</label>
+                <input type="search" name="club" id="club" class="input is-small" size="10" placeholder="Verein"/>
+            </div>
+            <div class="control ml-2 mr-2">
+                <label class="has-text-white label is-small" for="submit">_</label>
+                <input type="submit" name="commit" value="Liste abrufen" class="button is-link is-small mb-2 is-info"
+                       data-disable-with="Liste abrufen"/>
+            </div>
+        </div>
+    </form>
+    <div class="card">
+        <header class="card-header">
+            <span class="card-header-title">Ranglisten - Suchen und Filtern, auch in historischen Daten</span>
+        </header>
+        <div class="card-content">
+            Hier bekommst Du direkten Zugriff auf die Jugendranglisten - nicht nur aus dem aktuellen Jahr,
+            sondern auch historische Daten. Im Augenblick sind die Such- und Filtermöglichkeiten noch nicht
+            vollständig umgesetzt - neue Filtermöglichkeiten und Suchoptionen werden kontinuierlich hinzugefügt.
+            <br/><br/>
+            Aktuelle Optionen:
+            <ul>
+                <li><b>Quartal</b> - das anzuzeigende Quartal zum Stcihtag</li>
+                <li><b>Abschlussrangliste</b> - ist ein Abschlussquartal angewählt, wird die Abschließende Liste für das
+                    Jahr angezeigt, sonst die für das Folgequartal gültige (neue Altersklassen)
+                <li><b>Geschlecht</b></li>
+                <li><b>Altersklasse</b> - die anzuzeigende Altersklasse. Bei ungeraden Altersklassen
+                    erhält man die Liste nur für diesen Jahrgang (außer es sollen auch Jüngere angezeigt werden)
+                </li>
+                <li><b>Optionen</b> - Anzeige nur von dem in diesem Quartal gültigen Jahrgangs oder Einbeziehen auch der
+                    sonst
+                    nicht berücksichtigten jüngeren Geburtsjahrgänge
+                </li>
+                <li><b>Verband</b> - Nur Einträge von Spielerinnen und Spielern aus dem ausgewählten Verband</li>
+                <li><b>Verein</b> - Einträge anzeigen, die den eingegebenen Text im Vereinsnamen enthalten</li>
+            </ul>
+        </div>
+        <footer class="card-footer">
+            <a class="card-footer-item has-text-info" href="/players">Spielersuche</a>
+            <a class="card-footer-item has-text-info" href="/clubs">Vereinsuche</a>
+            <a class="card-footer-item has-text-info" href="/federations">Verbandsstatistik</a>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

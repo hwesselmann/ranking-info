@@ -22,7 +22,7 @@ public class RankingController {
 
     @GetMapping("/listings")
     public String getRankingListStartPage(Model model) {
-        return "listing/listingStart";
+        return "start";
     }
 
     /**
@@ -54,6 +54,6 @@ public class RankingController {
         List<Ranking> rankings = rankingRepository.retrieveRankingListItems("", gender, ageGroup, selectedFederation, "BVH Tennis");
         model.addAttribute(rankings);
 
-        return "listing/listingResult";
+        return "result";
     }
 }
