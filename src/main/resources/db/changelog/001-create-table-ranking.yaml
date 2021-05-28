@@ -1,0 +1,85 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: hwesselmann
+      changes:
+        - createTable:
+            tableName: ranking
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: dtbid
+                  type: int
+              - column:
+                  name: firstname
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastname
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: federation
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: club
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nationality
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: period
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: gender
+                  type: varchar(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: yob
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: points
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rank
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: agegroup
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: include_all_players
+                  type: boolean
+                  defaultValue: false
+              - column:
+                  name: only_yob_players
+                  type: boolean
+                  defaultValue: false
+              - column:
+                  name: end_of_year_ranking
+                  type: boolean
+                  defaultValue: false

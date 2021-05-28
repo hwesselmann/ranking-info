@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<!-- Some rules are stolen here:
+     - https://github.com/spring-projects/spring-boot/blob/master/src/checkstyle/checkstyle-suppressions.xml
+-->
+<suppressions>
+    <!-- No Javadoc checks for unit / integration test code -->
+    <suppress checks="JavadocMethod|JavadocVariable|JavadocType"
+              files="[/\\]test|[/\\]it"
+    />
+    <suppress checks="JavadocMethod|JavadocVariable|JavadocType|MethodLength"
+              files=".+Test\.java"
+    />
+    <!-- Allow '_' for JPA data repositories -->
+    <suppress checks="MethodName"
+              id="standard.MethodNameCheck"
+              files=".+Repository\.java"
+    />
+    <!-- Allow no constructor for SpringApplication -->
+    <suppress checks="HideUtilityClassConstructor"
+              files=".+Application\.java"
+    />
+</suppressions>
