@@ -2,13 +2,13 @@ spring:
   application:
     name: ranking-info
   profiles:
-    active: log-console-info
+    active: local_dev,log-console-info
   h2:
     console:
       enabled: true
-    thymeleaf:
-      mode: LEGACYHTML5
-      cache: false
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
 
 server:
   port: 8080
@@ -24,3 +24,11 @@ management:
   server:
     port: 9000
     address: 127.0.0.1
+
+---
+import:
+  folder: /src/test/resources
+spring:
+  config:
+    activate:
+      on-profile: local_dev
