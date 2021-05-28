@@ -20,9 +20,16 @@ public class RankingController {
 
     private final RankingRepository rankingRepository;
 
+    /**
+     * GET action preparing search view to show available datasets.
+     *
+     * @param model MVC data model
+     * @return view to render
+     */
     @GetMapping("/listings")
     public String getRankingListStartPage(Model model) {
-        return "start";
+        // TODO fetch available quarters for selection
+        return "listing/start";
     }
 
     /**
@@ -54,6 +61,6 @@ public class RankingController {
         List<Ranking> rankings = rankingRepository.retrieveRankingListItems("", gender, ageGroup, selectedFederation, "BVH Tennis");
         model.addAttribute(rankings);
 
-        return "result";
+        return "listing/result";
     }
 }
