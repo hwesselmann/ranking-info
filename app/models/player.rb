@@ -103,6 +103,7 @@ class Player < ApplicationRecord
           club.save
           existing_player.club = player.club
           existing_player.federation = player.federation
+          existing_player.nationality = player.nationality
         end
         ranking = Ranking.new(dtb_id: player.dtb_id,
                               age_group: 'Overall',
