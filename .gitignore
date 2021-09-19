@@ -44,3 +44,10 @@ coverage
 
 # vscode config files
 .vscode
+
+# intellij config file
+.idea/
+*.iml
+
+# folders from java rewrite project
+target/
