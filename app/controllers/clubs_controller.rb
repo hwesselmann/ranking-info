@@ -19,10 +19,9 @@ class ClubsController < ApplicationController
 
   def show
     quarter = current_quarter
-    players = Player.where("dtb_id IN (SELECT DISTINCT(dtb_id) FROM rankings
-                            WHERE date='#{quarter}')
-                            AND LOWER(club)=LOWER('#{params[:id]}')")
-                    .order(:lastname)
+    players = Ranking.where("date='#{quarter}' AND age_group='overall'
+                          AND LOWER(club)=LOWER('#{params[:id]}')")
+                     .order(:lastname)
     player_ranking = fill_club_info(players, quarter)
     @players = player_ranking
   end
@@ -38,19 +37,16 @@ class ClubsController < ApplicationController
   end
 
   def find_all_clubs(quarter, club)
-    Player.select(:club)
-          .where("dtb_id IN (SELECT DISTINCT(dtb_id)
-                                FROM rankings WHERE date='#{quarter}')
-                                AND LOWER(club) LIKE LOWER('%#{club}%')")
-          .order(:club)
-          .distinct
+    Ranking.select(:club)
+           .where("date='#{quarter}' AND LOWER(club) LIKE LOWER('%#{club}%')")
+           .order(:club)
+           .distinct
   end
 
   def count_players_for_club(quarter, club)
-    Player.select(:club)
-          .where("dtb_id IN (SELECT DISTINCT(dtb_id) FROM rankings
-                  WHERE date='#{quarter}') AND club='#{club}'")
-          .count
+    Ranking.select(:dtb_id)
+           .where("date='#{quarter}' AND age_group='overall' AND club='#{club}'")
+           .count
   end
 
   def fill_club_info(players, quarter)
@@ -83,7 +79,7 @@ class ClubsController < ApplicationController
 
   def fetch_basic_player_data(player, quarter)
     ranking = Ranking.find_by(dtb_id: player.dtb_id,
-                              age_group: 'Overall',
+                              age_group: 'overall',
                               date: quarter)
     age_group = Ranking.find_by(dtb_id: player.dtb_id, date: quarter,
                                 yob_ranking: false, age_group_ranking: true,
