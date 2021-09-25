@@ -8,8 +8,8 @@ class ImportController < ApplicationController
 
   def info
     # show some stats
-    @player_male_count = Player.where('dtb_id >= 10000000 AND dtb_id < 20000000').count
-    @player_female_count = Player.where('dtb_id >= 20000000 AND dtb_id < 30000000').count
+    @player_male_count = Ranking.select(:dtb_id).where('dtb_id >= 10000000 AND dtb_id < 20000000').distinct.count
+    @player_female_count = Ranking.select(:dtb_id).where('dtb_id >= 20000000 AND dtb_id < 30000000').distinct.count
     @ranking_count = Ranking.count
     @available_quarters = helpers.fetch_available_quarters
 
