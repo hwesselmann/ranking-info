@@ -49,8 +49,8 @@ class PlayersController < ApplicationController
   end
 
   def show
-    begin
-      @player = Player.find_by_dtb_id(params[:id])
+    #begin
+      @player = Ranking.where(dtb_id: params[:id]).order(date: :desc).first
       @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
       @current_rankings = get_current_rankings(@player.dtb_id)
       @complete_rankings = get_complete_rankings(@player.dtb_id).reverse!
@@ -58,9 +58,9 @@ class PlayersController < ApplicationController
       @score_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)[1]
       @data_diagram_complete = data_diagram_complete(@player.dtb_id)[0]
       @score_diagram_complete = data_diagram_complete(@player.dtb_id)[1]
-    rescue
-      redirect_to players_path, flash: { danger: 'Spieler nicht gefunden' }
-    end
+    #rescue
+    #  redirect_to players_path, flash: { danger: 'Spieler nicht gefunden' }
+    #end
   end
 
   def fill_up_dtb_id(dtb_id_part)
@@ -255,7 +255,6 @@ class PlayersController < ApplicationController
       scores[period] = ranking.score
     end
 
-    diagram_data = [{ name: 'Punkte', data: scores, vAxis: 0 }]
-    diagram_data
+    [{ name: 'Punkte', data: scores, vAxis: 0 }]
   end
 end

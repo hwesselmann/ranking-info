@@ -9,7 +9,7 @@ class ClubsSearchTest < ActionDispatch::IntegrationTest
   end
 
   test 'check club result list' do
-    get clubs_path, params: { commit: 'suchen', club: 'Must' }
+    get clubs_path, params: { commit: 'suchen', club: 'BVH' }
     assert_response :success
     assert assigns(:clubs)
     assert_template 'clubs/index'
