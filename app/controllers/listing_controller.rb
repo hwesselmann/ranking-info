@@ -67,9 +67,9 @@ class ListingController < ApplicationController
 
   def federations
     federations = []
-    players = Player.select(:federation).order(:federation).distinct
-    players.each do |player|
-      federations.push player.federation
+    rankings = Ranking.select(:federation).order(:federation).distinct
+    rankings.each do |ranking|
+      federations.push ranking.federation
     end
     federations
   end
@@ -82,7 +82,7 @@ class ListingController < ApplicationController
   end
 
   def age_group_selected(age_group)
-    if age_group.eql?('') then " AND age_group='Overall'"
+    if age_group.eql?('') then " AND age_group='overall'"
     else " AND age_group='#{params[:age_group]}'"
     end
   end

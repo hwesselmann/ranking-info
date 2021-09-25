@@ -17,9 +17,9 @@
         <tr>
           <td class="center is-hidden-mobile"><%= index + 1 %></td>
           <td class="center"><%= ranking.ranking_position %></td>
-          <td><%= ranking.player.lastname %>, <%= ranking.player.firstname %></td>
+          <td><%= ranking.lastname %>, <%= ranking.firstname %></td>
           <td class="center"><%= link_to ranking.dtb_id, player_path(ranking.dtb_id), class: 'has-text-info' %></td>
-          <td class="center is-hidden-mobile"><%= image_pack_tag("#{ranking.player.nationality.downcase}.svg", width: "30") %></td>
+          <td class="center is-hidden-mobile"><%= image_pack_tag("#{ranking.nationality.downcase}.svg", width: "30") %></td>
           <td class="is-hidden-mobile"><%= link_to ranking.club, club_path(ranking.club), class: 'has-text-info' %></td>
           <td class="is-hidden-mobile"><%= ranking.federation %></td>
           <td><%= ranking.score %></td>
