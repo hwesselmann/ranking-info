@@ -2,6 +2,11 @@ class CreateRankings < ActiveRecord::Migration[6.0]
   def change
     create_table :rankings do |t|
       t.integer :dtb_id, index: true
+      t.string :firstname, limit: 50
+      t.string :lastname, limit: 50, index: true
+      t.string :federation, limit: 50, index: true
+      t.string :club, index: true
+      t.string :nationality, limit: 3
       t.date :date
       t.string :age_group
       t.integer :ranking_position
@@ -13,5 +18,7 @@ class CreateRankings < ActiveRecord::Migration[6.0]
       t.timestamps
     end
     add_index :rankings, [:dtb_id, :date]
+    add_index :rankings, [:dtb_id, :date, :age_group, :ranking_position]
+    add_index :rankings, [:dtb_id, :date, :federation]
   end
 end
