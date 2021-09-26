@@ -5,12 +5,15 @@
 #
 class PlayersController < ApplicationController
   def index
+    # FIXME: change playersearch to work with rankings instead of players
     if params[:dtb_id] && !params[:dtb_id].eql?('')
       search_dtb_id = params[:dtb_id].strip
       dtb_id_start = fill_up_dtb_id(search_dtb_id.to_i)
       dtb_id_end = fill_up_dtb_id_end(search_dtb_id.to_i)
-      @players = Player.where("dtb_id >= #{dtb_id_start}
-                              AND dtb_id <= #{dtb_id_end}")
+      @players = Ranking.select(:dtb_id, :lastname, :firstname, :federation, :club, :nationality)
+                        .where("dtb_id >= #{dtb_id_start}
+                                AND dtb_id <= #{dtb_id_end}")
+                        .distinct
       # should return exactly one match => redirect to profile
       redirect_to action: 'show', id: search_dtb_id if @players.size == 1
     elsif params[:lastname] && !params[:lastname].eql?('')
@@ -21,35 +24,40 @@ class PlayersController < ApplicationController
         s_yob = params[:yob].strip
         yob_male = s_yob[2, 4].to_i + 100
         yob_female = yob_male + 100
-        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{s_lastname}%')
+        @players = Ranking.select(:dtb_id, :lastname, :firstname, :federation, :club, :nationality)
+                          .where("LOWER(lastname) LIKE LOWER('%#{s_lastname}%')
                                 AND ((dtb_id >= #{yob_male * 100_000}
                                 AND dtb_id <= #{yob_male * 100_000 + 99_999})
                                 OR (dtb_id>= #{yob_female * 100_000}
-                                  AND dtb_id <= #{yob_female * 100_000 + 99_999}))")
-                         .order(:lastname, :dtb_id)
+                                AND dtb_id <= #{yob_female * 100_000 + 99_999}))")
+                          .order(:lastname, :dtb_id).distinct
       else
-        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{s_lastname}%')")
-                         .order(:lastname, :dtb_id)
+        @players = Ranking.select(:dtb_id, :lastname, :firstname, :club, :federation, :nationality).where("LOWER(lastname) LIKE LOWER('%#{s_lastname}%')")
+                          .order(:lastname, :dtb_id).distinct
       end
       redirect_to action: 'show', id: @players[0].dtb_id if @players.size == 1
     elsif params[:yob] && !params[:yob].eql?('')
       s_yob = params[:yob].strip
       yob_male = s_yob[2, 4].to_i + 100
       yob_female = yob_male + 100
-      @players = Player.where("(dtb_id >= #{yob_male * 100_000}
-                              AND dtb_id <= #{yob_male * 100_000 + 99_999})
-                              OR (dtb_id >= #{yob_female * 100_000}
-                              AND dtb_id <= #{yob_female * 100_000 + 99_999})")
-                       .order(:lastname, :dtb_id)
+      @players = Ranking.select(:dtb_id, :lastname, :firstname, :federation, :club, :nationality)
+                        .where("(dtb_id >= #{yob_male * 100_000}
+                                AND dtb_id <= #{yob_male * 100_000 + 99_999})
+                                OR (dtb_id >= #{yob_female * 100_000}
+                                AND dtb_id <= #{yob_female * 100_000 + 99_999})")
+                        .order(:lastname, :dtb_id)
+                        .distinct
       redirect_to action: 'show', id: @players[0].dtb_id if @players.size == 1
     elsif params[:commit]
       # search was fired without parameters => show all
-      @players = Player.all.order(:lastname, :dtb_id)
+      @players = Ranking.select(:dtb_id, :lastname, :firstname, :federation, :club, :nationality)
+                         .order(:lastname, :dtb_id)
+                         .distinct
     end
   end
 
   def show
-    #begin
+    begin
       @player = Player.load_player_profile(params[:id])
       @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
       @current_rankings = get_current_rankings(@player.dtb_id)
@@ -58,9 +66,9 @@ class PlayersController < ApplicationController
       @score_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)[1]
       @data_diagram_complete = data_diagram_complete(@player.dtb_id)[0]
       @score_diagram_complete = data_diagram_complete(@player.dtb_id)[1]
-    #rescue
-    #  redirect_to players_path, flash: { danger: 'Spieler nicht gefunden' }
-    #end
+    rescue
+      redirect_to players_path, flash: { danger: 'Spieler nicht gefunden' }
+    end
   end
 
   def fill_up_dtb_id(dtb_id_part)
