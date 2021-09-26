@@ -50,7 +50,7 @@ class PlayersController < ApplicationController
 
   def show
     #begin
-      @player = Ranking.where(dtb_id: params[:id]).order(date: :desc).first
+      @player = Player.load_player_profile(params[:id])
       @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
       @current_rankings = get_current_rankings(@player.dtb_id)
       @complete_rankings = get_complete_rankings(@player.dtb_id).reverse!
