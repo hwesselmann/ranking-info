@@ -93,7 +93,7 @@ class PlayersController < ApplicationController
       current_rankings.each do |current_ranking|
         ranking = {}
         # 3. fill the initial hash
-        next if current_ranking.age_group.eql?('Overall')
+        next if current_ranking.age_group.eql?('overall')
 
         ranking['age_group'] = current_ranking.age_group
         ranking['position'] = current_ranking.ranking_position
