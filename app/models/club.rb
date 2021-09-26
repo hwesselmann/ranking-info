@@ -1,3 +1,8 @@
-class Club < ApplicationRecord
-  belongs_to :player, primary_key: 'dtb_id', foreign_key: 'dtb_id'
+# frozen_string_literal: true
+
+#
+# Model for a club of a player on the ranking (this is a transient object)
+#
+class Club
+  attr_accessor :name, :federation
 end

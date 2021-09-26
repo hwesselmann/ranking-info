@@ -9,8 +9,7 @@ class PlayersController < ApplicationController
       search_dtb_id = params[:dtb_id].strip
       dtb_id_start = fill_up_dtb_id(search_dtb_id.to_i)
       dtb_id_end = fill_up_dtb_id_end(search_dtb_id.to_i)
-      @players = Player.where("dtb_id >= #{dtb_id_start}
-                              AND dtb_id <= #{dtb_id_end}")
+      @players = Player.find_players_by_dtb_id(dtb_id_start, dtb_id_end)
       # should return exactly one match => redirect to profile
       redirect_to action: 'show', id: search_dtb_id if @players.size == 1
     elsif params[:lastname] && !params[:lastname].eql?('')
@@ -21,46 +20,34 @@ class PlayersController < ApplicationController
         s_yob = params[:yob].strip
         yob_male = s_yob[2, 4].to_i + 100
         yob_female = yob_male + 100
-        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{s_lastname}%')
-                                AND ((dtb_id >= #{yob_male * 100_000}
-                                AND dtb_id <= #{yob_male * 100_000 + 99_999})
-                                OR (dtb_id>= #{yob_female * 100_000}
-                                  AND dtb_id <= #{yob_female * 100_000 + 99_999}))")
-                         .order(:lastname, :dtb_id)
+        @players = Player.find_players_by_lastname_and_yob(s_lastname, yob_male, yob_female)
       else
-        @players = Player.where("LOWER(lastname) LIKE LOWER('%#{s_lastname}%')")
-                         .order(:lastname, :dtb_id)
+        @players = Player.find_players_by_lastname(s_lastname)
       end
       redirect_to action: 'show', id: @players[0].dtb_id if @players.size == 1
     elsif params[:yob] && !params[:yob].eql?('')
       s_yob = params[:yob].strip
       yob_male = s_yob[2, 4].to_i + 100
       yob_female = yob_male + 100
-      @players = Player.where("(dtb_id >= #{yob_male * 100_000}
-                              AND dtb_id <= #{yob_male * 100_000 + 99_999})
-                              OR (dtb_id >= #{yob_female * 100_000}
-                              AND dtb_id <= #{yob_female * 100_000 + 99_999})")
-                       .order(:lastname, :dtb_id)
+      @players = Player.find_players_by_yob(yob_male, yob_female)
       redirect_to action: 'show', id: @players[0].dtb_id if @players.size == 1
     elsif params[:commit]
       # search was fired without parameters => show all
-      @players = Player.all.order(:lastname, :dtb_id)
+      @players = Player.find_all_players
     end
   end
 
   def show
-    begin
-      @player = Player.find_by_dtb_id(params[:id])
-      @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
-      @current_rankings = get_current_rankings(@player.dtb_id)
-      @complete_rankings = get_complete_rankings(@player.dtb_id).reverse!
-      @data_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)[0]
-      @score_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)[1]
-      @data_diagram_complete = data_diagram_complete(@player.dtb_id)[0]
-      @score_diagram_complete = data_diagram_complete(@player.dtb_id)[1]
-    rescue
-      redirect_to players_path, flash: { danger: 'Spieler nicht gefunden' }
-    end
+    @player = Player.load_player_profile(params[:id])
+    @available_quarters = helpers.fetch_available_quarters(dtb_id: @player.dtb_id)
+    @current_rankings = get_current_rankings(@player.dtb_id)
+    @complete_rankings = get_complete_rankings(@player.dtb_id).reverse!
+    @data_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)[0]
+    @score_for_last_twelve_months = data_for_last_twelve_months(@player.dtb_id)[1]
+    @data_diagram_complete = data_diagram_complete(@player.dtb_id)[0]
+    @score_diagram_complete = data_diagram_complete(@player.dtb_id)[1]
+  rescue StandardError
+    redirect_to players_path, flash: { danger: 'Spieler nicht gefunden' } 
   end
 
   def fill_up_dtb_id(dtb_id_part)
@@ -255,7 +242,6 @@ class PlayersController < ApplicationController
       scores[period] = ranking.score
     end
 
-    diagram_data = [{ name: 'Punkte', data: scores, vAxis: 0 }]
-    diagram_data
+    [{ name: 'Punkte', data: scores, vAxis: 0 }]
   end
 end

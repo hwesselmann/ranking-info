@@ -5,8 +5,10 @@
 # below each fixture, per the syntax in the comments below
 #
 ranking_one: 
-  player: player_two
-  age_group: 'Overall'
+  nationality: GER
+  club: 'TC Musterhausen'
+  federation: 'TGJ'
+  age_group: 'overall'
   date: '2018-07-01'
   ranking_position: 283
   score: '15'
@@ -16,8 +18,12 @@ ranking_one:
   year_end_ranking: false
 
 ranking_two:
-  player: player_one
-  age_group: 'Overall'
+  firstname: J****n
+  lastname: P****y
+  nationality: GER
+  club: 'TC Musterhausen'
+  federation: 'TGJ'
+  age_group: 'overall'
   date: '2018-07-01'
   ranking_position: 284
   score: '14'
@@ -27,8 +33,12 @@ ranking_two:
   year_end_ranking: false
 
 ranking_three:
-  player: player_one
-  age_group: 'Overall'
+  firstname: J****n
+  lastname: P****y
+  nationality: GER
+  club: 'TC Musterhausen'
+  federation: 'TGJ'
+  age_group: 'overall'
   date: '2017-10-01'
   ranking_position: 284
   score: '14'
@@ -38,8 +48,12 @@ ranking_three:
   year_end_ranking: false
 
 ranking_four:
-  player: player_one
-  age_group: 'Overall'
+  firstname: J****n
+  lastname: P****y
+  nationality: GER
+  club: 'TC Musterhausen'
+  federation: 'TGJ'
+  age_group: 'overall'
   date: '2017-01-04'
   ranking_position: 284
   score: '14'
