@@ -34,9 +34,8 @@ class Player
   end
 
   def self.find_all_players
-    players_to_filter = Ranking.select(:dtb_id, :lastname, :firstname, :federation, :club, :nationality)
-                               .order(:lastname, :dtb_id, date: :desc)
-                               .distinct
+    players_to_filter = Ranking.select(:dtb_id, :lastname, :firstname, :federation, :club, :nationality, :date)
+                               .order(:lastname, :dtb_id, date: :desc).distinct
     players = []
     last_dtb_id = 0
     players_to_filter.each do |player|
