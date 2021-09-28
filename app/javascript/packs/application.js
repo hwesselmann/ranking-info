@@ -19,6 +19,7 @@ const images = require.context('../images', true)
 const imagePath = (name) => images(name, true)
 
 import "highcharts";
+import "@fortawesome/fontawesome-free/css/all"
 import "../stylesheets/application"
 
 document.addEventListener('DOMContentLoaded', () => {
