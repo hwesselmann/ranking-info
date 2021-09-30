@@ -30,4 +30,3 @@ tmp/*
 !tmp/pids/
 !tmp/pids/.keep
 yarn-error.log
-.idea
