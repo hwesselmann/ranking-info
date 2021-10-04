@@ -1,6 +1,7 @@
 {
   "short_name": "RankingInfo",
   "name": "RankingInfo",
+  "description": "Ranglisteninformationen - Der Anlaufpunkt zur Deutschen Tennis-Jugendrangliste",
   "icons": [
     {
       "src": "\/android-icon-36x36.png",
