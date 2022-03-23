@@ -3,7 +3,11 @@
 #
 # Rails application helper.
 #
-module ApplicationHelper  
+module ApplicationHelper
+  def track_action(page_title = '')
+    ahoy.track page_title, request.path_parameters
+  end
+
   # Returns the full title on a per-page basis.
   def full_title(page_title = '')
     base_title = 'Ranking-Info'
