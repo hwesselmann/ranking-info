@@ -1,6 +1,11 @@
 name: 'test and sca'
 
-on: [push]
+on:
+  push:
+    branches:
+    - '**'
+    tags-ignore:
+      - '**'
 
 jobs:
   vm-job:
