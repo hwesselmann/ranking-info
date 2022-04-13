@@ -8,7 +8,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'chartkick'
 gem 'jbuilder', '~> 2.7'
 gem 'puma', '~> 4.3'
-gem 'rails', '~> 6.1.4.6', '>= 6.1.4.6'
+gem 'rails', '~> 6.1.4.7', '>= 6.1.4.7'
 gem 'sass-rails', '>= 6'
 gem 'webpacker', '~> 4.0'
 
