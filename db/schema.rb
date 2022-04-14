@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_24_184238) do
+ActiveRecord::Schema[6.1].define(version: 2021_09_24_184238) do
 
   create_table "rankings", force: :cascade do |t|
     t.integer "dtb_id"
