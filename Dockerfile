@@ -1,5 +1,5 @@
 # build stage
-FROM ruby:2.6.6-alpine as build
+FROM ruby:3.0.4-alpine as build
 
 RUN apk add --update --no-cache \
     build-base \
@@ -43,7 +43,7 @@ RUN RAILS_ENV=production bundle exec rake assets:precompile
 RUN rm -rf node_modules tmp/cache vendor/assets lib/assets spec
 
 # final image
-FROM ruby:2.6.6-alpine
+FROM ruby:3.0.4-alpine
 LABEL maintainer="hauke@h-dawg.de"
 
 # Add Alpine packages
@@ -68,6 +68,4 @@ RUN date -u > BUILD_TIME
 
 EXPOSE 3000
 
-CMD rm -f tmp/pids/server.pid \
-  && bundle exec rails db:migrate \
-  && bundle exec rails s -b 0.0.0.0 -p 3000
+CMD ["entrypoint.sh"]
