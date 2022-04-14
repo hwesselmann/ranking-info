@@ -25,7 +25,6 @@ Procfile*
 public/assets/*
 public/packs-test
 public/packs/*
-public/uploads
 tmp/*
 !tmp/pids/
 !tmp/pids/.keep
