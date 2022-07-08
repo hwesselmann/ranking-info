@@ -59,7 +59,7 @@ COPY --from=build /app /app
 
 WORKDIR /app
 
-RUN chmod 777 public/uploads
+RUN chmod 777 public/uploads && chmod +x entrypoint.sh
 
 ENV SECRET_KEY_BASE rankingInfo
 
@@ -68,4 +68,4 @@ RUN date -u > BUILD_TIME
 
 EXPOSE 3000
 
-CMD ["entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
