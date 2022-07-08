@@ -10,7 +10,7 @@ RUN apk add --update --no-cache \
     yarn \
     tzdata \
     sqlite-dev \
-    python2 \
+    python3 \
     make \
     g++
 
