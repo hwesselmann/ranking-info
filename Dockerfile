@@ -1,71 +1,73 @@
-# build stage
-FROM ruby:3.0.4-alpine as build
-
-RUN apk add --update --no-cache \
-    build-base \
-    postgresql-dev \
-    git \
-    imagemagick \
-    nodejs-current \
-    yarn \
-    tzdata \
-    sqlite-dev \
-    python3 \
-    make \
-    g++
+FROM ruby:3.0.4-slim-bullseye AS assets
+LABEL maintainer="Hauke Wesselmann <hauke@h-dawg.de>"
 
 WORKDIR /app
 
-ENV SECRET_KEY_BASE rankingInfo
+RUN bash -c "set -o pipefail && apt-get update \
+  && apt-get install -y --no-install-recommends build-essential curl git libpq-dev \
+  && curl -sSL https://deb.nodesource.com/setup_16.x | bash - \
+  && curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+  && echo 'deb https://dl.yarnpkg.com/debian/ stable main' | tee /etc/apt/sources.list.d/yarn.list \
+  && apt-get update && apt-get install -y --no-install-recommends nodejs yarn \
+  && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man \
+  && apt-get clean \
+  && useradd --create-home ruby \
+  && mkdir /node_modules && chown ruby:ruby -R /node_modules /app"
 
-# Install gems
-COPY Gemfile* /app/
-RUN gem install bundler
+USER ruby
+
+COPY --chown=ruby:ruby Gemfile* ./
 RUN bundle config --global frozen true \
  && bundle config --local without development:test \
- && bundle install --jobs=4 \
- # Remove unneeded files (cached *.gem, *.o, *.c)
- && rm -rf /usr/local/bundle/cache/*.gem \
- && find /usr/local/bundle/gems/ -name "*.c" -delete \
- && find /usr/local/bundle/gems/ -name "*.o" -delete
+ && bundle install --jobs=4
 
-# Install yarn packages
-COPY package.json yarn.lock /app/
+COPY --chown=ruby:ruby package.json *yarn* ./
 RUN yarn install
 
-# Add the Rails app
-COPY . /app
+ARG RAILS_ENV="production"
+ARG NODE_ENV="production"
+ENV RAILS_ENV="${RAILS_ENV}" \
+    NODE_ENV="${NODE_ENV}" \
+    PATH="${PATH}:/home/ruby/.local/bin:/node_modules/.bin" \
+    USER="ruby"
 
-# Precompile assets
-RUN RAILS_ENV=production bundle exec rake assets:precompile
+COPY --chown=ruby:ruby . .
 
-# Remove folders not needed in resulting image
-RUN rm -rf node_modules tmp/cache vendor/assets lib/assets spec
+RUN if [ "${RAILS_ENV}" != "development" ]; then \
+  SECRET_KEY_BASE=dummyvalue rails assets:precompile; fi
 
-# final image
-FROM ruby:3.0.4-alpine
-LABEL maintainer="hauke@h-dawg.de"
+CMD ["bash"]
 
-# Add Alpine packages
-RUN apk add --update --no-cache \
-    postgresql-client \
-    imagemagick \
-    tzdata \
-    file
+###############################################################################
 
-# Copy app with gems from former build stage
-COPY --from=build /usr/local/bundle/ /usr/local/bundle/
-COPY --from=build /app /app
+FROM ruby:3.0.4-slim-bullseye AS app
+LABEL maintainer="Hauke Wesselmann <hauke@h-dawg.de>"
 
 WORKDIR /app
 
-RUN chmod 777 public/uploads && chmod +x entrypoint.sh
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends build-essential curl libpq-dev \
+  && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man \
+  && apt-get clean \
+  && useradd --create-home ruby \
+  && chown ruby:ruby -R /app
 
-ENV SECRET_KEY_BASE rankingInfo
+USER ruby
 
-# Save timestamp of image building
-RUN date -u > BUILD_TIME
+COPY --chown=ruby:ruby bin/ ./bin
+RUN chmod 0755 bin/*
+
+ARG RAILS_ENV="production"
+ENV RAILS_ENV="${RAILS_ENV}" \
+    PATH="${PATH}:/home/ruby/.local/bin" \
+    USER="ruby"
+
+COPY --chown=ruby:ruby --from=assets /usr/local/bundle /usr/local/bundle
+COPY --chown=ruby:ruby --from=assets /app/public /public
+COPY --chown=ruby:ruby . .
+
+#ENTRYPOINT ["/app/docker-entrypoint-web"]
 
 EXPOSE 3000
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["rails", "s"]
