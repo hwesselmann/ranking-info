@@ -68,6 +68,10 @@ COPY --chown=ruby:ruby . .
 
 #ENTRYPOINT ["/app/docker-entrypoint-web"]
 
+RUN chmod 777 public/uploads
+
+ENV SECRET_KEY_BASE rankingInfo
+
 EXPOSE 3000
 
 CMD ["rails", "s"]
