@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[6.1].define(version: 2021_09_24_184238) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_07_20_150031) do
   create_table "rankings", force: :cascade do |t|
     t.integer "dtb_id"
     t.string "firstname", limit: 50
@@ -26,8 +25,10 @@ ActiveRecord::Schema[6.1].define(version: 2021_09_24_184238) do
     t.boolean "age_group_ranking", default: false
     t.boolean "yob_ranking", default: false
     t.boolean "year_end_ranking", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["age_group", "age_group_ranking", "yob_ranking", "year_end_ranking", "date"], name: "age_group_all_options"
+    t.index ["age_group", "date"], name: "index_rankings_on_age_group_and_date"
     t.index ["club"], name: "index_rankings_on_club"
     t.index ["dtb_id", "date", "federation"], name: "index_rankings_on_dtb_id_and_date_and_federation"
     t.index ["dtb_id", "date"], name: "index_rankings_on_dtb_id_and_date"
@@ -39,8 +40,8 @@ ActiveRecord::Schema[6.1].define(version: 2021_09_24_184238) do
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "password_digest"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
