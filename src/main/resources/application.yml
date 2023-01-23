@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: Ranking-Info Webservice
+  profiles:
+    active: log-console-info, local-dev
+  jmx:
+    enabled: false
+
+info:
+  application:
+    name: ${spring.application.name}
+    description: the German youth tennis ranking with some filters and historical data
+    version: '@project.version@'
+    spring-boot-version: '@project.parent.version@'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
