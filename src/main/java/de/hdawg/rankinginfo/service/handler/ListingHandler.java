@@ -13,7 +13,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * handler for dealing with listing requests.
@@ -26,6 +28,12 @@ public class ListingHandler {
   public static final String PATH_PARAM_QUARTER = "quarter";
   public static final String PATH_PARAM_AGE_GROUP = "ageGroup";
   public static final String PATH_PARAM_GENDER = "gender";
+  public static final String PATH_PARAM_CLUB = "club";
+  public static final String PATH_PARAM_MODIFIER = "modifier";
+  public static final String KEY_YOB = "yob";
+  public static final String KEY_OVERALL = "overall";
+  public static final String KEY_ENDOFYEAR = "endofyear";
+
 
   private final ListingInfoContributor listingInfoContributor;
   private final ListingService listingService;
@@ -39,11 +47,12 @@ public class ListingHandler {
   public Mono<ServerResponse> retrieveAgeGroupListing(ServerRequest serverRequest) {
     log.debug("requesting ranking for quarter {} for age group {}",
         serverRequest.pathVariable(PATH_PARAM_QUARTER), serverRequest.pathVariable(PATH_PARAM_AGE_GROUP));
-    // FIXME check modifier combination
+    Map<String, Boolean> modifiers = mapModifier(serverRequest.pathVariable(PATH_PARAM_MODIFIER));
     try {
       LocalDate rankingPeriod = checkAndMapRankingPeriod(serverRequest.pathVariable(PATH_PARAM_QUARTER));
       var rankings = listingService.getAgeGroupRankings(rankingPeriod, serverRequest.pathVariable(PATH_PARAM_AGE_GROUP),
-          serverRequest.pathVariable(PATH_PARAM_GENDER), false, false, false);
+          serverRequest.pathVariable(PATH_PARAM_GENDER), modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL),
+          modifiers.get(KEY_ENDOFYEAR));
       return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(BodyInserters.fromValue(rankings));
     } catch (RankingPeriodException rpe) {
       log.error("the quarter requested ({}) is invalid", serverRequest.pathVariable(PATH_PARAM_QUARTER));
@@ -60,12 +69,13 @@ public class ListingHandler {
   public Mono<ServerResponse> retrieveAgeGroupListingFilteredByClub(ServerRequest serverRequest) {
     log.debug("requesting ranking for quarter {} for age group {}",
         serverRequest.pathVariable(PATH_PARAM_QUARTER), serverRequest.pathVariable(PATH_PARAM_AGE_GROUP));
-    // FIXME check modifier combination
+    Map<String, Boolean> modifiers = mapModifier(serverRequest.pathVariable(PATH_PARAM_MODIFIER));
     try {
       LocalDate rankingPeriod = checkAndMapRankingPeriod(serverRequest.pathVariable(PATH_PARAM_QUARTER));
       var rankings = listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod,
           serverRequest.pathVariable(PATH_PARAM_AGE_GROUP), serverRequest.pathVariable(PATH_PARAM_GENDER),
-          false, false, false, "");
+          modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR),
+          serverRequest.pathVariable(PATH_PARAM_CLUB));
       return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(BodyInserters.fromValue(rankings));
     } catch (RankingPeriodException rpe) {
       log.error("the quarter requested ({}) is invalid", serverRequest.pathVariable(PATH_PARAM_QUARTER));
@@ -96,15 +106,19 @@ public class ListingHandler {
     return LocalDate.of(year, month, day);
   }
 
-  boolean verifyCombinationOfModifiersIsValid(boolean yobRanking, boolean overallRanking, boolean endOfYearRanking) {
-    if (yobRanking) {
-      return (!overallRanking && !endOfYearRanking);
-    } else {
-      if (overallRanking) {
-        return !endOfYearRanking;
-      } else {
-        return true;
+  Map<String, Boolean> mapModifier(String pathVariable) {
+    Map<String, Boolean> modifiers = new HashMap<>();
+    modifiers.put(KEY_YOB, false);
+    modifiers.put(KEY_OVERALL, false);
+    modifiers.put(KEY_ENDOFYEAR, false);
+    if (!pathVariable.isEmpty() && !pathVariable.isBlank()) {
+      switch (pathVariable) {
+        case "yobonly" -> modifiers.put(KEY_YOB, true);
+        case KEY_OVERALL -> modifiers.put(KEY_OVERALL, true);
+        case KEY_ENDOFYEAR -> modifiers.put(KEY_ENDOFYEAR, true);
+        default -> throw new IllegalStateException("Unexpected value for modifier: " + pathVariable);
       }
     }
+    return modifiers;
   }
 }

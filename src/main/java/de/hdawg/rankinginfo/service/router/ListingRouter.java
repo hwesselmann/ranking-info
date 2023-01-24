@@ -17,8 +17,8 @@ public class ListingRouter {
   @Bean
   public RouterFunction<ServerResponse> route(ListingHandler listingHandler) {
     return RouterFunctions.route()
-        .GET("/listing/{quarter}/{gender}/{ageGroup}", RequestPredicates.accept(MediaType.APPLICATION_JSON), listingHandler::retrieveAgeGroupListing)
-        .GET("/listing/{quarter}/{gender}/{ageGroup}/{club}", RequestPredicates.accept(MediaType.APPLICATION_JSON), listingHandler::retrieveAgeGroupListingFilteredByClub)
+        .GET("/listing/{quarter}/{gender}/{ageGroup}/{modifier}", RequestPredicates.accept(MediaType.APPLICATION_JSON), listingHandler::retrieveAgeGroupListing)
+        .GET("/listing/{quarter}/{gender}/{ageGroup}/{modifier}/{club}", RequestPredicates.accept(MediaType.APPLICATION_JSON), listingHandler::retrieveAgeGroupListingFilteredByClub)
         .build();
   }
 }

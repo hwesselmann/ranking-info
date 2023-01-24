@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,17 +56,34 @@ class ListingHandlerTest {
     assertEquals("the requested ranking period start with an invalid day", exception.getMessage());
   }
 
-  @DisplayName("check if validation of modifiers works")
+  @DisplayName("check correct mapping of modifiers")
   @Test
-  void checkIfModifiersCombinationValidationWorks() {
-    assertTrue(sut.verifyCombinationOfModifiersIsValid(true, false, false));
-    assertTrue(sut.verifyCombinationOfModifiersIsValid(false, true, false));
-    assertTrue(sut.verifyCombinationOfModifiersIsValid(false, false, true));
-    assertTrue(sut.verifyCombinationOfModifiersIsValid(false, false, false));
+  void checkModifierMapping() {
+    Map<String, Boolean> result = sut.mapModifier("yobonly");
+    assertTrue(result.get("yob"));
+    assertFalse(result.get("overall"));
+    assertFalse(result.get("endofyear"));
 
-    assertFalse(sut.verifyCombinationOfModifiersIsValid(true, true, true));
-    assertFalse(sut.verifyCombinationOfModifiersIsValid(true, true, false));
-    assertFalse(sut.verifyCombinationOfModifiersIsValid(true, false, true));
-    assertFalse(sut.verifyCombinationOfModifiersIsValid(false, true, true));
+    result = sut.mapModifier("overall");
+    assertFalse(result.get("yob"));
+    assertTrue(result.get("overall"));
+    assertFalse(result.get("endofyear"));
+
+    result = sut.mapModifier("endofyear");
+    assertFalse(result.get("yob"));
+    assertFalse(result.get("overall"));
+    assertTrue(result.get("endofyear"));
+
+    result = sut.mapModifier("");
+    assertFalse(result.get("yob"));
+    assertFalse(result.get("overall"));
+    assertFalse(result.get("endofyear"));
+
+    result = sut.mapModifier(" ");
+    assertFalse(result.get("yob"));
+    assertFalse(result.get("overall"));
+    assertFalse(result.get("endofyear"));
+
+    assertThrows(IllegalStateException.class, () -> sut.mapModifier("invalid"));
   }
 }
