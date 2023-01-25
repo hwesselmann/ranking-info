@@ -54,9 +54,10 @@ public class ListingService {
    * @return listing container
    */
   public Listing getAgeGroupRankings(LocalDate rankingPeriod, String ageGroup, String gender, boolean isYobRanking, boolean overallRanking, boolean endOfYearRanking) {
+    String ageGroupWithGenderMarker = genderShortForm(gender) + ageGroup.toUpperCase();
     Listing result = Listing.builder()
         .rankingPeriod(rankingPeriod)
-        .ageGroup(ageGroup)
+        .ageGroup(ageGroupWithGenderMarker)
         .yobRanking(isYobRanking)
         .overallRanking(overallRanking)
         .endOfYearRanking(endOfYearRanking)
@@ -69,5 +70,13 @@ public class ListingService {
     }
     result.setListingItems(listingItems);
     return result;
+  }
+
+  private String genderShortForm(String gender) {
+    if ("boys".equalsIgnoreCase(gender)) {
+      return "m";
+    } else {
+      return "w";
+    }
   }
 }
