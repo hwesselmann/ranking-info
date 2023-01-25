@@ -117,5 +117,4 @@ public class ListingRouter {
                 .GET(listingHandler::retrieveAgeGroupListing)))
         .build();
   }
-
 }
