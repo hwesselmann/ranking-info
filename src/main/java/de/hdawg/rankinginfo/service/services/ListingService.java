@@ -22,9 +22,24 @@ public class ListingService {
 
   private final RankingRepository rankingRepository;
 
+  /**
+   * retrieve the requested age groups. Filter results by given club String.
+   *
+   * @param rankingPeriod ranking period
+   * @param ageGroup age group
+   * @param gender gender
+   * @param isYobRanking yob players only
+   * @param overallRanking overall ranking including younger players
+   * @param endOfYearRanking is end of year ranking
+   * @param club club to filter for
+   * @return listing container
+   */
   public Listing getAgeGroupRankingsFilteredByClub(LocalDate rankingPeriod, String ageGroup, String gender, boolean isYobRanking, boolean overallRanking, boolean endOfYearRanking, String club) {
-    // TODO filter results for club
-    return getAgeGroupRankings(rankingPeriod, ageGroup, gender, isYobRanking, overallRanking, endOfYearRanking);
+    Listing result = getAgeGroupRankings(rankingPeriod, ageGroup, gender, isYobRanking, overallRanking, endOfYearRanking);
+    List<ListingItem> filteredItems = result.getListingItems().stream().filter(r -> r.club().contains(club)).toList();
+    result.setListingItems(filteredItems);
+
+    return result;
   }
 
   /**
