@@ -111,9 +111,12 @@ public class ListingHandler {
     modifiers.put(KEY_YOB, false);
     modifiers.put(KEY_OVERALL, false);
     modifiers.put(KEY_ENDOFYEAR, false);
+    if ("official".equalsIgnoreCase(pathVariable)) {
+      return modifiers;
+    }
     if (!pathVariable.isEmpty() && !pathVariable.isBlank()) {
       switch (pathVariable) {
-        case "yobonly" -> modifiers.put(KEY_YOB, true);
+        case KEY_YOB -> modifiers.put(KEY_YOB, true);
         case KEY_OVERALL -> modifiers.put(KEY_OVERALL, true);
         case KEY_ENDOFYEAR -> modifiers.put(KEY_ENDOFYEAR, true);
         default -> throw new IllegalStateException("Unexpected value for modifier: " + pathVariable);

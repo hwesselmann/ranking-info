@@ -1,11 +1,13 @@
 package de.hdawg.rankinginfo.service.repository;
 
 import de.hdawg.rankinginfo.service.model.Ranking;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+@Component
 public class RankingRepository {
   public List<Ranking> getRankingsForListing(LocalDate quarter, String ageGroup, String gender, boolean isYobRanking, boolean overallRanking, boolean endOfYearRanking) {
     return Collections.emptyList();
