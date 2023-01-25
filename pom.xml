@@ -19,6 +19,8 @@
     <java.version>17</java.version>
     <!-- dependencies -->
     <springdoc-openapi-starter-webflux-ui.version>2.0.2</springdoc-openapi-starter-webflux-ui.version>
+    <liquibase-core.version>4.19.0</liquibase-core.version>
+    <h2.version>2.1.214</h2.version>
     <!-- plugins -->
     <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>3.0.0-M8</maven-failsafe-plugin.version>
@@ -36,6 +38,23 @@
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
       <version>${springdoc-openapi-starter-webflux-ui.version}</version>
+    </dependency>
+
+    <!-- persistence -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+      <version>${liquibase-core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- monitoring -->

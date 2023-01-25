@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-tables
+      author: hwesselmann
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+              - column:
+                  name: dtbid
+                  type: varchar(8)
+              - column:
+                  name: rankingperiod
+                  type: date
+              - column:
+                  name: lastname
+                  type: varchar(255)
+              - column:
+                  name: firstname
+                  type: varchar(255)
+              - column:
+                  name: rankingposition
+                  type: integer
+              - column:
+                  name: nationality
+                  type: varchar(255)
+              - column:
+                  name: federation
+                  type: varchar(255)
+              - column:
+                  name: club
+                  type: varchar(255)
+              - column:
+                  name: agegroup
+                  type: varchar(10)
+              - column:
+                  name: yobrankings
+                  type: boolean
+              - column:
+                  name: overallranking
+                  type: boolean
+              - column:
+                  name: endofyearranking
+                  type: boolean
+              - column:
+                  name: points
+                  type: varchar(255)
+            remarks: main table holding data for calculated rankings
+            tableName: ranking

@@ -23,3 +23,14 @@ management:
       enabled: true
     java:
       enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-dev
+  datasource:
+    url: jdbc:h2:mem:devdb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
