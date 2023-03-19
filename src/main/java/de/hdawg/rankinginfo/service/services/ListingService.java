@@ -61,7 +61,7 @@ public class ListingService {
         .overallRanking(overallRanking)
         .endOfYearRanking(endOfYearRanking)
         .build();
-    List<Ranking> rankingsFromDb = rankingRepository.getRankingsForListing(rankingPeriod, ageGroup, gender, isYobRanking, overallRanking, endOfYearRanking);
+    List<Ranking> rankingsFromDb = rankingRepository.getRankingsForListing(rankingPeriod.plusDays(1), ageGroup, gender, isYobRanking, overallRanking, endOfYearRanking);
     List<ListingItem> listingItems = rankingsFromDb.stream()
         .map(r -> new ListingItem(r.position(), r.dtbId(), r.firstname(), r.lastname(), r.nationality(), r.club(), r.federation(), r.points()))
         .toList();
