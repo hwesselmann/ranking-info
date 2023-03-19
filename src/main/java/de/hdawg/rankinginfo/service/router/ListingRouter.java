@@ -98,14 +98,6 @@ public class ListingRouter {
                           @Content(
                               mediaType = MediaType.APPLICATION_JSON_VALUE,
                               schema = @Schema(implementation = ErrorResponse.class))
-                      }),
-                  @ApiResponse(
-                      responseCode = "400",
-                      description = "bad request - most commonly using wrong parameters",
-                      content = {
-                          @Content(
-                              mediaType = MediaType.APPLICATION_JSON_VALUE,
-                              schema = @Schema(implementation = ErrorResponse.class))
                       })
               }))
   })
