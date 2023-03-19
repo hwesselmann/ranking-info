@@ -30,7 +30,7 @@ spring:
     activate:
       on-profile: local-dev
   datasource:
-    url: jdbc:h2:mem:devdb
+    url: jdbc:h2:file:~/Workspace/ranking-info-x/ranking-info-dev
     username: sa
     password: password
     driverClassName: org.h2.Driver
