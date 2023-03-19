@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-listing-index-on-ranking
+      author: hwesselmann
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: rankingperiod
+              - column:
+                  name: agegroup
+              - column:
+                  name: yobrankings
+              - column:
+                  name: overallranking
+              - column:
+                  name: endofyearranking
+              - column:
+                  name: points
+            indexName: idx_listing
+            tableName: ranking
