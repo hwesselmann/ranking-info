@@ -59,7 +59,7 @@ class ListingHandlerTest {
   @DisplayName("check correct mapping of modifiers")
   @Test
   void checkModifierMapping() {
-    Map<String, Boolean> result = sut.mapModifier("yobonly");
+    Map<String, Boolean> result = sut.mapModifier("yob");
     assertTrue(result.get("yob"));
     assertFalse(result.get("overall"));
     assertFalse(result.get("endofyear"));
