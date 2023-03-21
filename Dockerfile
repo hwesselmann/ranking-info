@@ -1,7 +1,7 @@
-FROM eclipse-temurin:17.0.5_8-jdk-alpine as deps
+FROM eclipse-temurin:19.0.2_7-jdk-alpine as deps
 
 # Identify dependencies
-COPY ./app.jar /app/app.jar
+COPY ./target/*.jar /app/app.jar
 RUN mkdir /app/unpacked && \
     cd /app/unpacked && \
     unzip ../app.jar && \
@@ -17,7 +17,7 @@ RUN mkdir /app/unpacked && \
     ./app.jar > /deps.info
 
 # base image to build a JRE
-FROM eclipse-temurin:17.0.5_8-jdk-alpine as temurin-jdk
+FROM eclipse-temurin:19.0.2_7-jdk-alpine as temurin-jdk
 
 # required for strip-debug to work
 RUN apk add --no-cache binutils
@@ -52,7 +52,7 @@ RUN mkdir /app && \
 
 USER 1000
 
-COPY --chown=1000:1000 ./app.jar /app/app.jar
+COPY --chown=1000:1000 ./target/*.jar /app/app.jar
 WORKDIR /app
 
 EXPOSE 8080
