@@ -1,6 +1,5 @@
 package de.hdawg.rankinginfo.service.controller;
 
-import de.hdawg.rankinginfo.service.actuator.ListingInfoContributor;
 import de.hdawg.rankinginfo.service.exception.RankingPeriodException;
 import de.hdawg.rankinginfo.service.model.listing.Listing;
 import de.hdawg.rankinginfo.service.services.ListingService;
@@ -29,11 +28,10 @@ public class ListingController {
   public static final String KEY_OVERALL = "overall";
   public static final String KEY_ENDOFYEAR = "endofyear";
   private static final Logger log = LoggerFactory.getLogger(ListingController.class);
-  private final ListingInfoContributor listingInfoContributor;
   private final ListingService listingService;
 
-  public ListingController(ListingInfoContributor listingInfoContributor, ListingService listingService) {
-    this.listingInfoContributor = listingInfoContributor;
+  public ListingController(ListingService listingService) {
+    ;
     this.listingService = listingService;
   }
 

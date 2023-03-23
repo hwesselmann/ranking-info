@@ -1,6 +1,5 @@
 package de.hdawg.rankinginfo.service.controller;
 
-import de.hdawg.rankinginfo.service.actuator.ListingInfoContributor;
 import de.hdawg.rankinginfo.service.exception.RankingPeriodException;
 import de.hdawg.rankinginfo.service.services.ListingService;
 import org.junit.jupiter.api.DisplayName;
@@ -16,13 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class ListingControllerTest {
 
   @Mock
-  ListingInfoContributor listingInfoContributor;
-
-  @Mock
   ListingService listingService;
-
   @InjectMocks
-  ListingController sut = new ListingController(listingInfoContributor, listingService);
+  ListingController sut = new ListingController(listingService);
 
   @DisplayName("check if mapping of input to ranking period works")
   @Test
