@@ -47,7 +47,7 @@ public class ListingController {
    * @return listing container with requested rankings
    */
   @Operation(summary = "get listings for specified quarter, gender, age group and modifiers")
-  @GetMapping(path = "/listing/{quarter}/{gender}/{ageGroup}/{modifier}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<Listing> getRequestedListing(
       @Parameter(description = "ranking period in format yyyy-mm-dd")
       @PathVariable(value = "quarter") String quarter,
@@ -76,7 +76,7 @@ public class ListingController {
    * @return listing container with requested rankings
    */
   @Operation(summary = "get listings for specified quarter, gender, age group and modifiers filtered by club string")
-  @GetMapping(path = "/listing/{quarter}/{gender}/{ageGroup}/{modifier}/{club}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}/{club}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<Listing> getRequestedListingWithClubFilter(
       @Parameter(description = "ranking period in format yyyy-mm-dd")
       @PathVariable(value = "quarter") String quarter,
