@@ -74,12 +74,12 @@ class ListingRouterTest {
   }
 
   private Listing prepareListing(boolean filtered) {
-    Listing result = Listing.builder().rankingPeriod(LocalDate.of(2022, 3, 31))
-        .ageGroup("U14").overallRanking(false).endOfYearRanking(false).yobRanking(false)
-        .build();
+    Listing result = new Listing(LocalDate.of(2022, 3, 31), "U14",
+        false, false, false);
     List<ListingItem> items = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
-      ListingItem item = new ListingItem(1, "12345678", "Hans", "Spieler", Nationality.GER, "TC Tennis", Federation.WTV, "21,3");
+      ListingItem item = new ListingItem(1, "12345678", "Hans", "Spieler",
+          Nationality.GER, "TC Tennis", Federation.WTV, "21,3");
       if (!filtered) {
         items.add(item);
       } else {
