@@ -3,8 +3,8 @@ package de.hdawg.rankinginfo.service.handler;
 import de.hdawg.rankinginfo.service.actuator.ListingInfoContributor;
 import de.hdawg.rankinginfo.service.exception.RankingPeriodException;
 import de.hdawg.rankinginfo.service.services.ListingService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -20,8 +20,6 @@ import java.util.Map;
 /**
  * handler for dealing with listing requests.
  */
-@Slf4j
-@RequiredArgsConstructor
 @Component
 public class ListingHandler {
 
@@ -33,10 +31,14 @@ public class ListingHandler {
   public static final String KEY_YOB = "yob";
   public static final String KEY_OVERALL = "overall";
   public static final String KEY_ENDOFYEAR = "endofyear";
-
-
+  private static final Logger log = LoggerFactory.getLogger(ListingHandler.class);
   private final ListingInfoContributor listingInfoContributor;
   private final ListingService listingService;
+
+  public ListingHandler(ListingInfoContributor listingInfoContributor, ListingService listingService) {
+    this.listingInfoContributor = listingInfoContributor;
+    this.listingService = listingService;
+  }
 
   /**
    * handler for retrieving an age group ranking list respecting search headers.

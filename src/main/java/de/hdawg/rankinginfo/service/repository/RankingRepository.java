@@ -3,7 +3,6 @@ package de.hdawg.rankinginfo.service.repository;
 import de.hdawg.rankinginfo.service.model.Federation;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.Ranking;
-import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +13,14 @@ import java.util.List;
 /**
  * Data access layer for ranking data.
  */
-@RequiredArgsConstructor
 @Component
 public class RankingRepository {
 
   private final JdbcTemplate jdbcTemplate;
+
+  public RankingRepository(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
 
   public List<Ranking> getRankingsForListing(LocalDate quarter, String ageGroup, String gender, boolean isYobRanking, boolean overallRanking, boolean endOfYearRanking) {
     String genderNumericalIdentifier = "1";
