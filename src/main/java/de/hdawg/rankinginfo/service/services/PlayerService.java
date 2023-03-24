@@ -4,9 +4,12 @@ import de.hdawg.rankinginfo.service.model.Federation;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.Ranking;
 import de.hdawg.rankinginfo.service.model.player.Player;
+import de.hdawg.rankinginfo.service.model.player.PlayerSearchResult;
+import de.hdawg.rankinginfo.service.model.player.PlayerSearchResultItem;
 import de.hdawg.rankinginfo.service.repository.RankingRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,11 +25,18 @@ public class PlayerService {
     this.rankingRepository = rankingRepository;
   }
 
-  public List<Player> findPlayers(String dtbId, String name, String yob) {
+  public PlayerSearchResult findPlayers(String dtbId, String name, String yob) {
     List<Ranking> rankings = rankingRepository.findPlayers(dtbId, name, yob);
-    return rankings.stream()
+    List<Player> players = rankings.stream()
         .map(r -> new Player(r.dtbId(), r.firstname(), r.lastname(), r.nationality(), r.club(), r.federation()))
         .toList().stream().distinct().toList();
+    PlayerSearchResult result = new PlayerSearchResult();
+    result.setCount(players.size());
+    result.setRequested(LocalDateTime.now());
+    List<PlayerSearchResultItem> items = players.stream().map(p -> new PlayerSearchResultItem(p.getDtbId(),p.getFirstname(), p.getLastname(),
+            p.getCurrentFederation(), p.getNationality(), p.getCurrentClub())).toList();
+    result.setItems(items);
+    return result;
   }
 
   /**

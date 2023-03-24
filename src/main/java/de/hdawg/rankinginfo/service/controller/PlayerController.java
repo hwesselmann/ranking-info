@@ -1,6 +1,7 @@
 package de.hdawg.rankinginfo.service.controller;
 
 import de.hdawg.rankinginfo.service.model.player.Player;
+import de.hdawg.rankinginfo.service.model.player.PlayerSearchResult;
 import de.hdawg.rankinginfo.service.services.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,12 +54,12 @@ public class PlayerController {
    */
   @Operation(summary = "search for a player by dtbId, year of birth an/or lastname")
   @GetMapping(path = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<List<Player>> searchPlayers(@Parameter(description = "DTB-ID to query")
-                                          @RequestParam(value = "dtbid", required = false) String dtbId,
-                                          @Parameter(description = "name to query", required = false)
-                                          @RequestParam(value = "name", required = false) String name,
-                                          @Parameter(description = "year of birth to query", required = false)
-                                          @RequestParam(value = "yob", required = false) String yob) {
+  public Mono<PlayerSearchResult> searchPlayers(@Parameter(description = "DTB-ID to query")
+                                                      @RequestParam(value = "dtbid", required = false) String dtbId,
+                                                      @Parameter(description = "name to query", required = false)
+                                                      @RequestParam(value = "name", required = false) String name,
+                                                      @Parameter(description = "year of birth to query", required = false)
+                                                      @RequestParam(value = "yob", required = false) String yob) {
     log.debug("performing player search using parameters dtbId: {} - name: {} - yob: {}", dtbId, name, yob);
     return Mono.fromCallable(() -> playerService.findPlayers(dtbId, name, yob));
   }

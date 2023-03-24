@@ -55,13 +55,26 @@ public class RankingRepository {
    */
   public List<Ranking> findPlayers(String dtbId, String name, String yob) {
     String sql = "SELECT DISTINCT (DTBID), DTBID, FIRSTNAME, LASTNAME, NATIONALITY, CLUB, FEDERATION, RANKINGPERIOD " +
-        "FROM RANKING WHERE DTBID LIKE '" + dtbId + "%'";
+        "FROM RANKING";
+    if (dtbId != null && !dtbId.isEmpty()) {
+      sql += " WHERE DTBID LIKE '" + dtbId + "%'";
+    }
     if (name != null && !name.isEmpty()) {
-      sql += " OR lastname LIKE '%" + name + "%'";
+      if (dtbId != null && !dtbId.isEmpty()) {
+        sql += " AND";
+      } else {
+        sql += " WHERE";
+      }
+      sql += " lastname LIKE '" + name + "%'";
     }
     if (yob != null && !yob.isEmpty()) {
-      sql += " OR dtbid LIKE '1" + yob.substring(2, 3) + "%'" +
-          " OR dtbid LIKE '2" + yob.substring(2, 3) + "%'";
+      if ((dtbId != null && !dtbId.isEmpty()) || (name != null && !name.isEmpty())) {
+        sql += " AND";
+      } else {
+        sql += " WHERE";
+      }
+      sql += " (dtbid LIKE '1" + yob.substring(2, 4) + "%'" +
+          " OR dtbid LIKE '2" + yob.substring(2, 4) + "%')";
     }
     sql += " ORDER BY DTBID, RANKINGPERIOD DESC";
     return jdbcTemplate.query(sql, (rs, rownum) ->
