@@ -1,5 +1,6 @@
 package de.hdawg.rankinginfo.service.services;
 
+import de.hdawg.rankinginfo.service.exception.UnknownDtbIdException;
 import de.hdawg.rankinginfo.service.model.Federation;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.Ranking;
@@ -46,7 +47,12 @@ public class PlayerService {
    * @return player domain object
    */
   public Player getPlayerById(String dtbId) {
-    Player player = new Player("12345678", "Harry", "Hirsch", Nationality.GER, "TC Berliner Gänse", Federation.BB);
+    List<Ranking> rankings = rankingRepository.getRankingsForPlayer(dtbId);
+    if (rankings.isEmpty()) {
+      throw new UnknownDtbIdException("DTB-ID " + dtbId + " was not found");
+    }
+    Player player = new Player(rankings.get(0).dtbId(), rankings.get(0).firstname(), rankings.get(0).lastname(),
+        rankings.get(0).nationality(), rankings.get(0).club(), rankings.get(0).federation());
     player.setClubs(new HashMap<>());
     player.setPoints(new HashMap<>());
     player.setRankingPositions(new HashMap<>());

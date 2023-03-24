@@ -3,9 +3,13 @@ package de.hdawg.rankinginfo.service.repository;
 import de.hdawg.rankinginfo.service.model.Federation;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.Ranking;
+import de.hdawg.rankinginfo.service.model.player.Player;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +26,17 @@ public class RankingRepository {
     this.jdbcTemplate = jdbcTemplate;
   }
 
+  /**
+   * fetch rankings for listing response.
+   *
+   * @param quarter          ranking period
+   * @param ageGroup         age group
+   * @param gender           gender
+   * @param isYobRanking     yob results only?
+   * @param overallRanking   include all players
+   * @param endOfYearRanking end of year ranking
+   * @return list of rankings
+   */
   public List<Ranking> getRankingsForListing(LocalDate quarter, String ageGroup, String gender, boolean isYobRanking, boolean overallRanking, boolean endOfYearRanking) {
     String genderNumericalIdentifier = "1";
     if ("girls".equals(gender)) {
@@ -84,6 +99,22 @@ public class RankingRepository {
             Federation.valueOf(rs.getString("federation")), rs.getString("club"),
             "", 0, false, false, false)
     );
+  }
+
+  public List<Ranking> getRankingsForPlayer(final String dtbId) {
+    final String sql = "SELECT * FROM RANKING WHERE DTBID=? ORDER BY RANKINGPERIOD DESC, AGEGROUP ASC";
+    return jdbcTemplate.query(sql, new PreparedStatementSetter() {
+      @Override
+      public void setValues(PreparedStatement ps) throws SQLException {
+        ps.setString(1, dtbId);
+      }
+    }, (rs, rownum) -> new Ranking(rs.getDate("rankingperiod").toLocalDate(), rs.getString("dtbid"),
+        rs.getString("lastname"), rs.getString("firstname"),
+        rs.getString("points"), Nationality.valueOf(rs.getString("nationality")),
+        Federation.valueOf(rs.getString("federation")), rs.getString("club"),
+        rs.getString("agegroup"), rs.getInt("rankingposition"),
+        rs.getBoolean("yobrankings"), rs.getBoolean("overallranking"),
+        rs.getBoolean("endofyearranking")));
   }
 
   public List<LocalDate> getAvailableRankingPeriods() {
