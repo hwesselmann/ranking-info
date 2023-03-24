@@ -1,4 +1,4 @@
 package de.hdawg.rankinginfo.service.model.player;
 
-public class Trend {
+public record Trend(int changeInPosition, int changeInPoints) {
 }

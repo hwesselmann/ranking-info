@@ -1,7 +1,5 @@
 package de.hdawg.rankinginfo.service.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,10 +14,8 @@ import java.util.Map;
  * ControllerAdvice for handling errors.
  */
 @RestControllerAdvice
-@RequestMapping(produces = "application/vnd.error+json")
+@RequestMapping(produces = "application/json")
 public class GlobalExceptionHandler {
-
-  private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   /**
    * Handler for illegal ranking period requests.
@@ -42,7 +38,7 @@ public class GlobalExceptionHandler {
    * @param e exception
    * @return api error response
    */
-  @ExceptionHandler(RankingPeriodException.class)
+  @ExceptionHandler(UnknownDtbIdException.class)
   ResponseEntity<Object> unknownDtbId(UnknownDtbIdException e) {
     Map<String, Object> body = new LinkedHashMap<>();
     body.put("timestamp", LocalDate.now());

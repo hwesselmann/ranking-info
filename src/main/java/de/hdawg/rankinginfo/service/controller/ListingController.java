@@ -31,7 +31,6 @@ public class ListingController {
   private final ListingService listingService;
 
   public ListingController(ListingService listingService) {
-    ;
     this.listingService = listingService;
   }
 

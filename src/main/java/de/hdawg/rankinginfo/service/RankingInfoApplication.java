@@ -7,9 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * main application class.
  */
 @SpringBootApplication
-public class JavaRankingInfoApplication {
+public class RankingInfoApplication {
   public static void main(String[] args) {
-    SpringApplication.run(JavaRankingInfoApplication.class, args);
+    SpringApplication.run(RankingInfoApplication.class, args);
   }
 
 }
