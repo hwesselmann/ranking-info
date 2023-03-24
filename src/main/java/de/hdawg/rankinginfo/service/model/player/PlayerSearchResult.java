@@ -6,7 +6,7 @@ import java.util.List;
 public class PlayerSearchResult {
   private int count;
   private LocalDateTime requested;
-  private List<PlayerSearchResultItem> items;
+  private List<PlayerSearchItem> items;
 
   public int getCount() {
     return count;
@@ -24,11 +24,11 @@ public class PlayerSearchResult {
     this.requested = requested;
   }
 
-  public List<PlayerSearchResultItem> getItems() {
+  public List<PlayerSearchItem> getItems() {
     return items;
   }
 
-  public void setItems(List<PlayerSearchResultItem> items) {
+  public void setItems(List<PlayerSearchItem> items) {
     this.items = items;
   }
 }

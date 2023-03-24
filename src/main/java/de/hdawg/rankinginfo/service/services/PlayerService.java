@@ -4,8 +4,8 @@ import de.hdawg.rankinginfo.service.model.Federation;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.Ranking;
 import de.hdawg.rankinginfo.service.model.player.Player;
+import de.hdawg.rankinginfo.service.model.player.PlayerSearchItem;
 import de.hdawg.rankinginfo.service.model.player.PlayerSearchResult;
-import de.hdawg.rankinginfo.service.model.player.PlayerSearchResultItem;
 import de.hdawg.rankinginfo.service.repository.RankingRepository;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +33,7 @@ public class PlayerService {
     PlayerSearchResult result = new PlayerSearchResult();
     result.setCount(players.size());
     result.setRequested(LocalDateTime.now());
-    List<PlayerSearchResultItem> items = players.stream().map(p -> new PlayerSearchResultItem(p.getDtbId(),p.getFirstname(), p.getLastname(),
+    List<PlayerSearchItem> items = players.stream().map(p -> new PlayerSearchItem(p.getDtbId(),p.getFirstname(), p.getLastname(),
             p.getCurrentFederation(), p.getNationality(), p.getCurrentClub())).toList();
     result.setItems(items);
     return result;
