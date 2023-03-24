@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-index-on-dtbid
+      author: hwesselmann
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: dtbid
+            indexName: idx_dtbid
+            tableName: ranking

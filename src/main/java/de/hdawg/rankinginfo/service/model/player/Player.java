@@ -7,6 +7,7 @@ import de.hdawg.rankinginfo.service.model.club.Club;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * domain object for player data.
@@ -87,5 +88,18 @@ public class Player {
 
   public void setClubs(Map<LocalDate, Club> clubs) {
     this.clubs = clubs;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Player player = (Player) o;
+    return dtbId.equals(player.dtbId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(dtbId);
   }
 }

@@ -45,8 +45,32 @@ public class RankingRepository {
     );
   }
 
-  public List<Ranking> getRankingsForPlayer(String dtbId, String lastname, String yob) {
-    return Collections.emptyList();
+  /**
+   * fetch rankings that match the given criteria.
+   *
+   * @param dtbId unique id (or partial id)
+   * @param name  lastname (or partial)
+   * @param yob   year of birth
+   * @return list of rankings or empty list.
+   */
+  public List<Ranking> findPlayers(String dtbId, String name, String yob) {
+    String sql = "SELECT DISTINCT (DTBID), DTBID, FIRSTNAME, LASTNAME, NATIONALITY, CLUB, FEDERATION, RANKINGPERIOD " +
+        "FROM RANKING WHERE DTBID LIKE '" + dtbId + "%'";
+    if (name != null && !name.isEmpty()) {
+      sql += " OR lastname LIKE '%" + name + "%'";
+    }
+    if (yob != null && !yob.isEmpty()) {
+      sql += " OR dtbid LIKE '1" + yob.substring(2, 3) + "%'" +
+          " OR dtbid LIKE '2" + yob.substring(2, 3) + "%'";
+    }
+    sql += " ORDER BY DTBID, RANKINGPERIOD DESC";
+    return jdbcTemplate.query(sql, (rs, rownum) ->
+        new Ranking(rs.getDate("rankingperiod").toLocalDate(), rs.getString("dtbid"),
+            rs.getString("lastname"), rs.getString("firstname"),
+            "", Nationality.valueOf(rs.getString("nationality")),
+            Federation.valueOf(rs.getString("federation")), rs.getString("club"),
+            "", 0, false, false, false)
+    );
   }
 
   public List<LocalDate> getAvailableRankingPeriods() {
