@@ -4,12 +4,15 @@ import de.hdawg.rankinginfo.service.exception.UnknownDtbIdException;
 import de.hdawg.rankinginfo.service.model.Federation;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.Ranking;
+import de.hdawg.rankinginfo.service.model.club.Club;
 import de.hdawg.rankinginfo.service.model.player.Player;
 import de.hdawg.rankinginfo.service.model.player.PlayerSearchItem;
 import de.hdawg.rankinginfo.service.model.player.PlayerSearchResult;
+import de.hdawg.rankinginfo.service.model.player.PointsHistory;
 import de.hdawg.rankinginfo.service.repository.RankingRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -53,8 +56,8 @@ public class PlayerService {
     }
     Player player = new Player(rankings.get(0).dtbId(), rankings.get(0).firstname(), rankings.get(0).lastname(),
         rankings.get(0).nationality(), rankings.get(0).club(), rankings.get(0).federation());
-    player.setClubs(new HashMap<>());
-    player.setPoints(new HashMap<>());
+    player.setClubs(rankings.stream().map(r -> new Club(r.club(), r.federation())).distinct().toList());
+    player.setPoints(rankings.stream().map(r -> new PointsHistory(r.rankingPeriod(), r.points())).distinct().toList());
     player.setRankingPositions(new HashMap<>());
     player.setTrends(new HashMap<>());
     return player;

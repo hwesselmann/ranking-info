@@ -6,6 +6,7 @@ import de.hdawg.rankinginfo.service.model.club.Club;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,10 +21,10 @@ public class Player {
   private final Nationality nationality;
   private final String currentClub;
   private final Federation currentFederation;
-  private Map<LocalDate, String> points;
+  private List<PointsHistory> points;
   private Map<LocalDate, HashMap<String, String>> rankingPositions;
   private Map<String, Trend> trends;
-  private Map<LocalDate, Club> clubs;
+  private List<Club> clubs;
 
   public Player(String dtbId, String firstname, String lastname, Nationality nationality, String currentClub, Federation currentFederation) {
     this.dtbId = dtbId;
@@ -58,11 +59,11 @@ public class Player {
     return currentFederation;
   }
 
-  public Map<LocalDate, String> getPoints() {
+  public List<PointsHistory> getPoints() {
     return points;
   }
 
-  public void setPoints(Map<LocalDate, String> points) {
+  public void setPoints(List<PointsHistory> points) {
     this.points = points;
   }
 
@@ -82,11 +83,11 @@ public class Player {
     this.trends = trends;
   }
 
-  public Map<LocalDate, Club> getClubs() {
+  public List<Club> getClubs() {
     return clubs;
   }
 
-  public void setClubs(Map<LocalDate, Club> clubs) {
+  public void setClubs(List<Club> clubs) {
     this.clubs = clubs;
   }
 
