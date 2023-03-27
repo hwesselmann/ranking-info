@@ -4,10 +4,7 @@ import de.hdawg.rankinginfo.service.model.Federation;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.club.Club;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -22,8 +19,11 @@ public class Player {
   private final String currentClub;
   private final Federation currentFederation;
   private List<PointsHistory> points;
-  private Map<LocalDate, HashMap<String, String>> rankingPositions;
-  private Map<String, Trend> trends;
+  private List<RankingItem> officialRankingPositions;
+  private List<RankingItem> yobRankingPositions;
+  private List<RankingItem> overallRankingPositions;
+  private List<RankingItem> endOfYearRankingPositions;
+  private List<Trend> trends;
   private List<Club> clubs;
 
   public Player(String dtbId, String firstname, String lastname, Nationality nationality, String currentClub, Federation currentFederation) {
@@ -67,19 +67,43 @@ public class Player {
     this.points = points;
   }
 
-  public Map<LocalDate, HashMap<String, String>> getRankingPositions() {
-    return rankingPositions;
+  public List<RankingItem> getOfficialRankingPositions() {
+    return officialRankingPositions;
   }
 
-  public void setRankingPositions(Map<LocalDate, HashMap<String, String>> rankingPositions) {
-    this.rankingPositions = rankingPositions;
+  public void setOfficialRankingPositions(List<RankingItem> rankingPositions) {
+    this.officialRankingPositions = rankingPositions;
   }
 
-  public Map<String, Trend> getTrends() {
+  public List<RankingItem> getYobRankingPositions() {
+    return yobRankingPositions;
+  }
+
+  public void setYobRankingPositions(List<RankingItem> rankingPositions) {
+    this.yobRankingPositions = rankingPositions;
+  }
+
+  public List<RankingItem> getOverallRankingPositions() {
+    return overallRankingPositions;
+  }
+
+  public void setOverallRankingPositions(List<RankingItem> rankingPositions) {
+    this.overallRankingPositions = rankingPositions;
+  }
+
+  public List<RankingItem> getEndOfYearRankingPositions() {
+    return endOfYearRankingPositions;
+  }
+
+  public void setEndOfYearRankingPositions(List<RankingItem> rankingPositions) {
+    this.endOfYearRankingPositions = rankingPositions;
+  }
+
+  public List<Trend> getTrends() {
     return trends;
   }
 
-  public void setTrends(Map<String, Trend> trends) {
+  public void setTrends(List<Trend> trends) {
     this.trends = trends;
   }
 
@@ -93,8 +117,12 @@ public class Player {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Player player = (Player) o;
     return dtbId.equals(player.dtbId);
   }
