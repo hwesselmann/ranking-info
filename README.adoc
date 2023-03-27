@@ -1,0 +1,13 @@
+= Ranking-Info API
+
+A Spring-Boot based backend service providing REST endpoints for retrieving results from the ranking info data store.
+
+== Requirements
+* Java 19
+* Docker (for building the docker image)
+
+== How to run
+[source, bash]
+----
+mvn spring-boot:run
+----
