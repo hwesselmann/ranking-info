@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-create-index-on-lastname
+      author: hwesselmann
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: lastname
+            indexName: idx_lastname
+            tableName: ranking

@@ -15,13 +15,13 @@ public class Listing {
   private LocalDate rankingPeriod;
   private String ageGroup;
 
-  @JsonProperty("show only players from the year of birth from this age group")
+  @JsonProperty("onlyPlayersFromYearOfBirthFromAgeGroup")
   private Boolean yobRanking;
 
-  @JsonProperty("also include younger players in calculation")
+  @JsonProperty("includeYoungerPlayers")
   private Boolean overallRanking;
 
-  @JsonProperty("is final ranking for the year")
+  @JsonProperty("finalRankingForYear")
   private Boolean endOfYearRanking;
 
   private List<ListingItem> listingItems;

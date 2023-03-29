@@ -62,8 +62,8 @@ public class ListingService {
         isYobRanking, overallRanking, endOfYearRanking);
 
     List<ListingItem> listingItems = rankingsFromDb.stream()
-        .map(r -> new ListingItem(r.position(), r.dtbId(), r.firstname(), r.lastname(), r.nationality(), r.club(),
-            r.federation(), r.points()))
+        .map(r -> new ListingItem(r.getPosition(), r.getDtbId(), r.getFirstname(), r.getLastname(), r.getNationality(),
+            r.getClub(), r.getFederation(), r.getPoints()))
         .toList();
     result.setListingItems(listingItems);
     return result;
