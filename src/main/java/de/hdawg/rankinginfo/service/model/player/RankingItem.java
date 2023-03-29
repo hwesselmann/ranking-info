@@ -9,7 +9,7 @@ import java.time.LocalDate;
  *
  * @param rankingPeriod   ranking period
  * @param ageGroup        age group
- * @param yobOnly         inlcudes only from this yob
+ * @param yobOnly         includes only from this yob
  * @param overall         includes younger players
  * @param endOfYear       is a final ranking for the year
  * @param points          points
