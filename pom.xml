@@ -16,7 +16,7 @@
   <description>ranking-service</description>
 
   <properties>
-    <java.version>19</java.version>
+    <java.version>20</java.version>
     <!-- dependencies -->
     <springdoc-openapi-starter-webflux-ui.version>2.0.4</springdoc-openapi-starter-webflux-ui.version>
     <liquibase-core.version>4.20.0</liquibase-core.version>
@@ -144,7 +144,7 @@
                   <version>[3.9,)</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>19</version>
+                  <version>20</version>
                 </requireJavaVersion>
               </rules>
             </configuration>

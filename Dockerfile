@@ -1,4 +1,4 @@
-FROM eclipse-temurin:19.0.2_7-jdk-alpine as deps
+FROM eclipse-temurin:20_36-jdk-alpine as deps
 
 # Identify dependencies
 COPY ./target/*.jar /app/app.jar
@@ -17,7 +17,7 @@ RUN mkdir /app/unpacked && \
     ./app.jar > /deps.info
 
 # base image to build a JRE
-FROM eclipse-temurin:19.0.2_7-jdk-alpine as temurin-jdk
+FROM eclipse-temurin:20_36-jdk-alpine as temurin-jdk
 
 # required for strip-debug to work
 RUN apk add --no-cache binutils
