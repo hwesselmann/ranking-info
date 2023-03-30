@@ -1,12 +1,15 @@
-package de.hdawg.rankinginfo.service.model.player;
+package de.hdawg.rankinginfo.service.model.club;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public class PlayerSearchResult {
+/**
+ * Model for a club search result.
+ */
+public class ClubSearchResult {
   private int count;
   private ZonedDateTime requested;
-  private List<PlayerSearchItem> items;
+  private List<Club> items;
 
   public int getCount() {
     return count;
@@ -24,11 +27,11 @@ public class PlayerSearchResult {
     this.requested = requested;
   }
 
-  public List<PlayerSearchItem> getItems() {
+  public List<Club> getItems() {
     return items;
   }
 
-  public void setItems(List<PlayerSearchItem> items) {
+  public void setItems(List<Club> items) {
     this.items = items;
   }
 }

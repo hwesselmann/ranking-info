@@ -13,7 +13,7 @@ import de.hdawg.rankinginfo.service.repository.RankingRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -47,7 +47,7 @@ public class PlayerService {
         .toList().stream().distinct().toList();
     PlayerSearchResult result = new PlayerSearchResult();
     result.setCount(players.size());
-    result.setRequested(LocalDateTime.now());
+    result.setRequested(ZonedDateTime.now());
     List<PlayerSearchItem> items = players.stream().map(p -> new PlayerSearchItem(p.getDtbId(), p.getFirstname(), p.getLastname(),
         p.getCurrentFederation(), p.getNationality(), p.getCurrentClub())).toList();
     result.setItems(items);
