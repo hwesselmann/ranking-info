@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 /**
  * controller for player endpoints.
  */
@@ -56,9 +54,9 @@ public class PlayerController {
   @GetMapping(path = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<PlayerSearchResult> searchPlayers(@Parameter(description = "DTB-ID to query")
                                                       @RequestParam(value = "dtbid", required = false) String dtbId,
-                                                      @Parameter(description = "name to query", required = false)
+                                                      @Parameter(description = "name to query")
                                                       @RequestParam(value = "name", required = false) String name,
-                                                      @Parameter(description = "year of birth to query", required = false)
+                                                      @Parameter(description = "year of birth to query")
                                                       @RequestParam(value = "yob", required = false) String yob) {
     log.debug("performing player search using parameters dtbId: {} - name: {} - yob: {}", dtbId, name, yob);
     return Mono.fromCallable(() -> playerService.findPlayers(dtbId, name, yob));
