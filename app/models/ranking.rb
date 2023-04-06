@@ -63,13 +63,18 @@ class Ranking < ApplicationRecord
   end
 
   def self.save_ranking(entry, period_to_import)
+    nat = if entry[3].nil?
+            'nil'
+          else
+            entry[3]
+          end
     Ranking.create(dtb_id: entry[4].split(' ').first.to_i,
                    age_group: 'overall',
                    date: period_to_import,
                    ranking_position: entry[0].to_i,
                    lastname: entry[1],
                    firstname: entry[2],
-                   nationality: entry[3],
+                   nationality: nat,
                    score: entry[6],
                    age_group_ranking: false,
                    yob_ranking: false,
