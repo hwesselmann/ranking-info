@@ -68,7 +68,9 @@ public enum Nationality {
   UKR("Ukraine"),
   USA("USA"),
   VEN("Venezuela"),
-  VIE("Vietnam");
+  VIE("Vietnam"),
+  // special value indicating the actual country has been banned from appearing on the listing.
+  NIL("unbekannt");
 
   private final String longname;
 
