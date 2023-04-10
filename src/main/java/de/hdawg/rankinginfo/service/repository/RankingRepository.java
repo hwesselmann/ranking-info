@@ -129,6 +129,11 @@ public class RankingRepository {
         rs.getBoolean("endofyearranking")));
   }
 
+  /**
+   * retrieve all available ranking periods.
+   *
+   * @return list of ranking periods
+   */
   public List<LocalDate> getAvailableRankingPeriods() {
     return Collections.emptyList();
   }
