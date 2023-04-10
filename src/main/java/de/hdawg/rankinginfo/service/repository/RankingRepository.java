@@ -39,8 +39,8 @@ public class RankingRepository {
    * @param ageGroup         age group
    * @param gender           gender
    * @param isYobRanking     yob results only?
-   * @param overallRanking   include all players
-   * @param endOfYearRanking end of year ranking
+   * @param overallRanking   include all players?
+   * @param endOfYearRanking end of year ranking?
    * @return list of rankings
    */
   public List<Ranking> getRankingsForListing(LocalDate quarter, String ageGroup, String gender, boolean isYobRanking, boolean overallRanking, boolean endOfYearRanking) {
