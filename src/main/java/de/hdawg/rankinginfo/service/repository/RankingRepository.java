@@ -107,6 +107,12 @@ public class RankingRepository {
     );
   }
 
+  /**
+   * get all rankings for a player with a given dtb id.
+   *
+   * @param dtbId unique id
+   * @return list of rankings
+   */
   public List<Ranking> getRankingsForPlayer(final String dtbId) {
     final String sql = "SELECT * FROM RANKING WHERE DTBID=? ORDER BY RANKINGPERIOD DESC, AGEGROUP ASC";
     return jdbcTemplate.query(sql, new PreparedStatementSetter() {
