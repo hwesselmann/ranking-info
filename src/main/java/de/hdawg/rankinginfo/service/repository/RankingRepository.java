@@ -4,13 +4,9 @@ import de.hdawg.rankinginfo.service.model.Federation;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.Ranking;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.stereotype.Component;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -75,8 +71,8 @@ public class RankingRepository {
    * @return list of rankings or empty list.
    */
   public List<Ranking> findPlayers(String dtbId, String name, String yob) {
-    String sql = "SELECT DISTINCT (DTBID), DTBID, FIRSTNAME, LASTNAME, NATIONALITY, CLUB, FEDERATION, RANKINGPERIOD " +
-        "FROM RANKING";
+    String sql = "SELECT DISTINCT (DTBID), DTBID, FIRSTNAME, LASTNAME, NATIONALITY, CLUB, FEDERATION, RANKINGPERIOD "
+        + "FROM RANKING";
     if (dtbId != null && !dtbId.isEmpty()) {
       sql += " WHERE DTBID LIKE '" + dtbId + "%'";
     }
@@ -94,8 +90,8 @@ public class RankingRepository {
       } else {
         sql += " WHERE";
       }
-      sql += " (dtbid LIKE '1" + yob.substring(2, 4) + "%'" +
-          " OR dtbid LIKE '2" + yob.substring(2, 4) + "%')";
+      sql += " (dtbid LIKE '1" + yob.substring(2, 4) + "%'"
+          + " OR dtbid LIKE '2" + yob.substring(2, 4) + "%')";
     }
     sql += " ORDER BY DTBID, RANKINGPERIOD DESC";
     return jdbcTemplate.query(sql, (rs, rownum) ->
@@ -115,12 +111,7 @@ public class RankingRepository {
    */
   public List<Ranking> getRankingsForPlayer(final String dtbId) {
     final String sql = "SELECT * FROM RANKING WHERE DTBID=? ORDER BY RANKINGPERIOD DESC, AGEGROUP ASC";
-    return jdbcTemplate.query(sql, new PreparedStatementSetter() {
-      @Override
-      public void setValues(PreparedStatement ps) throws SQLException {
-        ps.setString(1, dtbId);
-      }
-    }, (rs, rownum) -> new Ranking(rs.getDate(COLUMN_RANKINGPERIOD).toLocalDate(), rs.getString(COLUMN_DTBID),
+    return jdbcTemplate.query(sql, ps -> ps.setString(1, dtbId), (rs, rownum) -> new Ranking(rs.getDate(COLUMN_RANKINGPERIOD).toLocalDate(), rs.getString(COLUMN_DTBID),
         rs.getString(COLUMN_LASTNAME), rs.getString(COLUMN_FIRSTNAME),
         rs.getString(COLUMN_POINTS), Nationality.valueOf(rs.getString(COLUMN_NATIONALITY)),
         Federation.valueOf(rs.getString(COLUMN_FEDERATION)), rs.getString("club"),
@@ -135,6 +126,7 @@ public class RankingRepository {
    * @return list of ranking periods
    */
   public List<LocalDate> getAvailableRankingPeriods() {
-    return Collections.emptyList();
+    final String sql = "SELECT DISTINCT(RANKINGPERIOD) FROM RANKING ORDER BY RANKINGPERIOD ASC";
+    return jdbcTemplate.query(sql, (rs, rownum) -> rs.getDate(1).toLocalDate());
   }
 }
