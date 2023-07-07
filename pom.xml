@@ -19,8 +19,8 @@
     <java.version>20</java.version>
     <!-- dependencies -->
     <springdoc-openapi-starter-webflux-ui.version>2.1.0</springdoc-openapi-starter-webflux-ui.version>
-    <liquibase-core.version>4.22.0</liquibase-core.version>
-    <h2.version>2.1.214</h2.version>
+    <liquibase-core.version>4.23.0</liquibase-core.version>
+    <h2.version>2.2.220</h2.version>
     <!-- plugins -->
     <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
