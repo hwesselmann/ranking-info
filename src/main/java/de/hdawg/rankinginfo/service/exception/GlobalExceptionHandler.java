@@ -17,6 +17,9 @@ import java.util.Map;
 @RequestMapping(produces = "application/json")
 public class GlobalExceptionHandler {
 
+  public static final String TIMESTAMP_FIELD_LABEL = "timestamp";
+  public static final String ERROR_FIELD_LABEL = "error";
+
   /**
    * Handler for illegal ranking period requests.
    *
@@ -24,12 +27,27 @@ public class GlobalExceptionHandler {
    * @return api error response
    */
   @ExceptionHandler(RankingPeriodException.class)
-  public ResponseEntity<Object> illegalRankingPeriod(final RankingPeriodException e) {
+  public ResponseEntity<Object> handleIllegalRankingPeriod(final RankingPeriodException e) {
     Map<String, Object> body = new LinkedHashMap<>();
-    body.put("timestamp", LocalDate.now());
-    body.put("error", e.getMessage());
+    body.put(TIMESTAMP_FIELD_LABEL, LocalDate.now());
+    body.put(ERROR_FIELD_LABEL, e.getMessage());
 
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Handler for datastore exceptions.
+   *
+   * @param e exception
+   * @return api error response
+   */
+  @ExceptionHandler(DatastoreException.class)
+  public ResponseEntity<Object> handleDatastoreException(final DatastoreException e) {
+    Map<String, Object> body = new LinkedHashMap<>();
+    body.put(TIMESTAMP_FIELD_LABEL, LocalDate.now());
+    body.put(ERROR_FIELD_LABEL, e.getMessage());
+
+    return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   /**
@@ -39,10 +57,10 @@ public class GlobalExceptionHandler {
    * @return api error response
    */
   @ExceptionHandler(UnknownDtbIdException.class)
-  ResponseEntity<Object> unknownDtbId(UnknownDtbIdException e) {
+  ResponseEntity<Object> handleUnknownDtbId(UnknownDtbIdException e) {
     Map<String, Object> body = new LinkedHashMap<>();
-    body.put("timestamp", LocalDate.now());
-    body.put("error", e.getMessage());
+    body.put(TIMESTAMP_FIELD_LABEL, LocalDate.now());
+    body.put(ERROR_FIELD_LABEL, e.getMessage());
 
     return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
   }

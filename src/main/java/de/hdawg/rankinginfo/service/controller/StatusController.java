@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 /**
  * Endpoints for status data.
  */
@@ -29,5 +31,16 @@ public class StatusController {
   @GetMapping(path = "/status/rankingperiods", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<AvailableRankingPeriods> getAvailableRankingPeriods() {
     return Mono.fromCallable(statusService::getAvailableRankingPeriods);
+  }
+
+  /**
+   * retrieve the most recent available ranking period.
+   *
+   * @return most recent ranking period
+   */
+  @Operation(summary = "get most recent rankings period")
+  @GetMapping(path = "/status/rankingperiods/current", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Mono<LocalDate> getMostRecentRankingPeriod() {
+    return Mono.fromCallable(statusService::getMostRecentRankingPeriod);
   }
 }

@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -128,5 +129,14 @@ public class RankingRepository {
   public List<LocalDate> getAvailableRankingPeriods() {
     final String sql = "SELECT DISTINCT(RANKINGPERIOD) FROM RANKING ORDER BY RANKINGPERIOD ASC";
     return jdbcTemplate.query(sql, (rs, rownum) -> rs.getDate(1).toLocalDate());
+  }
+
+  /**
+   * Retrieve the most recent ranking period in the system.
+   *
+   * @return ranking period or null
+   */
+  public LocalDate getMostRecentRankingPeriod() {
+    return getAvailableRankingPeriods().stream().max(Comparator.naturalOrder()).orElse(null);
   }
 }
