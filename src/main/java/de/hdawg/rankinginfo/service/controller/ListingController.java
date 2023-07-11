@@ -5,6 +5,7 @@ import de.hdawg.rankinginfo.service.model.listing.Listing;
 import de.hdawg.rankinginfo.service.services.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +46,13 @@ public class ListingController {
   @Operation(summary = "get listings for specified quarter, gender, age group and modifiers")
   @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<Listing> getRequestedListing(
-      @Parameter(description = "ranking period in format yyyy-mm-dd")
+      @Parameter(in = ParameterIn.PATH, description = "ranking period in format yyyy-mm-dd")
       @PathVariable(value = "quarter") String quarter,
-      @Parameter(description = "gender to request listing for: 'boys' or 'girls'")
+      @Parameter(in = ParameterIn.PATH, description = "gender to request listing for: 'boys' or 'girls'")
       @PathVariable(value = "gender") String gender,
-      @Parameter(description = "requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'")
+      @Parameter(in = ParameterIn.PATH, description = "requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'")
       @PathVariable(value = "ageGroup") String ageGroup,
-      @Parameter(description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
+      @Parameter(in = ParameterIn.PATH, description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
       @PathVariable(value = "modifier") String modifier) {
 
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
@@ -75,15 +76,15 @@ public class ListingController {
   @Operation(summary = "get listings for specified quarter, gender, age group and modifiers filtered by club string")
   @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}/{club}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<Listing> getRequestedListingWithClubFilter(
-      @Parameter(description = "ranking period in format yyyy-mm-dd")
+      @Parameter(in = ParameterIn.PATH, description = "ranking period in format yyyy-mm-dd")
       @PathVariable(value = "quarter") String quarter,
       @Parameter(description = "gender to request listing for: 'boys' or 'girls'")
       @PathVariable(value = "gender") String gender,
-      @Parameter(description = "requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'")
+      @Parameter(in = ParameterIn.PATH, description = "requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'")
       @PathVariable(value = "ageGroup") String ageGroup,
-      @Parameter(description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
+      @Parameter(in = ParameterIn.PATH, description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
       @PathVariable(value = "modifier") String modifier,
-      @Parameter(description = "club name or name part to filter for") @PathVariable(value = "club")
+      @Parameter(in = ParameterIn.PATH, description = "club name or name part to filter for") @PathVariable(value = "club")
       String club) {
 
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);

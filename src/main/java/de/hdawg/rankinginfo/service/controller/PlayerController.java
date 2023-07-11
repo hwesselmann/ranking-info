@@ -5,6 +5,7 @@ import de.hdawg.rankinginfo.service.model.player.PlayerSearchResult;
 import de.hdawg.rankinginfo.service.services.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,8 +33,9 @@ public class PlayerController {
    */
   @Operation(summary = "get player data for the given dtbId")
   @GetMapping(path = "/players/{dtbid}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<Player> getPlayerForDtbId(@Parameter(description = "DTB-ID of the player to fetch")
-                                        @PathVariable(value = "dtbid") String dtbId) {
+  public Mono<Player> getPlayerForDtbId(
+      @Parameter(in = ParameterIn.PATH, description = "DTB-ID of the player to fetch")
+      @PathVariable(value = "dtbid") String dtbId) {
     return Mono.fromCallable(() -> playerService.getPlayerById(dtbId));
   }
 
@@ -47,15 +49,16 @@ public class PlayerController {
    */
   @Operation(summary = "search for a player by dtbId, year of birth an/or lastname")
   @GetMapping(path = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<PlayerSearchResult> searchPlayers(@Parameter(description = "DTB-ID to query")
-                                                @RequestParam(value = "dtbid", required = false)
-                                                String dtbId,
-                                                @Parameter(description = "name to query")
-                                                @RequestParam(value = "name", required = false)
-                                                String name,
-                                                @Parameter(description = "year of birth to query")
-                                                @RequestParam(value = "yob", required = false)
-                                                String yob) {
+  public Mono<PlayerSearchResult> searchPlayers(
+      @Parameter(in = ParameterIn.QUERY, description = "DTB-ID to query")
+      @RequestParam(value = "dtbid", required = false)
+      String dtbId,
+      @Parameter(in = ParameterIn.QUERY, description = "name to query")
+      @RequestParam(value = "name", required = false)
+      String name,
+      @Parameter(in = ParameterIn.QUERY, description = "year of birth to query")
+      @RequestParam(value = "yob", required = false)
+      String yob) {
     return Mono.fromCallable(() -> playerService.findPlayers(dtbId, name, yob));
   }
 }
