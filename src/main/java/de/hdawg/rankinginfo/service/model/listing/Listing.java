@@ -1,6 +1,8 @@
 package de.hdawg.rankinginfo.service.model.listing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.hdawg.rankinginfo.service.model.AgeGroup;
+import de.hdawg.rankinginfo.service.model.Gender;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,7 +14,8 @@ import java.util.List;
 public class Listing {
 
   private LocalDate rankingPeriod;
-  private String ageGroup;
+  private AgeGroup ageGroup;
+  private Gender gender;
 
   @JsonProperty("onlyPlayersFromYearOfBirthFromAgeGroup")
   private Boolean yobRanking;
@@ -36,14 +39,16 @@ public class Listing {
    *
    * @param rankingPeriod    ranking period
    * @param ageGroup         age group
+   * @param gender           gender
    * @param yobRanking       only players from this yob?
    * @param overallRanking   all players available?
    * @param endOfYearRanking is this the final ranking for this year?
    */
-  public Listing(LocalDate rankingPeriod, String ageGroup, Boolean yobRanking,
+  public Listing(LocalDate rankingPeriod, AgeGroup ageGroup, Gender gender, Boolean yobRanking,
                  Boolean overallRanking, Boolean endOfYearRanking) {
     this.rankingPeriod = rankingPeriod;
     this.ageGroup = ageGroup;
+    this.gender = gender;
     this.yobRanking = yobRanking;
     this.overallRanking = overallRanking;
     this.endOfYearRanking = endOfYearRanking;
@@ -54,15 +59,17 @@ public class Listing {
    *
    * @param rankingPeriod    ranking period
    * @param ageGroup         age group
+   * @param gender           gender
    * @param yobRanking       only players from this yob?
    * @param overallRanking   all players available?
    * @param endOfYearRanking is this the final ranking for this year?
    * @param listingItems     listing items containing the items of the listing
    */
-  public Listing(LocalDate rankingPeriod, String ageGroup, Boolean yobRanking,
+  public Listing(LocalDate rankingPeriod, AgeGroup ageGroup, Gender gender, Boolean yobRanking,
                  Boolean overallRanking, Boolean endOfYearRanking, List<ListingItem> listingItems) {
     this.rankingPeriod = rankingPeriod;
     this.ageGroup = ageGroup;
+    this.gender = gender;
     this.yobRanking = yobRanking;
     this.overallRanking = overallRanking;
     this.endOfYearRanking = endOfYearRanking;
@@ -77,12 +84,20 @@ public class Listing {
     this.rankingPeriod = rankingPeriod;
   }
 
-  public String getAgeGroup() {
+  public AgeGroup getAgeGroup() {
     return ageGroup;
   }
 
-  public void setAgeGroup(String ageGroup) {
+  public void setAgeGroup(AgeGroup ageGroup) {
     this.ageGroup = ageGroup;
+  }
+
+  public Gender getGender() {
+    return gender;
+  }
+
+  public void setGender(Gender gender) {
+    this.gender = gender;
   }
 
   public Boolean getYobRanking() {

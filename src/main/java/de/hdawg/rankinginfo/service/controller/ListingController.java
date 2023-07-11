@@ -70,7 +70,7 @@ public class ListingController {
     Map<String, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
     return Mono.fromCallable(
-        () -> listingService.getAgeGroupRankings(rankingPeriod, ageGroup.name(), gender.name(),
+        () -> listingService.getAgeGroupRankings(rankingPeriod, ageGroup, gender,
             modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR)));
   }
 
@@ -108,8 +108,8 @@ public class ListingController {
     Map<String, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
     return Mono.fromCallable(
-        () -> listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup.name(),
-            gender.name(),
+        () -> listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup,
+            gender,
             modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR),
             club));
   }

@@ -2,6 +2,8 @@ package de.hdawg.rankinginfo.service.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.hdawg.rankinginfo.service.model.AgeGroup;
+import de.hdawg.rankinginfo.service.model.Gender;
 import de.hdawg.rankinginfo.service.model.Ranking;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,7 +22,7 @@ class RankingRepositoryTest {
   @Test
   void testReadingFromAnEmptyDatasource() {
     List<Ranking> result =
-        sut.getRankingsForListing(LocalDate.of(2022, 1, 1), "u14", "boys", false, false, false);
+        sut.getRankingsForListing(LocalDate.of(2022, 1, 1), AgeGroup.u14, Gender.boys, false, false, false);
     assertEquals(0, result.size());
   }
 

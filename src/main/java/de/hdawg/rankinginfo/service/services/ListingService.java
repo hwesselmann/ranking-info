@@ -1,5 +1,7 @@
 package de.hdawg.rankinginfo.service.services;
 
+import de.hdawg.rankinginfo.service.model.AgeGroup;
+import de.hdawg.rankinginfo.service.model.Gender;
 import de.hdawg.rankinginfo.service.model.Ranking;
 import de.hdawg.rankinginfo.service.model.listing.Listing;
 import de.hdawg.rankinginfo.service.model.listing.ListingItem;
@@ -32,8 +34,8 @@ public class ListingService {
    * @param club             club to filter for
    * @return listing container
    */
-  public Listing getAgeGroupRankingsFilteredByClub(LocalDate rankingPeriod, String ageGroup,
-                                                   String gender,
+  public Listing getAgeGroupRankingsFilteredByClub(LocalDate rankingPeriod, AgeGroup ageGroup,
+                                                   Gender gender,
                                                    boolean isYobRanking, boolean overallRanking,
                                                    boolean endOfYearRanking, String club) {
     Listing result =
@@ -57,12 +59,11 @@ public class ListingService {
    * @param endOfYearRanking requested end of year ranking
    * @return listing container
    */
-  public Listing getAgeGroupRankings(LocalDate rankingPeriod, String ageGroup, String gender,
+  public Listing getAgeGroupRankings(LocalDate rankingPeriod, AgeGroup ageGroup, Gender gender,
                                      boolean isYobRanking,
                                      boolean overallRanking, boolean endOfYearRanking) {
-    String ageGroupWithGenderMarker = genderShortForm(gender) + ageGroup.toUpperCase();
     Listing result =
-        new Listing(rankingPeriod, ageGroupWithGenderMarker, isYobRanking, overallRanking,
+        new Listing(rankingPeriod, ageGroup, gender, isYobRanking, overallRanking,
             endOfYearRanking);
     List<Ranking> rankingsFromDb =
         rankingRepository.getRankingsForListing(rankingPeriod.plusDays(1), ageGroup, gender,
@@ -75,13 +76,5 @@ public class ListingService {
         .toList();
     result.setListingItems(listingItems);
     return result;
-  }
-
-  private String genderShortForm(String gender) {
-    if ("boys".equalsIgnoreCase(gender)) {
-      return "m";
-    } else {
-      return "w";
-    }
   }
 }

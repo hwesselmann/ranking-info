@@ -1,6 +1,8 @@
 package de.hdawg.rankinginfo.service.repository;
 
+import de.hdawg.rankinginfo.service.model.AgeGroup;
 import de.hdawg.rankinginfo.service.model.Federation;
+import de.hdawg.rankinginfo.service.model.Gender;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.Ranking;
 import java.time.LocalDate;
@@ -39,16 +41,16 @@ public class RankingRepository {
    * @param endOfYearRanking end of year ranking?
    * @return list of rankings
    */
-  public List<Ranking> getRankingsForListing(LocalDate quarter, String ageGroup, String gender,
+  public List<Ranking> getRankingsForListing(LocalDate quarter, AgeGroup ageGroup, Gender gender,
                                              boolean isYobRanking, boolean overallRanking,
                                              boolean endOfYearRanking) {
     String genderNumericalIdentifier = "1";
-    if ("girls".equals(gender)) {
+    if (Gender.girls == gender) {
       genderNumericalIdentifier = "2";
     }
 
     String sql = "SELECT * FROM ranking WHERE rankingperiod='" + quarter
-        + "' AND agegroup='" + ageGroup.toUpperCase()
+        + "' AND agegroup='" + ageGroup.name().toUpperCase()
         + "' AND dtbid LIKE '" + genderNumericalIdentifier + "%'"
         + " AND yobrankings=" + isYobRanking
         + " AND overallranking=" + overallRanking
