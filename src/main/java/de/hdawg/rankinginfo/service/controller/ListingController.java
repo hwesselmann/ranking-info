@@ -1,6 +1,8 @@
 package de.hdawg.rankinginfo.service.controller;
 
 import de.hdawg.rankinginfo.service.exception.RankingPeriodException;
+import de.hdawg.rankinginfo.service.model.AgeGroup;
+import de.hdawg.rankinginfo.service.model.Gender;
 import de.hdawg.rankinginfo.service.model.listing.Listing;
 import de.hdawg.rankinginfo.service.services.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +44,7 @@ public class ListingController {
    * get listings for specified quarter, gender, age group and modifiers.
    *
    * @param quarter  ranking period in format yyyy-mm-dd
-   * @param gender   gender to request listing for: 'boys' or 'girls
+   * @param gender   gender to request listing for: 'boys' or 'girls'
    * @param ageGroup requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'
    * @param modifier get different data views. valid: 'official', 'yob', 'overall', 'endofyear'
    * @return listing container with requested rankings
@@ -55,12 +57,12 @@ public class ListingController {
   })
   @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<Listing> getRequestedListing(
-      @Parameter(in = ParameterIn.PATH, description = "ranking period in format yyyy-mm-dd")
+      @Parameter(in = ParameterIn.PATH, example = "yyyy-mm-dd", description = "ranking period")
       @PathVariable(value = "quarter") String quarter,
-      @Parameter(in = ParameterIn.PATH, description = "gender to request listing for: 'boys' or 'girls'")
-      @PathVariable(value = "gender") String gender,
-      @Parameter(in = ParameterIn.PATH, description = "requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'")
-      @PathVariable(value = "ageGroup") String ageGroup,
+      @Parameter(in = ParameterIn.PATH, description = "gender to request listing for")
+      @PathVariable(value = "gender") Gender gender,
+      @Parameter(in = ParameterIn.PATH, description = "requested age group")
+      @PathVariable(value = "ageGroup") AgeGroup ageGroup,
       @Parameter(in = ParameterIn.PATH, description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
       @PathVariable(value = "modifier") String modifier) {
 
@@ -68,7 +70,7 @@ public class ListingController {
     Map<String, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
     return Mono.fromCallable(
-        () -> listingService.getAgeGroupRankings(rankingPeriod, ageGroup, gender,
+        () -> listingService.getAgeGroupRankings(rankingPeriod, ageGroup.name(), gender.name(),
             modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR)));
   }
 
@@ -76,7 +78,7 @@ public class ListingController {
    * get listings for specified quarter, gender, age group and modifiers filtered by club string.
    *
    * @param quarter  ranking period in format yyyy-mm-dd
-   * @param gender   gender to request listing for: 'boys' or 'girls
+   * @param gender   gender to request listing for: 'boys' or 'girls'
    * @param ageGroup requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'
    * @param modifier get different data views. valid: 'official', 'yob', 'overall', 'endofyear'
    * @param club     club name or name part to filter for
@@ -90,12 +92,12 @@ public class ListingController {
   })
   @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}/{club}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<Listing> getRequestedListingWithClubFilter(
-      @Parameter(in = ParameterIn.PATH, description = "ranking period in format yyyy-mm-dd")
+      @Parameter(in = ParameterIn.PATH, example = "yyyy-mm-dd", description = "ranking period")
       @PathVariable(value = "quarter") String quarter,
-      @Parameter(description = "gender to request listing for: 'boys' or 'girls'")
-      @PathVariable(value = "gender") String gender,
-      @Parameter(in = ParameterIn.PATH, description = "requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'")
-      @PathVariable(value = "ageGroup") String ageGroup,
+      @Parameter(description = "gender to request listing for")
+      @PathVariable(value = "gender") Gender gender,
+      @Parameter(in = ParameterIn.PATH, description = "requested age group")
+      @PathVariable(value = "ageGroup") AgeGroup ageGroup,
       @Parameter(in = ParameterIn.PATH, description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
       @PathVariable(value = "modifier") String modifier,
       @Parameter(in = ParameterIn.PATH, description = "club name or name part to filter for")
@@ -106,7 +108,8 @@ public class ListingController {
     Map<String, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
     return Mono.fromCallable(
-        () -> listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup, gender,
+        () -> listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup.name(),
+            gender.name(),
             modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR),
             club));
   }
