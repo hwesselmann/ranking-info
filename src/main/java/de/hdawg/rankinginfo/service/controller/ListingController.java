@@ -6,6 +6,10 @@ import de.hdawg.rankinginfo.service.services.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +48,11 @@ public class ListingController {
    * @return listing container with requested rankings
    */
   @Operation(summary = "get listings for specified quarter, gender, age group and modifiers")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "successfully received the requested listing.", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = Listing.class))}),
+      @ApiResponse(responseCode = "400", description = "unknown ranking period or parameters passed for request", content = @Content)
+  })
   @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<Listing> getRequestedListing(
       @Parameter(in = ParameterIn.PATH, description = "ranking period in format yyyy-mm-dd")
@@ -74,6 +83,11 @@ public class ListingController {
    * @return listing container with requested rankings
    */
   @Operation(summary = "get listings for specified quarter, gender, age group and modifiers filtered by club string")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "successfully received the requested listing.", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = Listing.class))}),
+      @ApiResponse(responseCode = "400", description = "unknown ranking period or parameters passed for request", content = @Content)
+  })
   @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}/{club}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<Listing> getRequestedListingWithClubFilter(
       @Parameter(in = ParameterIn.PATH, description = "ranking period in format yyyy-mm-dd")
@@ -84,7 +98,8 @@ public class ListingController {
       @PathVariable(value = "ageGroup") String ageGroup,
       @Parameter(in = ParameterIn.PATH, description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
       @PathVariable(value = "modifier") String modifier,
-      @Parameter(in = ParameterIn.PATH, description = "club name or name part to filter for") @PathVariable(value = "club")
+      @Parameter(in = ParameterIn.PATH, description = "club name or name part to filter for")
+      @PathVariable(value = "club")
       String club) {
 
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
