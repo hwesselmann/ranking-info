@@ -4,6 +4,7 @@ import de.hdawg.rankinginfo.service.model.club.ClubPlayer;
 import de.hdawg.rankinginfo.service.model.club.ClubSearchResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,7 @@ public class ClubController {
   @Operation(summary = "get players for specified club")
   @GetMapping(path = "/clubs/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<ClubPlayer> getRequestedClubsPlayers(
-      @Parameter(description = "name of the club")
+      @Parameter(in = ParameterIn.PATH, description = "name of the club")
       @PathVariable(value = "name") String name) {
 
     return Mono.fromCallable(() -> null);
@@ -40,8 +41,9 @@ public class ClubController {
    */
   @Operation(summary = "search for a club by its name")
   @GetMapping(path = "/clubs", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<ClubSearchResult> searchClubs(@Parameter(description = "name part of the club to search")
-                                            @RequestParam(value = "name", required = false) String name) {
+  public Mono<ClubSearchResult> searchClubs(
+      @Parameter(in = ParameterIn.QUERY, description = "name part of the club to search")
+      @RequestParam(value = "name", required = false) String name) {
     return Mono.fromCallable(() -> null);
   }
 }

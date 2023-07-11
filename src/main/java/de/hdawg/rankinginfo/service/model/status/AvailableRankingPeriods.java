@@ -14,7 +14,8 @@ public class AvailableRankingPeriods {
   public AvailableRankingPeriods() {
   }
 
-  public AvailableRankingPeriods(int count, ZonedDateTime requested, Map<Integer, List<LocalDate>> rankingperiods) {
+  public AvailableRankingPeriods(int count, ZonedDateTime requested,
+                                 Map<Integer, List<LocalDate>> rankingperiods) {
     this.count = count;
     this.requested = requested;
     this.rankingperiods = rankingperiods;

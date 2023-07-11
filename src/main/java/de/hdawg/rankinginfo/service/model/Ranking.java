@@ -20,9 +20,12 @@ public class Ranking {
   private Boolean overallYouthRanking;
   private Boolean endOfYearRanking;
 
-  public Ranking(LocalDate rankingPeriod, String dtbId, String lastname, String firstname, String points,
-                 Nationality nationality, Federation federation, String club, String ageGroup, Integer position,
-                 Boolean yearOfBirthRanking, Boolean overallYouthRanking, Boolean endOfYearRanking) {
+  public Ranking(LocalDate rankingPeriod, String dtbId, String lastname, String firstname,
+                 String points,
+                 Nationality nationality, Federation federation, String club, String ageGroup,
+                 Integer position,
+                 Boolean yearOfBirthRanking, Boolean overallYouthRanking,
+                 Boolean endOfYearRanking) {
     this.rankingPeriod = rankingPeriod;
     this.dtbId = dtbId;
     this.lastname = lastname;
