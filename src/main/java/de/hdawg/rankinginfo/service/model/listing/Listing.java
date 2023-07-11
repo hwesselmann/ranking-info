@@ -1,7 +1,6 @@
 package de.hdawg.rankinginfo.service.model.listing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -41,7 +40,8 @@ public class Listing {
    * @param overallRanking   all players available?
    * @param endOfYearRanking is this the final ranking for this year?
    */
-  public Listing(LocalDate rankingPeriod, String ageGroup, Boolean yobRanking, Boolean overallRanking, Boolean endOfYearRanking) {
+  public Listing(LocalDate rankingPeriod, String ageGroup, Boolean yobRanking,
+                 Boolean overallRanking, Boolean endOfYearRanking) {
     this.rankingPeriod = rankingPeriod;
     this.ageGroup = ageGroup;
     this.yobRanking = yobRanking;
@@ -59,7 +59,8 @@ public class Listing {
    * @param endOfYearRanking is this the final ranking for this year?
    * @param listingItems     listing items containing the items of the listing
    */
-  public Listing(LocalDate rankingPeriod, String ageGroup, Boolean yobRanking, Boolean overallRanking, Boolean endOfYearRanking, List<ListingItem> listingItems) {
+  public Listing(LocalDate rankingPeriod, String ageGroup, Boolean yobRanking,
+                 Boolean overallRanking, Boolean endOfYearRanking, List<ListingItem> listingItems) {
     this.rankingPeriod = rankingPeriod;
     this.ageGroup = ageGroup;
     this.yobRanking = yobRanking;

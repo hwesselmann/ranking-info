@@ -3,14 +3,13 @@ package de.hdawg.rankinginfo.service.services;
 import de.hdawg.rankinginfo.service.exception.DatastoreException;
 import de.hdawg.rankinginfo.service.model.status.AvailableRankingPeriods;
 import de.hdawg.rankinginfo.service.repository.RankingRepository;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Service;
 
 /**
  * Service performing data logistics and mapping for the information displayed on the status pages.

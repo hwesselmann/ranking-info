@@ -8,4 +8,5 @@ import de.hdawg.rankinginfo.service.model.Federation;
  * @param name       name of the club
  * @param federation federation
  */
-public record Club(String name, Federation federation) {}
+public record Club(String name, Federation federation) {
+}

@@ -40,8 +40,9 @@ public class ClubController {
    */
   @Operation(summary = "search for a club by its name")
   @GetMapping(path = "/clubs", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<ClubSearchResult> searchClubs(@Parameter(description = "name part of the club to search")
-                                            @RequestParam(value = "name", required = false) String name) {
+  public Mono<ClubSearchResult> searchClubs(
+      @Parameter(description = "name part of the club to search")
+      @RequestParam(value = "name", required = false) String name) {
     return Mono.fromCallable(() -> null);
   }
 }

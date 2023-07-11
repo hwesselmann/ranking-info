@@ -15,6 +15,7 @@ import de.hdawg.rankinginfo.service.model.Nationality;
  * @param federation  federation
  * @param points      points or pr value
  */
-public record ListingItem(Integer position, String dtbId, String firstname, String lastname, Nationality nationality,
+public record ListingItem(Integer position, String dtbId, String firstname, String lastname,
+                          Nationality nationality,
                           String club, Federation federation, String points) {
 }

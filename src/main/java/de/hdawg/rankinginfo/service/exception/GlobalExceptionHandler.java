@@ -1,14 +1,13 @@
 package de.hdawg.rankinginfo.service.exception;
 
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.time.LocalDate;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * ControllerAdvice for handling errors.

@@ -5,6 +5,10 @@ import de.hdawg.rankinginfo.service.model.listing.Listing;
 import de.hdawg.rankinginfo.service.services.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -12,11 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Controller for the listing endpoint.
@@ -58,8 +57,9 @@ public class ListingController {
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
     Map<String, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
-    return Mono.fromCallable(() -> listingService.getAgeGroupRankings(rankingPeriod, ageGroup, gender, modifiers.get(KEY_YOB),
-        modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR)));
+    return Mono.fromCallable(
+        () -> listingService.getAgeGroupRankings(rankingPeriod, ageGroup, gender,
+            modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR)));
   }
 
   /**
@@ -83,14 +83,16 @@ public class ListingController {
       @PathVariable(value = "ageGroup") String ageGroup,
       @Parameter(description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
       @PathVariable(value = "modifier") String modifier,
-      @Parameter(description = "club name or name part to filter for")
-      @PathVariable(value = "club") String club) {
+      @Parameter(description = "club name or name part to filter for") @PathVariable(value = "club")
+      String club) {
 
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
     Map<String, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
-    return Mono.fromCallable(() -> listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup, gender,
-        modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR), club));
+    return Mono.fromCallable(
+        () -> listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup, gender,
+            modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR),
+            club));
   }
 
   LocalDate checkAndMapRankingPeriod(String input) throws RankingPeriodException {
@@ -129,7 +131,8 @@ public class ListingController {
         case KEY_YOB -> modifiers.put(KEY_YOB, true);
         case KEY_OVERALL -> modifiers.put(KEY_OVERALL, true);
         case KEY_ENDOFYEAR -> modifiers.put(KEY_ENDOFYEAR, true);
-        default -> throw new IllegalStateException("Unexpected value for modifier: " + pathVariable);
+        default ->
+            throw new IllegalStateException("Unexpected value for modifier: " + pathVariable);
       }
     }
     return modifiers;

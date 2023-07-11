@@ -4,10 +4,9 @@ import de.hdawg.rankinginfo.service.model.Ranking;
 import de.hdawg.rankinginfo.service.model.listing.Listing;
 import de.hdawg.rankinginfo.service.model.listing.ListingItem;
 import de.hdawg.rankinginfo.service.repository.RankingRepository;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 /**
  * service providing backend integration and mapping for ranking listing operations.
@@ -33,11 +32,15 @@ public class ListingService {
    * @param club             club to filter for
    * @return listing container
    */
-  public Listing getAgeGroupRankingsFilteredByClub(LocalDate rankingPeriod, String ageGroup, String gender,
+  public Listing getAgeGroupRankingsFilteredByClub(LocalDate rankingPeriod, String ageGroup,
+                                                   String gender,
                                                    boolean isYobRanking, boolean overallRanking,
                                                    boolean endOfYearRanking, String club) {
-    Listing result = getAgeGroupRankings(rankingPeriod, ageGroup, gender, isYobRanking, overallRanking, endOfYearRanking);
-    List<ListingItem> filteredItems = result.getListingItems().stream().filter(r -> r.club().contains(club)).toList();
+    Listing result =
+        getAgeGroupRankings(rankingPeriod, ageGroup, gender, isYobRanking, overallRanking,
+            endOfYearRanking);
+    List<ListingItem> filteredItems =
+        result.getListingItems().stream().filter(r -> r.club().contains(club)).toList();
     result.setListingItems(filteredItems);
 
     return result;
@@ -54,15 +57,20 @@ public class ListingService {
    * @param endOfYearRanking requested end of year ranking
    * @return listing container
    */
-  public Listing getAgeGroupRankings(LocalDate rankingPeriod, String ageGroup, String gender, boolean isYobRanking,
+  public Listing getAgeGroupRankings(LocalDate rankingPeriod, String ageGroup, String gender,
+                                     boolean isYobRanking,
                                      boolean overallRanking, boolean endOfYearRanking) {
     String ageGroupWithGenderMarker = genderShortForm(gender) + ageGroup.toUpperCase();
-    Listing result = new Listing(rankingPeriod, ageGroupWithGenderMarker, isYobRanking, overallRanking, endOfYearRanking);
-    List<Ranking> rankingsFromDb = rankingRepository.getRankingsForListing(rankingPeriod.plusDays(1), ageGroup, gender,
-        isYobRanking, overallRanking, endOfYearRanking);
+    Listing result =
+        new Listing(rankingPeriod, ageGroupWithGenderMarker, isYobRanking, overallRanking,
+            endOfYearRanking);
+    List<Ranking> rankingsFromDb =
+        rankingRepository.getRankingsForListing(rankingPeriod.plusDays(1), ageGroup, gender,
+            isYobRanking, overallRanking, endOfYearRanking);
 
     List<ListingItem> listingItems = rankingsFromDb.stream()
-        .map(r -> new ListingItem(r.getPosition(), r.getDtbId(), r.getFirstname(), r.getLastname(), r.getNationality(),
+        .map(r -> new ListingItem(r.getPosition(), r.getDtbId(), r.getFirstname(), r.getLastname(),
+            r.getNationality(),
             r.getClub(), r.getFederation(), r.getPoints()))
         .toList();
     result.setListingItems(listingItems);

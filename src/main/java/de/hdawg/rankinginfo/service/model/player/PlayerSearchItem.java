@@ -11,7 +11,8 @@ public class PlayerSearchItem {
   private Nationality nationality;
   private String club;
 
-  public PlayerSearchItem(String dtbId, String firstname, String lastname, Federation federation, Nationality nationality, String club) {
+  public PlayerSearchItem(String dtbId, String firstname, String lastname, Federation federation,
+                          Nationality nationality, String club) {
     this.dtbId = dtbId;
     this.firstname = firstname;
     this.lastname = lastname;

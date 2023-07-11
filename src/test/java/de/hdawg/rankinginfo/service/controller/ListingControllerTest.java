@@ -1,16 +1,19 @@
 package de.hdawg.rankinginfo.service.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.hdawg.rankinginfo.service.exception.RankingPeriodException;
 import de.hdawg.rankinginfo.service.services.ListingService;
+import java.time.LocalDate;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.time.LocalDate;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ListingControllerTest {
 
@@ -32,22 +35,28 @@ class ListingControllerTest {
   @DisplayName("check if invalid input results in an exception")
   @Test
   void testExceptionOnInvalidInput() {
-    Throwable exception = assertThrows(RankingPeriodException.class, () -> sut.checkAndMapRankingPeriod("2018-03-30"));
+    Throwable exception = assertThrows(RankingPeriodException.class,
+        () -> sut.checkAndMapRankingPeriod("2018-03-30"));
     assertEquals("the year for the requested ranking period is not valid", exception.getMessage());
 
-    exception = assertThrows(RankingPeriodException.class, () -> sut.checkAndMapRankingPeriod("10000-03-30"));
+    exception = assertThrows(RankingPeriodException.class,
+        () -> sut.checkAndMapRankingPeriod("10000-03-30"));
     assertEquals("the year for the requested ranking period is not valid", exception.getMessage());
 
-    exception = assertThrows(RankingPeriodException.class, () -> sut.checkAndMapRankingPeriod("2019-01-30"));
+    exception = assertThrows(RankingPeriodException.class,
+        () -> sut.checkAndMapRankingPeriod("2019-01-30"));
     assertEquals("requested period is not a valid ranking period", exception.getMessage());
 
-    exception = assertThrows(RankingPeriodException.class, () -> sut.checkAndMapRankingPeriod("2019-03-30"));
+    exception = assertThrows(RankingPeriodException.class,
+        () -> sut.checkAndMapRankingPeriod("2019-03-30"));
     assertEquals("the requested ranking period start with an invalid day", exception.getMessage());
 
-    exception = assertThrows(RankingPeriodException.class, () -> sut.checkAndMapRankingPeriod("2019-12-30"));
+    exception = assertThrows(RankingPeriodException.class,
+        () -> sut.checkAndMapRankingPeriod("2019-12-30"));
     assertEquals("the requested ranking period start with an invalid day", exception.getMessage());
 
-    exception = assertThrows(RankingPeriodException.class, () -> sut.checkAndMapRankingPeriod("2019-06-31"));
+    exception = assertThrows(RankingPeriodException.class,
+        () -> sut.checkAndMapRankingPeriod("2019-06-31"));
     assertEquals("the requested ranking period start with an invalid day", exception.getMessage());
   }
 

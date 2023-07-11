@@ -3,12 +3,11 @@ package de.hdawg.rankinginfo.service.repository;
 import de.hdawg.rankinginfo.service.model.Federation;
 import de.hdawg.rankinginfo.service.model.Nationality;
 import de.hdawg.rankinginfo.service.model.Ranking;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 /**
  * Data access layer for ranking data.
@@ -40,7 +39,9 @@ public class RankingRepository {
    * @param endOfYearRanking end of year ranking?
    * @return list of rankings
    */
-  public List<Ranking> getRankingsForListing(LocalDate quarter, String ageGroup, String gender, boolean isYobRanking, boolean overallRanking, boolean endOfYearRanking) {
+  public List<Ranking> getRankingsForListing(LocalDate quarter, String ageGroup, String gender,
+                                             boolean isYobRanking, boolean overallRanking,
+                                             boolean endOfYearRanking) {
     String genderNumericalIdentifier = "1";
     if ("girls".equals(gender)) {
       genderNumericalIdentifier = "2";
@@ -72,8 +73,9 @@ public class RankingRepository {
    * @return list of rankings or empty list.
    */
   public List<Ranking> findPlayers(String dtbId, String name, String yob) {
-    String sql = "SELECT DISTINCT (DTBID), DTBID, FIRSTNAME, LASTNAME, NATIONALITY, CLUB, FEDERATION, RANKINGPERIOD "
-        + "FROM RANKING";
+    String sql =
+        "SELECT DISTINCT (DTBID), DTBID, FIRSTNAME, LASTNAME, NATIONALITY, CLUB, FEDERATION, RANKINGPERIOD "
+            + "FROM RANKING";
     if (dtbId != null && !dtbId.isEmpty()) {
       sql += " WHERE DTBID LIKE '" + dtbId + "%'";
     }
@@ -111,14 +113,17 @@ public class RankingRepository {
    * @return list of rankings
    */
   public List<Ranking> getRankingsForPlayer(final String dtbId) {
-    final String sql = "SELECT * FROM RANKING WHERE DTBID=? ORDER BY RANKINGPERIOD DESC, AGEGROUP ASC";
-    return jdbcTemplate.query(sql, ps -> ps.setString(1, dtbId), (rs, rownum) -> new Ranking(rs.getDate(COLUMN_RANKINGPERIOD).toLocalDate(), rs.getString(COLUMN_DTBID),
-        rs.getString(COLUMN_LASTNAME), rs.getString(COLUMN_FIRSTNAME),
-        rs.getString(COLUMN_POINTS), Nationality.valueOf(rs.getString(COLUMN_NATIONALITY)),
-        Federation.valueOf(rs.getString(COLUMN_FEDERATION)), rs.getString("club"),
-        rs.getString("agegroup"), rs.getInt("rankingposition"),
-        rs.getBoolean("yobrankings"), rs.getBoolean("overallranking"),
-        rs.getBoolean("endofyearranking")));
+    final String sql =
+        "SELECT * FROM RANKING WHERE DTBID=? ORDER BY RANKINGPERIOD DESC, AGEGROUP ASC";
+    return jdbcTemplate.query(sql, ps -> ps.setString(1, dtbId),
+        (rs, rownum) -> new Ranking(rs.getDate(COLUMN_RANKINGPERIOD).toLocalDate(),
+            rs.getString(COLUMN_DTBID),
+            rs.getString(COLUMN_LASTNAME), rs.getString(COLUMN_FIRSTNAME),
+            rs.getString(COLUMN_POINTS), Nationality.valueOf(rs.getString(COLUMN_NATIONALITY)),
+            Federation.valueOf(rs.getString(COLUMN_FEDERATION)), rs.getString("club"),
+            rs.getString("agegroup"), rs.getInt("rankingposition"),
+            rs.getBoolean("yobrankings"), rs.getBoolean("overallranking"),
+            rs.getBoolean("endofyearranking")));
   }
 
   /**

@@ -1,7 +1,6 @@
 package de.hdawg.rankinginfo.service.model.player;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.time.LocalDate;
 
 /**
