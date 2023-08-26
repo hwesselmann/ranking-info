@@ -28,6 +28,9 @@ build:
   stage: build
   script:
     - ./mvnw $MAVEN_CLI_OPTS -DskipTests -Dmaven.test.skip=true -T 4 package
+  only:
+    - branches
+    - tags
   artifacts:
     expire_in: 10 mins
   tags: [ranking-info-runner]
@@ -38,6 +41,9 @@ verify:
   stage: test
   script:
     - ./mvnw $MAVEN_CLI_OPTS verify
+  only:
+    - branches
+    - tags
   artifacts:
     when: always
     reports:
@@ -57,7 +63,6 @@ sonarcloud-check:
   script:
     - ./mvnw verify sonar:sonar -Dsonar.projectKey=hwesselmann_ranking-info
   only:
-    - merge_requests
     - main
   artifacts:
     expire_in: 10 mins
