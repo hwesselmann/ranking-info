@@ -14,7 +14,7 @@ variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   GIT_DEPTH: "0"
 
-image: maven:3.8.6-eclipse-temurin-17
+image: eclipse-temurin:17-jdk
 
 cache:
   paths:
@@ -23,7 +23,7 @@ cache:
 verify:
   stage: test
   script:
-    - 'mvn $MAVEN_CLI_OPTS verify'
+    - ./mvnw $MAVEN_CLI_OPTS verify
   artifacts:
     when: always
     reports:
@@ -39,7 +39,7 @@ sonarcloud-check:
     paths:
       - .sonar/cache
   script:
-    - mvn verify sonar:sonar -Dsonar.projectKey=ranking-info_ranking-importer
+    - ./mvnw verify sonar:sonar -Dsonar.projectKey=hwesselmann_ranking-info
   only:
     - merge_requests
     - main

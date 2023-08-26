@@ -5,11 +5,6 @@ spring:
     active: log-console-info, local-dev
   jmx:
     enabled: false
-  datasource:
-    url: jdbc:h2:file:~/Workspace/ranking-info-x/ranking-info-dev
-    username: sa
-    password: password
-    driverClassName: org.h2.Driver
 
 info:
   application:
