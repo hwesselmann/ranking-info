@@ -10,9 +10,9 @@
   </parent>
 
   <groupId>de.hdawg</groupId>
-  <artifactId>rankinginfo</artifactId>
+  <artifactId>ranking-info</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <name>ranking-service</name>
+  <name>ranking-info-api</name>
   <description>ranking-service</description>
 
   <properties>
