@@ -6,12 +6,16 @@ import de.hdawg.rankinginfo.rest.services.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 /**
  * controller for player endpoints.
@@ -32,11 +36,17 @@ public class PlayerController {
    * @return player domain object
    */
   @Operation(summary = "get player data for the given dtbId")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "successfully received the requested player data.", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = Player.class))}),
+      @ApiResponse(responseCode = "400", description = "unknown id passed for request", content = @Content)
+  })
   @GetMapping(path = "/players/{dtbid}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<Player> getPlayerForDtbId(
+  public ResponseEntity<Player> getPlayerForDtbId(
       @Parameter(in = ParameterIn.PATH, description = "DTB-ID of the player to fetch")
       @PathVariable(value = "dtbid") String dtbId) {
-    return Mono.fromCallable(() -> playerService.getPlayerById(dtbId));
+    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+        .body(playerService.getPlayerById(dtbId));
   }
 
   /**
@@ -48,8 +58,12 @@ public class PlayerController {
    * @return list of found players or empty list
    */
   @Operation(summary = "search for a player by dtbId, year of birth an/or lastname")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "successfully received the requested search result.", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerSearchResult.class))})
+  })
   @GetMapping(path = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<PlayerSearchResult> searchPlayers(
+  public ResponseEntity<PlayerSearchResult> searchPlayers(
       @Parameter(in = ParameterIn.QUERY, description = "DTB-ID to query")
       @RequestParam(value = "dtbid", required = false)
       String dtbId,
@@ -59,6 +73,7 @@ public class PlayerController {
       @Parameter(in = ParameterIn.QUERY, description = "year of birth to query")
       @RequestParam(value = "yob", required = false)
       String yob) {
-    return Mono.fromCallable(() -> playerService.findPlayers(dtbId, name, yob));
+    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+        .body(playerService.findPlayers(dtbId, name, yob));
   }
 }

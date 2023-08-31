@@ -1,8 +1,8 @@
 package de.hdawg.rankinginfo.rest.controller;
 
-import de.hdawg.rankinginfo.rest.exception.RankingPeriodException;
 import de.hdawg.rankinginfo.model.AgeGroup;
 import de.hdawg.rankinginfo.model.Gender;
+import de.hdawg.rankinginfo.rest.exception.RankingPeriodException;
 import de.hdawg.rankinginfo.rest.model.listing.Listing;
 import de.hdawg.rankinginfo.rest.services.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,10 +19,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 /**
  * Controller for the listing endpoint.
@@ -56,7 +56,7 @@ public class ListingController {
       @ApiResponse(responseCode = "400", description = "unknown ranking period or parameters passed for request", content = @Content)
   })
   @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<Listing> getRequestedListing(
+  public ResponseEntity<Listing> getRequestedListing(
       @Parameter(in = ParameterIn.PATH, example = "yyyy-mm-dd", description = "ranking period")
       @PathVariable(value = "quarter") String quarter,
       @Parameter(in = ParameterIn.PATH, description = "gender to request listing for")
@@ -69,8 +69,9 @@ public class ListingController {
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
     Map<String, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
-    return Mono.fromCallable(
-        () -> listingService.getAgeGroupRankings(rankingPeriod, ageGroup, gender,
+    return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(listingService.getAgeGroupRankings(rankingPeriod, ageGroup, gender,
             modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR)));
   }
 
@@ -91,7 +92,7 @@ public class ListingController {
       @ApiResponse(responseCode = "400", description = "unknown ranking period or parameters passed for request", content = @Content)
   })
   @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}/{club}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<Listing> getRequestedListingWithClubFilter(
+  public ResponseEntity<Listing> getRequestedListingWithClubFilter(
       @Parameter(in = ParameterIn.PATH, example = "yyyy-mm-dd", description = "ranking period")
       @PathVariable(value = "quarter") String quarter,
       @Parameter(description = "gender to request listing for")
@@ -107,8 +108,9 @@ public class ListingController {
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
     Map<String, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
-    return Mono.fromCallable(
-        () -> listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup,
+    return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup,
             gender,
             modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR),
             club));
