@@ -5,12 +5,12 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 /**
  * class providing storage operations for rankings.
  */
-@Component
+@Repository
 public class RankingImportRepository {
 
   private final JdbcTemplate jdbcTemplate;
@@ -26,7 +26,8 @@ public class RankingImportRepository {
    */
   public void storeRankings(List<Ranking> rankings) {
     jdbcTemplate.batchUpdate("INSERT INTO RANKING " +
-            "(DTBID, RANKINGPERIOD, LASTNAME, FIRSTNAME, POINTS, RANKINGPOSITION, NATIONALITY, FEDERATION, CLUB, AGEGROUP, YOBRANKINGS, OVERALLRANKING, ENDOFYEARRANKING) " +
+            "(DTBID, RANKINGPERIOD, LASTNAME, FIRSTNAME, POINTS, RANKINGPOSITION, NATIONALITY, FEDERATION, CLUB, AGEGROUP, YOBRANKINGS, OVERALLRANKING, ENDOFYEARRANKING) "
+            +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         rankings, 100, (PreparedStatement ps, Ranking ranking) -> {
           ps.setString(1, ranking.getDtbId());
