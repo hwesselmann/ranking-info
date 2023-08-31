@@ -9,12 +9,12 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 /**
  * Data access layer for ranking data.
  */
-@Component
+@Repository
 public class RankingRepository {
 
   public static final String COLUMN_RANKINGPERIOD = "rankingperiod";
@@ -42,8 +42,8 @@ public class RankingRepository {
    * @return list of rankings
    */
   public List<Ranking> getRankingsForListing(LocalDate quarter, AgeGroup ageGroup, Gender gender,
-                                             boolean isYobRanking, boolean overallRanking,
-                                             boolean endOfYearRanking) {
+      boolean isYobRanking, boolean overallRanking,
+      boolean endOfYearRanking) {
     String genderNumericalIdentifier = "1";
     if (Gender.girls == gender) {
       genderNumericalIdentifier = "2";
