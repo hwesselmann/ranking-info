@@ -24,6 +24,10 @@ management:
     java:
       enabled: true
 
+springdoc:
+  swagger-ui:
+    path: /docs
+
 ---
 spring:
   config:
