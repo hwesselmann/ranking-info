@@ -35,7 +35,7 @@ public class PlayerController {
    * @param dtbId unique player id
    * @return player domain object
    */
-  @Operation(summary = "get player data for the given dtbId")
+  @Operation(summary = "get player data for the given dtbId", tags = "player")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "successfully received the requested player data.", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = Player.class))}),
@@ -57,7 +57,7 @@ public class PlayerController {
    * @param yob   year of birth
    * @return list of found players or empty list
    */
-  @Operation(summary = "search for a player by dtbId, year of birth an/or lastname")
+  @Operation(summary = "search for a player by dtbId, year of birth an/or lastname", tags = "player")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "successfully received the requested search result.", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerSearchResult.class))})

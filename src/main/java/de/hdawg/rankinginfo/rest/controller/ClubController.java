@@ -29,7 +29,7 @@ public class ClubController {
    * @param name name of the club
    * @return player data
    */
-  @Operation(summary = "get players for specified club")
+  @Operation(summary = "get players for specified club", tags = "club")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "successfully received the requested player data.", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = ClubPlayerResult.class))})
@@ -48,7 +48,7 @@ public class ClubController {
    * @param name name part to search for
    * @return club search result.
    */
-  @Operation(summary = "search for a club by its name")
+  @Operation(summary = "search for a club by its name", tags = "club")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "successfully received the requested player data.", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = ClubSearchResult.class))})

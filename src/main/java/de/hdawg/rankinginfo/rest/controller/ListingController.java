@@ -47,7 +47,7 @@ public class ListingController {
    * @param modifier get different data views. valid: 'official', 'yob', 'overall', 'endofyear'
    * @return listing container with requested rankings
    */
-  @Operation(summary = "get listings for specified quarter, gender, age group and modifiers")
+  @Operation(summary = "get listings for specified quarter, gender, age group and modifiers", tags = "listing")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "successfully received the requested listing.", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = Listing.class))}),
@@ -84,7 +84,7 @@ public class ListingController {
    * @param club     club name or name part to filter for
    * @return listing container with requested rankings
    */
-  @Operation(summary = "get listings for specified quarter, gender, age group and modifiers filtered by club string")
+  @Operation(summary = "get listings for specified quarter, gender, age group and modifiers filtered by club string", tags = "listing")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "successfully received the requested listing.", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = Listing.class))}),

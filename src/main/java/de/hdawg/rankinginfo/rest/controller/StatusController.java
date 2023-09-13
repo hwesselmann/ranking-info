@@ -30,7 +30,7 @@ public class StatusController {
    *
    * @return ranking periods
    */
-  @Operation(summary = "get rankings periods")
+  @Operation(summary = "get rankings periods", tags = "status")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "successfully received available ranking periods.", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = AvailableRankingPeriods.class))})
@@ -46,7 +46,7 @@ public class StatusController {
    *
    * @return most recent ranking period
    */
-  @Operation(summary = "get most recent rankings period")
+  @Operation(summary = "get most recent rankings period", tags = "status")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "successfully received the current ranking period.", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = LocalDate.class))})
