@@ -4,6 +4,7 @@ import de.hdawg.rankinginfo.model.AgeGroup;
 import de.hdawg.rankinginfo.model.Gender;
 import de.hdawg.rankinginfo.rest.exception.RankingPeriodException;
 import de.hdawg.rankinginfo.rest.model.listing.Listing;
+import de.hdawg.rankinginfo.rest.model.listing.ListingModifier;
 import de.hdawg.rankinginfo.rest.services.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,9 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ListingController {
 
-  public static final String KEY_YOB = "yob";
-  public static final String KEY_OVERALL = "overall";
-  public static final String KEY_ENDOFYEAR = "endofyear";
   private static final Logger log = LoggerFactory.getLogger(ListingController.class);
   private final ListingService listingService;
 
@@ -63,16 +61,17 @@ public class ListingController {
       @PathVariable(value = "gender") Gender gender,
       @Parameter(in = ParameterIn.PATH, description = "requested age group")
       @PathVariable(value = "ageGroup") AgeGroup ageGroup,
-      @Parameter(in = ParameterIn.PATH, description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
-      @PathVariable(value = "modifier") String modifier) {
+      @Parameter(in = ParameterIn.PATH, description = "get different data views.")
+      @PathVariable(value = "modifier") ListingModifier modifier) {
 
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
-    Map<String, Boolean> modifiers = mapModifier(modifier);
+    Map<ListingModifier, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)
         .body(listingService.getAgeGroupRankings(rankingPeriod, ageGroup, gender,
-            modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR)));
+            modifiers.get(ListingModifier.yob), modifiers.get(ListingModifier.overall),
+            modifiers.get(ListingModifier.endofyear)));
   }
 
   /**
@@ -100,19 +99,20 @@ public class ListingController {
       @Parameter(in = ParameterIn.PATH, description = "requested age group")
       @PathVariable(value = "ageGroup") AgeGroup ageGroup,
       @Parameter(in = ParameterIn.PATH, description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
-      @PathVariable(value = "modifier") String modifier,
+      @PathVariable(value = "modifier") ListingModifier modifier,
       @Parameter(in = ParameterIn.PATH, description = "club name or name part to filter for")
       @PathVariable(value = "club")
       String club) {
 
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
-    Map<String, Boolean> modifiers = mapModifier(modifier);
+    Map<ListingModifier, Boolean> modifiers = mapModifier(modifier);
     LocalDate rankingPeriod = checkAndMapRankingPeriod(quarter);
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)
         .body(listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup,
             gender,
-            modifiers.get(KEY_YOB), modifiers.get(KEY_OVERALL), modifiers.get(KEY_ENDOFYEAR),
+            modifiers.get(ListingModifier.yob), modifiers.get(ListingModifier.overall),
+            modifiers.get(ListingModifier.endofyear),
             club));
   }
 
@@ -139,22 +139,18 @@ public class ListingController {
     return LocalDate.of(year, month, day);
   }
 
-  Map<String, Boolean> mapModifier(String pathVariable) {
-    Map<String, Boolean> modifiers = new HashMap<>();
-    modifiers.put(KEY_YOB, false);
-    modifiers.put(KEY_OVERALL, false);
-    modifiers.put(KEY_ENDOFYEAR, false);
-    if ("official".equalsIgnoreCase(pathVariable)) {
+  Map<ListingModifier, Boolean> mapModifier(ListingModifier pathVariable) {
+    Map<ListingModifier, Boolean> modifiers = new HashMap<>();
+    modifiers.put(ListingModifier.yob, false);
+    modifiers.put(ListingModifier.overall, false);
+    modifiers.put(ListingModifier.endofyear, false);
+    if (ListingModifier.official.equals(pathVariable)) {
       return modifiers;
     }
-    if (!pathVariable.isEmpty() && !pathVariable.isBlank()) {
-      switch (pathVariable) {
-        case KEY_YOB -> modifiers.put(KEY_YOB, true);
-        case KEY_OVERALL -> modifiers.put(KEY_OVERALL, true);
-        case KEY_ENDOFYEAR -> modifiers.put(KEY_ENDOFYEAR, true);
-        default ->
-            throw new IllegalStateException("Unexpected value for modifier: " + pathVariable);
-      }
+    switch (pathVariable) {
+      case yob -> modifiers.put(ListingModifier.yob, true);
+      case overall -> modifiers.put(ListingModifier.overall, true);
+      case endofyear -> modifiers.put(ListingModifier.endofyear, true);
     }
     return modifiers;
   }

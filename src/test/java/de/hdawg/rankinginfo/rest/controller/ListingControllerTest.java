@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.hdawg.rankinginfo.rest.exception.RankingPeriodException;
+import de.hdawg.rankinginfo.rest.model.listing.ListingModifier;
 import de.hdawg.rankinginfo.rest.services.ListingService;
 import java.time.LocalDate;
 import java.util.Map;
@@ -63,31 +64,24 @@ class ListingControllerTest {
   @DisplayName("check correct mapping of modifiers")
   @Test
   void checkModifierMapping() {
-    Map<String, Boolean> result = sut.mapModifier("yob");
-    assertTrue(result.get("yob"));
-    assertFalse(result.get("overall"));
-    assertFalse(result.get("endofyear"));
+    Map<ListingModifier, Boolean> result = sut.mapModifier(ListingModifier.yob);
+    assertTrue(result.get(ListingModifier.yob));
+    assertFalse(result.get(ListingModifier.overall));
+    assertFalse(result.get(ListingModifier.endofyear));
 
-    result = sut.mapModifier("overall");
-    assertFalse(result.get("yob"));
-    assertTrue(result.get("overall"));
-    assertFalse(result.get("endofyear"));
+    result = sut.mapModifier(ListingModifier.overall);
+    assertFalse(result.get(ListingModifier.yob));
+    assertTrue(result.get(ListingModifier.overall));
+    assertFalse(result.get(ListingModifier.endofyear));
 
-    result = sut.mapModifier("endofyear");
-    assertFalse(result.get("yob"));
-    assertFalse(result.get("overall"));
-    assertTrue(result.get("endofyear"));
+    result = sut.mapModifier(ListingModifier.endofyear);
+    assertFalse(result.get(ListingModifier.yob));
+    assertFalse(result.get(ListingModifier.overall));
+    assertTrue(result.get(ListingModifier.endofyear));
 
-    result = sut.mapModifier("");
-    assertFalse(result.get("yob"));
-    assertFalse(result.get("overall"));
-    assertFalse(result.get("endofyear"));
-
-    result = sut.mapModifier(" ");
-    assertFalse(result.get("yob"));
-    assertFalse(result.get("overall"));
-    assertFalse(result.get("endofyear"));
-
-    assertThrows(IllegalStateException.class, () -> sut.mapModifier("invalid"));
+    result = sut.mapModifier(ListingModifier.official);
+    assertFalse(result.get(ListingModifier.yob));
+    assertFalse(result.get(ListingModifier.overall));
+    assertFalse(result.get(ListingModifier.endofyear));
   }
 }
