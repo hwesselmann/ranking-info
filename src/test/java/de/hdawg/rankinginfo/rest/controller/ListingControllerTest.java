@@ -67,21 +67,26 @@ class ListingControllerTest {
     Map<ListingModifier, Boolean> result = sut.mapModifier(ListingModifier.yob);
     assertTrue(result.get(ListingModifier.yob));
     assertFalse(result.get(ListingModifier.overall));
-    assertFalse(result.get(ListingModifier.endofyear));
+    assertFalse(result.get(ListingModifier.end_of_year));
 
     result = sut.mapModifier(ListingModifier.overall);
     assertFalse(result.get(ListingModifier.yob));
     assertTrue(result.get(ListingModifier.overall));
-    assertFalse(result.get(ListingModifier.endofyear));
+    assertFalse(result.get(ListingModifier.end_of_year));
 
-    result = sut.mapModifier(ListingModifier.endofyear);
+    result = sut.mapModifier(ListingModifier.end_of_year);
     assertFalse(result.get(ListingModifier.yob));
     assertFalse(result.get(ListingModifier.overall));
-    assertTrue(result.get(ListingModifier.endofyear));
+    assertTrue(result.get(ListingModifier.end_of_year));
 
     result = sut.mapModifier(ListingModifier.official);
     assertFalse(result.get(ListingModifier.yob));
     assertFalse(result.get(ListingModifier.overall));
-    assertFalse(result.get(ListingModifier.endofyear));
+    assertFalse(result.get(ListingModifier.end_of_year));
+
+    result = sut.mapModifier(null);
+    assertFalse(result.get(ListingModifier.yob));
+    assertFalse(result.get(ListingModifier.overall));
+    assertFalse(result.get(ListingModifier.end_of_year));
   }
 }

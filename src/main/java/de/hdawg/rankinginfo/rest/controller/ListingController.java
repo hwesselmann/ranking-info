@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -44,7 +45,7 @@ public class ListingController {
    * @param quarter  ranking period in format yyyy-mm-dd
    * @param gender   gender to request listing for: 'boys' or 'girls'
    * @param ageGroup requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'
-   * @param modifier get different data views. valid: 'official', 'yob', 'overall', 'endofyear'
+   * @param modifier get different data views. valid: 'official', 'yob', 'overall', 'end_of_year'
    * @return listing container with requested rankings
    */
   @Operation(summary = "get listings for specified quarter, gender, age group and modifiers", tags = "listing")
@@ -53,7 +54,7 @@ public class ListingController {
           @Content(mediaType = "application/json", schema = @Schema(implementation = Listing.class))}),
       @ApiResponse(responseCode = "400", description = "unknown ranking period or parameters passed for request", content = @Content)
   })
-  @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Listing> getRequestedListing(
       @Parameter(in = ParameterIn.PATH, example = "yyyy-mm-dd", description = "ranking period")
       @PathVariable(value = "quarter") String quarter,
@@ -61,8 +62,8 @@ public class ListingController {
       @PathVariable(value = "gender") Gender gender,
       @Parameter(in = ParameterIn.PATH, description = "requested age group")
       @PathVariable(value = "ageGroup") AgeGroup ageGroup,
-      @Parameter(in = ParameterIn.PATH, description = "get different data views.")
-      @PathVariable(value = "modifier") ListingModifier modifier) {
+      @Parameter(in = ParameterIn.QUERY, description = "get different data views.")
+      @RequestParam(value = "modifier", required = false) ListingModifier modifier) {
 
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
     Map<ListingModifier, Boolean> modifiers = mapModifier(modifier);
@@ -71,7 +72,7 @@ public class ListingController {
         .contentType(MediaType.APPLICATION_JSON)
         .body(listingService.getAgeGroupRankings(rankingPeriod, ageGroup, gender,
             modifiers.get(ListingModifier.yob), modifiers.get(ListingModifier.overall),
-            modifiers.get(ListingModifier.endofyear)));
+            modifiers.get(ListingModifier.end_of_year)));
   }
 
   /**
@@ -80,7 +81,7 @@ public class ListingController {
    * @param quarter  ranking period in format yyyy-mm-dd
    * @param gender   gender to request listing for: 'boys' or 'girls'
    * @param ageGroup requested age group: 'u11','u12','u13','u14','u15','u16','u17','u18'
-   * @param modifier get different data views. valid: 'official', 'yob', 'overall', 'endofyear'
+   * @param modifier get different data views. valid: 'official', 'yob', 'overall', 'end_of_year'
    * @param club     club name or name part to filter for
    * @return listing container with requested rankings
    */
@@ -90,7 +91,7 @@ public class ListingController {
           @Content(mediaType = "application/json", schema = @Schema(implementation = Listing.class))}),
       @ApiResponse(responseCode = "400", description = "unknown ranking period or parameters passed for request", content = @Content)
   })
-  @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{modifier}/{club}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/listings/{quarter}/{gender}/{ageGroup}/{club}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Listing> getRequestedListingWithClubFilter(
       @Parameter(in = ParameterIn.PATH, example = "yyyy-mm-dd", description = "ranking period")
       @PathVariable(value = "quarter") String quarter,
@@ -98,11 +99,10 @@ public class ListingController {
       @PathVariable(value = "gender") Gender gender,
       @Parameter(in = ParameterIn.PATH, description = "requested age group")
       @PathVariable(value = "ageGroup") AgeGroup ageGroup,
-      @Parameter(in = ParameterIn.PATH, description = "get different data views. valid: 'official', 'yob', 'overall', 'endofyear'")
-      @PathVariable(value = "modifier") ListingModifier modifier,
       @Parameter(in = ParameterIn.PATH, description = "club name or name part to filter for")
-      @PathVariable(value = "club")
-      String club) {
+      @PathVariable(value = "club") String club,
+      @Parameter(in = ParameterIn.QUERY, description = "get different data views.")
+      @RequestParam(value = "modifier", required = false) ListingModifier modifier) {
 
     log.debug("requesting ranking for quarter {} for age group {}", quarter, ageGroup);
     Map<ListingModifier, Boolean> modifiers = mapModifier(modifier);
@@ -112,7 +112,7 @@ public class ListingController {
         .body(listingService.getAgeGroupRankingsFilteredByClub(rankingPeriod, ageGroup,
             gender,
             modifiers.get(ListingModifier.yob), modifiers.get(ListingModifier.overall),
-            modifiers.get(ListingModifier.endofyear),
+            modifiers.get(ListingModifier.end_of_year),
             club));
   }
 
@@ -139,18 +139,19 @@ public class ListingController {
     return LocalDate.of(year, month, day);
   }
 
-  Map<ListingModifier, Boolean> mapModifier(ListingModifier pathVariable) {
-    Map<ListingModifier, Boolean> modifiers = new HashMap<>();
+  Map<ListingModifier, Boolean> mapModifier(ListingModifier modifier) {
+    Map<ListingModifier, Boolean> modifiers = new EnumMap<>(ListingModifier.class);
     modifiers.put(ListingModifier.yob, false);
     modifiers.put(ListingModifier.overall, false);
-    modifiers.put(ListingModifier.endofyear, false);
-    if (ListingModifier.official.equals(pathVariable)) {
+    modifiers.put(ListingModifier.end_of_year, false);
+    if (modifier == null || ListingModifier.official.equals(modifier)) {
       return modifiers;
     }
-    switch (pathVariable) {
+    switch (modifier) {
       case yob -> modifiers.put(ListingModifier.yob, true);
       case overall -> modifiers.put(ListingModifier.overall, true);
-      case endofyear -> modifiers.put(ListingModifier.endofyear, true);
+      case end_of_year -> modifiers.put(ListingModifier.end_of_year, true);
+      default -> log.trace("check this condition as it should not be reachable");
     }
     return modifiers;
   }

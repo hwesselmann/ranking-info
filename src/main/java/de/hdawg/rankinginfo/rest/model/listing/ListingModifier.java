@@ -7,5 +7,5 @@ public enum ListingModifier {
   official,
   yob,
   overall,
-  endofyear;
+  end_of_year
 }
