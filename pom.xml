@@ -23,7 +23,7 @@
     <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
     <!-- dependencies -->
     <java.version>20</java.version>
-    <liquibase-core.version>4.23.1</liquibase-core.version>
+    <liquibase-core.version>4.23.2</liquibase-core.version>
     <maven-enforcer-plugin.version>3.4.0</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
     <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
