@@ -54,7 +54,7 @@
     <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
     <!-- plugins -->
     <opencsv.version>5.8</opencsv.version>
-    <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
+    <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
     <sonar.organization>hwesselmann-1</sonar.organization>
     <springdoc-openapi-starter-webflux-ui.version>2.2.0
     </springdoc-openapi-starter-webflux-ui.version>
