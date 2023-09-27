@@ -2,6 +2,7 @@ package de.hdawg.rankinginfo.rest.controller;
 
 import de.hdawg.rankinginfo.rest.model.club.ClubPlayerResult;
 import de.hdawg.rankinginfo.rest.model.club.ClubSearchResult;
+import de.hdawg.rankinginfo.rest.services.ClubService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -22,6 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ClubController {
+
+  private final ClubService clubService;
+
+  public ClubController(ClubService clubService) {
+    this.clubService = clubService;
+  }
 
   /**
    * retrieve all players from the requested club with a ranking in the current ranking period.
@@ -57,6 +64,6 @@ public class ClubController {
   public ResponseEntity<ClubSearchResult> searchClubs(
       @Parameter(in = ParameterIn.QUERY, description = "name part of the club to search")
       @RequestParam(value = "name", required = false) String name) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    return ResponseEntity.ok(clubService.findClub(name));
   }
 }

@@ -11,27 +11,21 @@ public class ClubSearchResult {
   private ZonedDateTime requested;
   private List<Club> items;
 
-  public int getCount() {
-    return count;
+  public ClubSearchResult(int count, ZonedDateTime requested, List<Club> items) {
+    this.count = count;
+    this.requested = requested;
+    this.items = items;
   }
 
-  public void setCount(int count) {
-    this.count = count;
+  public int getCount() {
+    return count;
   }
 
   public ZonedDateTime getRequested() {
     return requested;
   }
 
-  public void setRequested(ZonedDateTime requested) {
-    this.requested = requested;
-  }
-
   public List<Club> getItems() {
     return items;
-  }
-
-  public void setItems(List<Club> items) {
-    this.items = items;
   }
 }

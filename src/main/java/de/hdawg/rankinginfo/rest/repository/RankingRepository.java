@@ -5,7 +5,9 @@ import de.hdawg.rankinginfo.model.Federation;
 import de.hdawg.rankinginfo.model.Gender;
 import de.hdawg.rankinginfo.model.Nationality;
 import de.hdawg.rankinginfo.model.Ranking;
+import de.hdawg.rankinginfo.rest.model.club.Club;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -145,5 +147,9 @@ public class RankingRepository {
    */
   public LocalDate getMostRecentRankingPeriod() {
     return getAvailableRankingPeriods().stream().max(Comparator.naturalOrder()).orElse(null);
+  }
+
+  public List<Club> findClubsBySearchTerm(String searchTerm) {
+    return Collections.emptyList();
   }
 }
