@@ -1,7 +1,7 @@
 package de.hdawg.rankinginfo.rest.services;
 
-import de.hdawg.rankinginfo.rest.exception.UnknownDtbIdException;
 import de.hdawg.rankinginfo.model.Ranking;
+import de.hdawg.rankinginfo.rest.exception.UnknownDtbIdException;
 import de.hdawg.rankinginfo.rest.model.club.Club;
 import de.hdawg.rankinginfo.rest.model.player.Player;
 import de.hdawg.rankinginfo.rest.model.player.PlayerSearchItem;
@@ -39,20 +39,59 @@ public class PlayerService {
    * @return player search result container with results
    */
   public PlayerSearchResult findPlayers(String dtbId, String name, String yob) {
-    List<Ranking> rankings = rankingRepository.findPlayers(dtbId, name, yob);
-    List<Player> players = rankings.stream()
+    var rankings = retrieveRankingsForMapping(dtbId, name, yob);
+    var players = rankings.stream()
         .map(r -> new Player(r.getDtbId(), r.getFirstname(), r.getLastname(), r.getNationality(),
             r.getClub(),
             r.getFederation()))
         .toList().stream().distinct().toList();
-    PlayerSearchResult result = new PlayerSearchResult();
-    result.setCount(players.size());
-    result.setRequested(ZonedDateTime.now());
-    List<PlayerSearchItem> items = players.stream()
-        .map(p -> new PlayerSearchItem(p.getDtbId(), p.getFirstname(), p.getLastname(),
-            p.getCurrentFederation(), p.getNationality(), p.getCurrentClub())).toList();
-    result.setItems(items);
-    return result;
+    return new PlayerSearchResult(
+        players.size(),
+        ZonedDateTime.now(),
+        players.stream()
+            .map(p -> new PlayerSearchItem(p.getDtbId(), p.getFirstname(), p.getLastname(),
+                p.getCurrentFederation(), p.getNationality(), p.getCurrentClub())).toList()
+    );
+  }
+
+  /**
+   * fetch rankings for mapping to players objects according to the passed in params.
+   *
+   * @param dtbId dtbid
+   * @param name  name
+   * @param yob   yob
+   * @return list of rankings matching the params
+   */
+  List<Ranking> retrieveRankingsForMapping(String dtbId, String name, String yob) {
+    if (name != null && !name.isEmpty()) {
+      if (yob != null && !yob.isEmpty()) {
+        if (dtbId != null && !dtbId.isEmpty()) {
+          return rankingRepository.findPlayersByDtbIdAndNameAndYob(dtbId, name, yob);
+        } else {
+          return rankingRepository.findPlayersByNameAndYob(name, yob);
+        }
+      } else {
+        if (dtbId != null && !dtbId.isEmpty()) {
+          return rankingRepository.findPlayersByNameAndDtbId(dtbId, name);
+        } else {
+          return rankingRepository.findPlayersByName(name);
+        }
+      }
+    } else {
+      if (yob != null && !yob.isEmpty()) {
+        if (dtbId != null && !dtbId.isEmpty()) {
+          return rankingRepository.findPlayersByDtbIdAndYob(dtbId, yob);
+        } else {
+          return rankingRepository.findPlayersByYob(yob);
+        }
+      } else {
+        if (dtbId != null && !dtbId.isEmpty()) {
+          return rankingRepository.findPlayersByDtbId(dtbId);
+        } else {
+          return rankingRepository.findAllPlayers();
+        }
+      }
+    }
   }
 
   /**
@@ -114,7 +153,7 @@ public class PlayerService {
   }
 
   List<Trend> calculateAgeGroupTrends(List<RankingItem> rankingItems,
-                                      List<String> eligibleAgeGroups) {
+      List<String> eligibleAgeGroups) {
     List<Trend> result = new ArrayList<>();
     eligibleAgeGroups.forEach(a -> {
       List<RankingItem> filtered = rankingItems.stream()

@@ -27,4 +27,7 @@ class PlayerServiceTest {
     assertEquals(List.of("U15", "U16", "U17", "U18"),
         sut.getEligibleAgeGroups("20800000", LocalDate.of(2023, 4, 1)));
   }
+
+  // TODO write tests for retrieveForMapping!
+  // test combinations and make sure the right method gets called
 }

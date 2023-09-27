@@ -6,17 +6,21 @@ import de.hdawg.rankinginfo.model.Gender;
 import de.hdawg.rankinginfo.model.Nationality;
 import de.hdawg.rankinginfo.model.Ranking;
 import de.hdawg.rankinginfo.rest.model.club.Club;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Data access layer for ranking data.
  */
 @Repository
+@Transactional(readOnly = true)
 public class RankingRepository {
 
   public static final String COLUMN_RANKINGPERIOD = "rankingperiod";
@@ -26,10 +30,11 @@ public class RankingRepository {
   public static final String COLUMN_POINTS = "points";
   public static final String COLUMN_NATIONALITY = "nationality";
   public static final String COLUMN_FEDERATION = "federation";
-  private final JdbcTemplate jdbcTemplate;
+  public static final String COLUMN_CLUB = "club";
+  private final JdbcClient jdbcClient;
 
-  public RankingRepository(JdbcTemplate jdbcTemplate) {
-    this.jdbcTemplate = jdbcTemplate;
+  public RankingRepository(JdbcClient jdbcClient) {
+    this.jdbcClient = jdbcClient;
   }
 
   /**
@@ -46,68 +51,147 @@ public class RankingRepository {
   public List<Ranking> getRankingsForListing(LocalDate quarter, AgeGroup ageGroup, Gender gender,
       boolean isYobRanking, boolean overallRanking,
       boolean endOfYearRanking) {
-    String genderNumericalIdentifier = "1";
-    if (Gender.girls == gender) {
-      genderNumericalIdentifier = "2";
-    }
+    var genderNumericalIdentifier = Gender.girls == gender ? "2%" : "1%";
 
-    String sql = "SELECT * FROM ranking WHERE rankingperiod='" + quarter
-        + "' AND agegroup='" + ageGroup.name().toUpperCase()
-        + "' AND dtbid LIKE '" + genderNumericalIdentifier + "%'"
-        + " AND yobrankings=" + isYobRanking
-        + " AND overallranking=" + overallRanking
-        + " AND endofyearranking=" + endOfYearRanking
-        + " ORDER BY rankingposition ASC, points ASC";
-    return jdbcTemplate.query(sql, (rs, rowNum) ->
-        new Ranking(rs.getDate(COLUMN_RANKINGPERIOD).toLocalDate(), rs.getString(COLUMN_DTBID),
-            rs.getString(COLUMN_LASTNAME), rs.getString(COLUMN_FIRSTNAME),
-            rs.getString(COLUMN_POINTS), Nationality.valueOf(rs.getString(COLUMN_NATIONALITY)),
-            Federation.valueOf(rs.getString(COLUMN_FEDERATION)), rs.getString("club"),
-            rs.getString("agegroup"), rs.getInt("rankingposition"),
-            isYobRanking, overallRanking, endOfYearRanking)
-    );
+    var sql = "select * from ranking where rankingperiod=:quarter and agegroup=:agegroup and "
+        + "dtbid LIKE :dtbid and yobrankings=:yobranking and overallranking=:overallranking "
+        + " and endofyearranking=:endofyearranking order by rankingposition asc, points asc";
+    return jdbcClient.sql(sql)
+        .param("quarter", quarter)
+        .param("agegroup", ageGroup.name().toUpperCase())
+        .param("dtbid", genderNumericalIdentifier)
+        .param("yobranking", isYobRanking)
+        .param("overallranking", overallRanking)
+        .param("endofyearranking", endOfYearRanking)
+        .query(new RankingMapper())
+        .list();
   }
 
   /**
-   * fetch rankings that match the given criteria.
+   * find players by id, lastname and yob.
    *
-   * @param dtbId unique id (or partial id)
-   * @param name  lastname (or partial)
-   * @param yob   year of birth
-   * @return list of rankings or empty list.
+   * @param dtbId dtbid
+   * @param name  lastname
+   * @param yob   yob
+   * @return list of players for the given params
    */
-  public List<Ranking> findPlayers(String dtbId, String name, String yob) {
-    String sql =
-        "SELECT DISTINCT (DTBID), DTBID, FIRSTNAME, LASTNAME, NATIONALITY, CLUB, FEDERATION, RANKINGPERIOD "
-            + "FROM RANKING";
-    if (dtbId != null && !dtbId.isEmpty()) {
-      sql += " WHERE DTBID LIKE '" + dtbId + "%'";
-    }
-    if (name != null && !name.isEmpty()) {
-      if (dtbId != null && !dtbId.isEmpty()) {
-        sql += " AND";
-      } else {
-        sql += " WHERE";
-      }
-      sql += " lastname LIKE '" + name + "%'";
-    }
-    if (yob != null && !yob.isEmpty()) {
-      if ((dtbId != null && !dtbId.isEmpty()) || (name != null && !name.isEmpty())) {
-        sql += " AND";
-      } else {
-        sql += " WHERE";
-      }
-      sql += " (dtbid LIKE '1" + yob.substring(2, 4) + "%'"
-          + " OR dtbid LIKE '2" + yob.substring(2, 4) + "%')";
-    }
-    sql += " ORDER BY DTBID, RANKINGPERIOD DESC";
-    return jdbcTemplate.query(sql, (rs, rownum) ->
-        new Ranking(rs.getDate(COLUMN_RANKINGPERIOD).toLocalDate(), rs.getString(COLUMN_DTBID),
-            rs.getString(COLUMN_LASTNAME), rs.getString(COLUMN_FIRSTNAME),
-            "", Nationality.valueOf(rs.getString(COLUMN_NATIONALITY)),
-            Federation.valueOf(rs.getString(COLUMN_FEDERATION)), rs.getString("club"),
-            "", 0, false, false, false)
-    );
+  public List<Ranking> findPlayersByDtbIdAndNameAndYob(final String dtbId, final String name,
+      final String yob) {
+    var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
+        + "rankingperiod from ranking where lastname like :lastname and dtbid like :dtbid "
+        + "and (dtbid like :boysId or dtbid like :girlsId)";
+    return jdbcClient.sql(sql)
+        .param("dtbid", dtbId + "%")
+        .param("lastname", "%" + name + "%")
+        .param("boysId", "1" + yob.substring(2, 4) + "%")
+        .param("girlsId", "2" + yob.substring(2, 4) + "%")
+        .query(new RankingPlayerMapper()).list();
+  }
+
+  /**
+   * find players by lastname and yob.
+   *
+   * @param name lastname
+   * @param yob  yob
+   * @return list of players for the given params
+   */
+  public List<Ranking> findPlayersByNameAndYob(final String name, final String yob) {
+    var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
+        + "rankingperiod from ranking where lastname like :lastname and (dtbid like :boysId "
+        + "or dtbid like :girlsId)";
+    return jdbcClient.sql(sql)
+        .param("lastname", "%" + name + "%")
+        .param("boysId", "1" + yob.substring(2, 4) + "%")
+        .param("girlsId", "2" + yob.substring(2, 4) + "%")
+        .query(new RankingPlayerMapper()).list();
+  }
+
+  /**
+   * find players by id and lastname.
+   *
+   * @param dtbId dtbid
+   * @param name  lastname
+   * @return list of players for the given params
+   */
+  public List<Ranking> findPlayersByNameAndDtbId(final String dtbId, final String name) {
+    var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
+        + "rankingperiod from ranking where lastname like :lastname and dtbid like :dtbid";
+    return jdbcClient.sql(sql)
+        .param("dtbid", dtbId + "%")
+        .param("lastname", "%" + name + "%")
+        .query(new RankingPlayerMapper()).list();
+  }
+
+  /**
+   * find players by lastname.
+   *
+   * @param name lastname
+   * @return list of players for the given params
+   */
+  public List<Ranking> findPlayersByName(final String name) {
+    var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
+        + "rankingperiod from ranking where lastname like :lastname";
+    return jdbcClient.sql(sql)
+        .param("lastname", "%" + name + "%")
+        .query(new RankingPlayerMapper()).list();
+  }
+
+  /**
+   * find players by id and yob.
+   *
+   * @param dtbId dtbid
+   * @param yob   yob
+   * @return list of players for the given params
+   */
+  public List<Ranking> findPlayersByDtbIdAndYob(final String dtbId, final String yob) {
+    var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
+        + "rankingperiod from ranking where dtbid like :dtbid and (dtbid like :boysId "
+        + "or dtbid like :girlsId)";
+    return jdbcClient.sql(sql)
+        .param("dtbid", dtbId + "%")
+        .param("boysId", "1" + yob.substring(2, 4) + "%")
+        .param("girlsId", "2" + yob.substring(2, 4) + "%")
+        .query(new RankingPlayerMapper()).list();
+  }
+
+  /**
+   * find players by yob.
+   *
+   * @param yob yob
+   * @return list of players for the given params
+   */
+  public List<Ranking> findPlayersByYob(final String yob) {
+    var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
+        + "rankingperiod from ranking where (dtbid like :boysId or dtbid like :girlsId)";
+    return jdbcClient.sql(sql)
+        .param("boysId", "1" + yob.substring(2, 4) + "%")
+        .param("girlsId", "2" + yob.substring(2, 4) + "%")
+        .query(new RankingPlayerMapper()).list();
+  }
+
+  /**
+   * find players by id.
+   *
+   * @param dtbId dtbid
+   * @return list of players for the given params
+   */
+  public List<Ranking> findPlayersByDtbId(final String dtbId) {
+    var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
+        + "rankingperiod from ranking where dtbid like :dtbid";
+    return jdbcClient.sql(sql)
+        .param("dtbid", dtbId + "%")
+        .query(new RankingPlayerMapper()).list();
+  }
+
+  /**
+   * fetch unique rankings for every dtb id in the database.
+   *
+   * @return list of players
+   */
+  public List<Ranking> findAllPlayers() {
+    var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
+        + "rankingperiod from ranking";
+    return jdbcClient.sql(sql).query(new RankingPlayerMapper()).list();
   }
 
   /**
@@ -117,17 +201,9 @@ public class RankingRepository {
    * @return list of rankings
    */
   public List<Ranking> getRankingsForPlayer(final String dtbId) {
-    final String sql =
-        "SELECT * FROM RANKING WHERE DTBID=? ORDER BY RANKINGPERIOD DESC, AGEGROUP ASC";
-    return jdbcTemplate.query(sql, ps -> ps.setString(1, dtbId),
-        (rs, rownum) -> new Ranking(rs.getDate(COLUMN_RANKINGPERIOD).toLocalDate(),
-            rs.getString(COLUMN_DTBID),
-            rs.getString(COLUMN_LASTNAME), rs.getString(COLUMN_FIRSTNAME),
-            rs.getString(COLUMN_POINTS), Nationality.valueOf(rs.getString(COLUMN_NATIONALITY)),
-            Federation.valueOf(rs.getString(COLUMN_FEDERATION)), rs.getString("club"),
-            rs.getString("agegroup"), rs.getInt("rankingposition"),
-            rs.getBoolean("yobrankings"), rs.getBoolean("overallranking"),
-            rs.getBoolean("endofyearranking")));
+    var sql =
+        "select * from ranking where dtbid=:dtbid order by rankingperiod desc, agegroup asc";
+    return jdbcClient.sql(sql).param("dtbid", dtbId).query(new RankingMapper()).list();
   }
 
   /**
@@ -136,8 +212,8 @@ public class RankingRepository {
    * @return list of ranking periods
    */
   public List<LocalDate> getAvailableRankingPeriods() {
-    final String sql = "SELECT DISTINCT(RANKINGPERIOD) FROM RANKING ORDER BY RANKINGPERIOD ASC";
-    return jdbcTemplate.query(sql, (rs, rownum) -> rs.getDate(1).toLocalDate());
+    var sql = "select distinct(rankingperiod) from ranking order by rankingperiod asc";
+    return jdbcClient.sql(sql).query(LocalDate.class).list();
   }
 
   /**
@@ -150,6 +226,60 @@ public class RankingRepository {
   }
 
   public List<Club> findClubsBySearchTerm(String searchTerm) {
-    return Collections.emptyList();
+    var sql = "select distinct(club), federation from ranking where upper(club) like upper(:club)";
+    return jdbcClient.sql(sql).param("club", "%" + searchTerm + "%").query(new ClubMapper()).list();
+  }
+
+  private static class RankingMapper implements RowMapper<Ranking> {
+
+    @Override
+    public Ranking mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new Ranking(
+          rs.getDate(COLUMN_RANKINGPERIOD).toLocalDate(),
+          rs.getString(COLUMN_DTBID),
+          rs.getString(COLUMN_LASTNAME),
+          rs.getString(COLUMN_FIRSTNAME),
+          rs.getString(COLUMN_POINTS),
+          Nationality.valueOf(rs.getString(COLUMN_NATIONALITY)),
+          Federation.valueOf(rs.getString(COLUMN_FEDERATION)),
+          rs.getString(COLUMN_CLUB),
+          rs.getString("agegroup"),
+          rs.getInt("rankingposition"),
+          rs.getBoolean("yobrankings"),
+          rs.getBoolean("overallranking"),
+          rs.getBoolean("endofyearranking"));
+    }
+  }
+
+  private static class RankingPlayerMapper implements RowMapper<Ranking> {
+
+    @Override
+    public Ranking mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new Ranking(
+          rs.getDate(COLUMN_RANKINGPERIOD).toLocalDate(),
+          rs.getString(COLUMN_DTBID),
+          rs.getString(COLUMN_LASTNAME),
+          rs.getString(COLUMN_FIRSTNAME),
+          "",
+          Nationality.valueOf(rs.getString(COLUMN_NATIONALITY)),
+          Federation.valueOf(rs.getString(COLUMN_FEDERATION)),
+          rs.getString(COLUMN_CLUB),
+          "overall",
+          0,
+          false,
+          false,
+          false);
+    }
+  }
+
+  private static class ClubMapper implements RowMapper<Club> {
+
+    @Override
+    public Club mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new Club(
+          rs.getString(COLUMN_CLUB),
+          Federation.valueOf(rs.getString(COLUMN_FEDERATION))
+      );
+    }
   }
 }

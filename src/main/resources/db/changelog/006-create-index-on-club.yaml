@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-create-index-on-club
+      author: hwesselmann
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: club
+            indexName: idx_club
+            tableName: ranking
