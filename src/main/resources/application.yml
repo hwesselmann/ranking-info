@@ -6,6 +6,10 @@ spring:
   jmx:
     enabled: false
 
+server:
+  http2:
+    enabled: true
+
 info:
   application:
     name: ${spring.application.name}
