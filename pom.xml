@@ -44,10 +44,9 @@
   <name>ranking-info-api</name>
 
   <properties>
-    <h2.version>2.1.214</h2.version>
-    <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+    <java.version>21</java.version>
     <!-- dependencies -->
-    <java.version>20</java.version>
+    <h2.version>2.1.214</h2.version>
     <liquibase-core.version>4.23.2</liquibase-core.version>
     <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
@@ -57,8 +56,8 @@
     <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
     <sonar.organization>hwesselmann-1</sonar.organization>
     <springdoc-openapi-starter-webflux-ui.version>2.2.0
-    </springdoc-openapi-starter-webflux-ui.version>
     <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
+    <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
   </properties>
 
   <dependencies>
@@ -123,6 +122,17 @@
       <plugin>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <groupId>org.springframework.boot</groupId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build-info</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.github.git-commit-id</groupId>
+        <artifactId>git-commit-id-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
