@@ -24,7 +24,8 @@ stages:
   - code-analysis
 
 build:
-  image: eclipse-temurin:20-jdk
+  #  image: eclipse-temurin:20-jdk
+  image: openjdk:21-jdk
   stage: build
   script:
     - ./mvnw $MAVEN_CLI_OPTS -DskipTests -Dmaven.test.skip=true -T 4 package
@@ -37,7 +38,8 @@ build:
 
 
 verify:
-  image: eclipse-temurin:20-jdk
+  #  image: eclipse-temurin:20-jdk
+  image: openjdk:21-jdk
   stage: test
   script:
     - ./mvnw $MAVEN_CLI_OPTS verify
@@ -54,7 +56,8 @@ verify:
   tags: [ranking-info-runner]
 
 sonarcloud-check:
-  image: eclipse-temurin:20-jdk
+  #  image: eclipse-temurin:20-jdk
+  image: openjdk:21-jdk
   stage: code-analysis
   cache:
     key: "${CI_JOB_NAME}"
