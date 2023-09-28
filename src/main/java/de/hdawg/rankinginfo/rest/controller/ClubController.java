@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +45,7 @@ public class ClubController {
       @Parameter(in = ParameterIn.PATH, description = "name of the club")
       @PathVariable(value = "name") String name) {
 
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    return ResponseEntity.ok(clubService.getPlayersForClub(name));
   }
 
   /**

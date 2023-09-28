@@ -8,14 +8,24 @@ import java.util.List;
  */
 public class ClubPlayerResult {
 
+  private String name;
   private int count;
   private ZonedDateTime requested;
   private List<ClubPlayer> items;
 
-  public ClubPlayerResult(int count, ZonedDateTime requested, List<ClubPlayer> items) {
+  public ClubPlayerResult(String name, int count, ZonedDateTime requested, List<ClubPlayer> items) {
+    this.name = name;
     this.count = count;
     this.requested = requested;
     this.items = items;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public int getCount() {

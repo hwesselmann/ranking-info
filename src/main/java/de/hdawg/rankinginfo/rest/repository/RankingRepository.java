@@ -225,9 +225,34 @@ public class RankingRepository {
     return getAvailableRankingPeriods().stream().max(Comparator.naturalOrder()).orElse(null);
   }
 
+  /**
+   * find all clubs matching a given search term.
+   *
+   * @param searchTerm club name or club name part
+   * @return list of matches
+   */
   public List<Club> findClubsBySearchTerm(String searchTerm) {
     var sql = "select distinct(club), federation from ranking where upper(club) like upper(:club)";
     return jdbcClient.sql(sql).param("club", "%" + searchTerm + "%").query(new ClubMapper()).list();
+  }
+
+  /**
+   * find all rankings for unique players with a ranking on the most recent listing for a given
+   * club.
+   *
+   * @param name                    club name
+   * @param mostRecentRankingPeriod most recent ranking period
+   * @return list of matched rankings
+   */
+  public List<Ranking> findRankingsForPlayersOfGivenClub(String name,
+      LocalDate mostRecentRankingPeriod) {
+    var sql = "select * from ranking where club=:club and rankingperiod=:rankingperiod "
+        + "and agegroup='U18' and overallranking=true";
+    return jdbcClient.sql(sql)
+        .param("club", name)
+        .param("rankingperiod", mostRecentRankingPeriod)
+        .query(new RankingMapper())
+        .list();
   }
 
   private static class RankingMapper implements RowMapper<Ranking> {
