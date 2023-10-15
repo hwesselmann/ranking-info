@@ -47,7 +47,7 @@
     <java.version>21</java.version>
     <!-- dependencies -->
     <h2.version>2.1.214</h2.version>
-    <liquibase-core.version>4.23.2</liquibase-core.version>
+    <liquibase-core.version>4.24.0</liquibase-core.version>
     <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
     <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
@@ -186,7 +186,7 @@
                   <version>21</version>
                 </requireJavaVersion>
                 <requireMavenVersion>
-                  <version>[3.9.4,)</version>
+                  <version>[3.9.5,)</version>
                 </requireMavenVersion>
               </rules>
             </configuration>
