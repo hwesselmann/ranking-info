@@ -53,13 +53,13 @@ public class RankingRepository {
       boolean endOfYearRanking) {
     var genderNumericalIdentifier = Gender.girls == gender ? "2%" : "1%";
 
-    var sql = "select * from ranking where rankingperiod=:quarter and agegroup=:agegroup and "
-        + "dtbid LIKE :dtbid and yobrankings=:yobranking and overallranking=:overallranking "
-        + " and endofyearranking=:endofyearranking order by rankingposition asc, points asc";
+    var sql = "select * from ranking where rankingperiod = :quarter and agegroup = :age_group and "
+        + "dtbid LIKE :dtb_id and yobrankings = :yobranking and overallranking = :overallranking "
+        + " and endofyearranking = :endofyearranking order by rankingposition asc, points asc";
     return jdbcClient.sql(sql)
         .param("quarter", quarter)
-        .param("agegroup", ageGroup.name().toUpperCase())
-        .param("dtbid", genderNumericalIdentifier)
+        .param("age_group", ageGroup.name().toUpperCase())
+        .param("dtb_id", genderNumericalIdentifier)
         .param("yobranking", isYobRanking)
         .param("overallranking", overallRanking)
         .param("endofyearranking", endOfYearRanking)
@@ -78,10 +78,10 @@ public class RankingRepository {
   public List<Ranking> findPlayersByDtbIdAndNameAndYob(final String dtbId, final String name,
       final String yob) {
     var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
-        + "rankingperiod from ranking where lastname like :lastname and dtbid like :dtbid "
+        + "rankingperiod from ranking where lastname like :lastname and dtbid like :dtb_id "
         + "and (dtbid like :boysId or dtbid like :girlsId)";
     return jdbcClient.sql(sql)
-        .param("dtbid", dtbId + "%")
+        .param("dtb_id", dtbId + "%")
         .param("lastname", "%" + name + "%")
         .param("boysId", "1" + yob.substring(2, 4) + "%")
         .param("girlsId", "2" + yob.substring(2, 4) + "%")
@@ -115,9 +115,9 @@ public class RankingRepository {
    */
   public List<Ranking> findPlayersByNameAndDtbId(final String dtbId, final String name) {
     var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
-        + "rankingperiod from ranking where lastname like :lastname and dtbid like :dtbid";
+        + "rankingperiod from ranking where lastname like :lastname and dtbid like :dtb_id";
     return jdbcClient.sql(sql)
-        .param("dtbid", dtbId + "%")
+        .param("dtb_id", dtbId + "%")
         .param("lastname", "%" + name + "%")
         .query(new RankingPlayerMapper()).list();
   }
@@ -145,10 +145,10 @@ public class RankingRepository {
    */
   public List<Ranking> findPlayersByDtbIdAndYob(final String dtbId, final String yob) {
     var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
-        + "rankingperiod from ranking where dtbid like :dtbid and (dtbid like :boysId "
+        + "rankingperiod from ranking where dtbid like :dtb_id and (dtbid like :boysId "
         + "or dtbid like :girlsId)";
     return jdbcClient.sql(sql)
-        .param("dtbid", dtbId + "%")
+        .param("dtb_id", dtbId + "%")
         .param("boysId", "1" + yob.substring(2, 4) + "%")
         .param("girlsId", "2" + yob.substring(2, 4) + "%")
         .query(new RankingPlayerMapper()).list();
@@ -177,9 +177,9 @@ public class RankingRepository {
    */
   public List<Ranking> findPlayersByDtbId(final String dtbId) {
     var sql = "select distinct (dtbid), dtbid, firstname, lastname, nationality, club, federation, "
-        + "rankingperiod from ranking where dtbid like :dtbid";
+        + "rankingperiod from ranking where dtbid like :dtb_id";
     return jdbcClient.sql(sql)
-        .param("dtbid", dtbId + "%")
+        .param("dtb_id", dtbId + "%")
         .query(new RankingPlayerMapper()).list();
   }
 
@@ -202,8 +202,8 @@ public class RankingRepository {
    */
   public List<Ranking> getRankingsForPlayer(final String dtbId) {
     var sql =
-        "select * from ranking where dtbid=:dtbid order by rankingperiod desc, agegroup asc";
-    return jdbcClient.sql(sql).param("dtbid", dtbId).query(new RankingMapper()).list();
+        "select * from ranking where dtbid = :dtb_id order by rankingperiod desc, agegroup asc";
+    return jdbcClient.sql(sql).param("dtb_id", dtbId).query(new RankingMapper()).list();
   }
 
   /**
@@ -246,11 +246,11 @@ public class RankingRepository {
    */
   public List<Ranking> findRankingsForPlayersOfGivenClub(String name,
       LocalDate mostRecentRankingPeriod) {
-    var sql = "select * from ranking where club=:club and rankingperiod=:rankingperiod "
+    var sql = "select * from ranking where club=:club and ranking_period = :ranking_period "
         + "and agegroup='U18' and overallranking=true";
     return jdbcClient.sql(sql)
         .param("club", name)
-        .param("rankingperiod", mostRecentRankingPeriod)
+        .param("ranking_period", mostRecentRankingPeriod)
         .query(new RankingMapper())
         .list();
   }
