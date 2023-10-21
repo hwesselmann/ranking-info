@@ -63,4 +63,19 @@ public class GlobalExceptionHandler {
 
     return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
   }
+
+  /**
+   * Handler for requests asking for an unknown club.
+   *
+   * @param e exception
+   * @return api error response
+   */
+  @ExceptionHandler(ClubNotFoundException.class)
+  ResponseEntity<Object> handleUnknownClub(ClubNotFoundException e) {
+    Map<String, Object> body = new LinkedHashMap<>();
+    body.put(TIMESTAMP_FIELD_LABEL, LocalDate.now());
+    body.put(ERROR_FIELD_LABEL, e.getMessage());
+
+    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
 }

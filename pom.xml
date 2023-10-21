@@ -5,11 +5,36 @@
 
   <modelVersion>4.0.0</modelVersion>
 
+  <repositories>
+    <repository>
+      <id>spring-snapshots</id>
+      <url>https://repo.spring.io/snapshot</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>spring-milestones</id>
+      <url>https://repo.spring.io/milestone</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>spring-snapshots</id>
+      <url>https://repo.spring.io/snapshot</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>spring-milestones</id>
+      <url>https://repo.spring.io/milestone</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <parent>
     <artifactId>spring-boot-starter-parent</artifactId>
     <groupId>org.springframework.boot</groupId>
     <relativePath/>
-    <version>3.1.4</version> <!-- lookup parent from repository -->
+    <version>3.2.0-M3</version> <!-- lookup parent from repository -->
   </parent>
 
   <artifactId>ranking-info</artifactId>
@@ -19,10 +44,9 @@
   <name>ranking-info-api</name>
 
   <properties>
-    <h2.version>2.1.214</h2.version>
-    <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+    <java.version>21</java.version>
     <!-- dependencies -->
-    <java.version>20</java.version>
+    <h2.version>2.1.214</h2.version>
     <liquibase-core.version>4.24.0</liquibase-core.version>
     <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
@@ -31,9 +55,8 @@
     <opencsv.version>5.8</opencsv.version>
     <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
     <sonar.organization>hwesselmann-1</sonar.organization>
-    <springdoc-openapi-starter-webflux-ui.version>2.2.0
-    </springdoc-openapi-starter-webflux-ui.version>
     <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
+    <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
   </properties>
 
   <dependencies>
@@ -71,7 +94,6 @@
       <version>${opencsv.version}</version>
     </dependency>
 
-
     <!-- monitoring -->
     <dependency>
       <artifactId>spring-boot-starter-actuator</artifactId>
@@ -94,12 +116,22 @@
     </dependency>
   </dependencies>
 
-
   <build>
     <plugins>
       <plugin>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <groupId>org.springframework.boot</groupId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build-info</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.github.git-commit-id</groupId>
+        <artifactId>git-commit-id-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -151,10 +183,10 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>20</version>
+                  <version>21</version>
                 </requireJavaVersion>
                 <requireMavenVersion>
-                  <version>[3.9.3,)</version>
+                  <version>[3.9.5,)</version>
                 </requireMavenVersion>
               </rules>
             </configuration>

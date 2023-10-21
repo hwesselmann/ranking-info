@@ -38,7 +38,7 @@ public class ListingService {
                                                    Gender gender,
                                                    boolean isYobRanking, boolean overallRanking,
                                                    boolean endOfYearRanking, String club) {
-    Listing result =
+    var result =
         getAgeGroupRankings(rankingPeriod, ageGroup, gender, isYobRanking, overallRanking,
             endOfYearRanking);
     List<ListingItem> filteredItems =
@@ -62,7 +62,7 @@ public class ListingService {
   public Listing getAgeGroupRankings(LocalDate rankingPeriod, AgeGroup ageGroup, Gender gender,
                                      boolean isYobRanking,
                                      boolean overallRanking, boolean endOfYearRanking) {
-    Listing result =
+    var result =
         new Listing(rankingPeriod, ageGroup, gender, isYobRanking, overallRanking,
             endOfYearRanking);
     List<Ranking> rankingsFromDb =
