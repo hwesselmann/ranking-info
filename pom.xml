@@ -56,7 +56,7 @@
     <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
     <sonar.organization>hwesselmann-1</sonar.organization>
     <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
-    <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
   </properties>
 
   <dependencies>
