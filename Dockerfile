@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21.0.1_12-jre-alpine
 
 # Add app user
 ARG APPLICATION_USER=app
