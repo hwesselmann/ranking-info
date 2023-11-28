@@ -3,11 +3,13 @@
 A Spring-Boot based backend service providing REST endpoints for retrieving results from the ranking info data store.
 
 == Requirements
-* Java 20
+
+* Java 21
 * Docker (for building the docker image)
 
 == How to run
-[source, bash]
+
+[source,bash]
 ----
 mvn spring-boot:run
 ----
