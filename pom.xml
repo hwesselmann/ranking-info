@@ -9,7 +9,7 @@
     <artifactId>spring-boot-starter-parent</artifactId>
     <groupId>org.springframework.boot</groupId>
     <relativePath/>
-    <version>3.2.0</version> <!-- lookup parent from repository -->
+    <version>3.2.2</version> <!-- lookup parent from repository -->
   </parent>
 
   <artifactId>ranking-info</artifactId>
@@ -24,14 +24,17 @@
     <!-- dependencies -->
     <springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
     <h2.version>2.1.214</h2.version>
-    <liquibase-core.version>4.25.1</liquibase-core.version>
+    <liquibase-core.version>4.26.0</liquibase-core.version>
     <opencsv.version>5.9</opencsv.version>
+    <checkstyle.version>10.13.0</checkstyle.version>
     <!-- plugins -->
     <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
-    <maven-failsafe-plugin.version>3.2.3</maven-failsafe-plugin.version>
-    <maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
+    <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
     <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+    <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
+    <gitlab-codeclimate-maven-plugin.version>1.1.0</gitlab-codeclimate-maven-plugin.version>
   </properties>
 
   <dependencies>
@@ -174,6 +177,48 @@
         <groupId>org.apache.maven.plugins</groupId>
         <version>${maven-enforcer-plugin.version}</version>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven-checkstyle-plugin.version}</version>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+          <consoleOutput>true</consoleOutput>
+          <failsOnError>true</failsOnError>
+          <linkXRef>false</linkXRef>
+        </configuration>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>com.gitlab.smueller18.gitlab</groupId>
+        <artifactId>gitlab-codeclimate-maven-plugin</artifactId>
+        <version>${gitlab-codeclimate-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>codeclimate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 </project>
