@@ -15,6 +15,8 @@ target/
 
 ### IntelliJ IDEA ###
 .idea/sonarlint/
+./idea/*.xml
+*.iml
 
 ### NetBeans ###
 /nbproject/private/
