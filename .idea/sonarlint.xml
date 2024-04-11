@@ -3,7 +3,7 @@
   <component name="SonarLintProjectSettings">
     <option name="bindingEnabled" value="true" />
     <option name="bindingSuggestionsEnabled" value="false" />
-    <option name="projectKey" value="hwesselmann_ranking-info" />
-    <option name="serverId" value="SonarCloud.io" />
+    <option name="projectKey" value="hwesselmann_ranking-info2" />
+    <option name="serverId" value="sonarcloud - github" />
   </component>
 </project>
