@@ -19,20 +19,20 @@
   <name>ranking-info-api</name>
 
   <properties>
-    <java.version>21</java.version>
-    <sonar.organization>hwesselmann-1</sonar.organization>
+    <java.version>22</java.version>
+    <sonar.organization>hwesselmann</sonar.organization>
     <!-- dependencies -->
-    <springdoc-openapi-starter-webmvc-ui.version>2.4.0</springdoc-openapi-starter-webmvc-ui.version>
+    <springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
     <h2.version>2.1.214</h2.version>
-    <liquibase-core.version>4.26.0</liquibase-core.version>
+    <liquibase-core.version>4.27.0</liquibase-core.version>
     <opencsv.version>5.9</opencsv.version>
-    <checkstyle.version>10.14.2</checkstyle.version>
+    <checkstyle.version>10.15.0</checkstyle.version>
     <!-- plugins -->
     <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
     <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
     <sonar-maven-plugin.version>3.11.0.3922</sonar-maven-plugin.version>
-    <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
     <gitlab-codeclimate-maven-plugin.version>1.1.0</gitlab-codeclimate-maven-plugin.version>
   </properties>
