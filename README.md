@@ -10,7 +10,7 @@ Kotlin/Spring Boot reimplementation of [ranking-info](https://github.com/hwessel
 |---|---|
 | Language / Framework | Kotlin 2 / Spring Boot 4 |
 | Database | SQLite (dev), PostgreSQL (prod) |
-| ORM / Migrations | Spring Data JPA / Liquibase |
+| ORM / Migrations | Exposed (JetBrains) / Liquibase |
 | Frontend | Thymeleaf + Tailwind CSS (CDN) |
 | API docs | springdoc-openapi (Swagger UI at `/api-docs`) |
 | Scheduling | `@Scheduled` (in-process) |
