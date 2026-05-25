@@ -1,0 +1,46 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ranking_info
+      DB_USER: ranking_info
+      DB_PASSWORD: ${DB_PASSWORD:-changeme}
+      API_BEARER_TOKEN: ${API_BEARER_TOKEN:-changeme}
+      IMPORT_FOLDER: /data/import
+      DOMAIN: ${DOMAIN:-localhost}
+      IMPRINT_NAME: ${IMPRINT_NAME:-}
+      IMPRINT_STREET: ${IMPRINT_STREET:-}
+      IMPRINT_ZIPCODE: ${IMPRINT_ZIPCODE:-}
+      IMPRINT_CITY: ${IMPRINT_CITY:-}
+      IMPRINT_PHONE: ${IMPRINT_PHONE:-}
+      IMPRINT_MAIL: ${IMPRINT_MAIL:-}
+    volumes:
+      - import-data:/data/import
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ranking_info
+      POSTGRES_USER: ranking_info
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ranking_info"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  import-data:

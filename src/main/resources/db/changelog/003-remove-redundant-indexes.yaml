@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-remove-redundant-indexes
+      author: ranking-info
+      changes:
+        - dropIndex:
+            indexName: age_group_all_options
+            tableName: rankings
+        - dropIndex:
+            indexName: index_rankings_on_age_group_and_date
+            tableName: rankings
+        - dropIndex:
+            indexName: idx_rankings_date_age_group_options
+            tableName: rankings

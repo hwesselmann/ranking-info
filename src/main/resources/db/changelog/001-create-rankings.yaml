@@ -1,0 +1,151 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-rankings
+      author: ranking-info
+      changes:
+        - createTable:
+            tableName: rankings
+            columns:
+              - column:
+                  name: id
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: dtb_id
+                  type: INTEGER
+              - column:
+                  name: lastname
+                  type: VARCHAR(50)
+              - column:
+                  name: firstname
+                  type: VARCHAR(50)
+              - column:
+                  name: nationality
+                  type: VARCHAR(3)
+              - column:
+                  name: age_group
+                  type: VARCHAR(20)
+              - column:
+                  name: date
+                  type: DATE
+              - column:
+                  name: ranking_position
+                  type: INTEGER
+              - column:
+                  name: score
+                  type: VARCHAR(20)
+              - column:
+                  name: club
+                  type: VARCHAR(255)
+              - column:
+                  name: federation
+                  type: VARCHAR(50)
+              - column:
+                  name: age_group_ranking
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: yob_ranking
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: year_end_ranking
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: age_group_all_options
+            tableName: rankings
+            columns:
+              - column: {name: age_group}
+              - column: {name: age_group_ranking}
+              - column: {name: yob_ranking}
+              - column: {name: year_end_ranking}
+              - column: {name: date}
+        - createIndex:
+            indexName: index_rankings_on_age_group_and_date
+            tableName: rankings
+            columns:
+              - column: {name: age_group}
+              - column: {name: date}
+        - createIndex:
+            indexName: index_rankings_on_club
+            tableName: rankings
+            columns:
+              - column: {name: club}
+        - createIndex:
+            indexName: idx_rankings_date_age_group_options
+            tableName: rankings
+            columns:
+              - column: {name: date}
+              - column: {name: age_group}
+              - column: {name: age_group_ranking}
+              - column: {name: yob_ranking}
+              - column: {name: year_end_ranking}
+        - createIndex:
+            indexName: idx_rankings_full_filter_set
+            tableName: rankings
+            columns:
+              - column: {name: date}
+              - column: {name: age_group}
+              - column: {name: yob_ranking}
+              - column: {name: age_group_ranking}
+              - column: {name: year_end_ranking}
+        - createIndex:
+            indexName: idx_rankings_date_dtb_id
+            tableName: rankings
+            columns:
+              - column: {name: date}
+              - column: {name: dtb_id}
+        - createIndex:
+            indexName: index_rankings_on_dtb_id_and_date_and_federation
+            tableName: rankings
+            columns:
+              - column: {name: dtb_id}
+              - column: {name: date}
+              - column: {name: federation}
+        - createIndex:
+            indexName: index_rankings_on_dtb_id_and_date
+            tableName: rankings
+            columns:
+              - column: {name: dtb_id}
+              - column: {name: date}
+        - createIndex:
+            indexName: index_rankings_on_dtb_id
+            tableName: rankings
+            columns:
+              - column: {name: dtb_id}
+        - createIndex:
+            indexName: idx_rankings_federation_date
+            tableName: rankings
+            columns:
+              - column: {name: federation}
+              - column: {name: date}
+        - createIndex:
+            indexName: index_rankings_on_federation
+            tableName: rankings
+            columns:
+              - column: {name: federation}
+        - createIndex:
+            indexName: index_rankings_on_lastname
+            tableName: rankings
+            columns:
+              - column: {name: lastname}

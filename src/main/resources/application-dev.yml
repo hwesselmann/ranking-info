@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:${user.home}/ranking-info-dev.db
+    driver-class-name: org.sqlite.JDBC
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+import:
+  folder: ${IMPORT_FOLDER:${user.home}/ranking-import}
+  schedule: "0 */30 * * * ?"

@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/001-create-rankings.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/002-create-import-histories.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/003-remove-redundant-indexes.yaml
+      relativeToChangelogFile: false

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${clubName + ' | Ranking-Info'}">Verein</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { brand: '#3e8ed0' } } } }</script>
+    <link rel="stylesheet" th:href="@{/css/application.css}">
+</head>
+<body>
+<th:block th:replace="~{fragments/nav :: nav}"></th:block>
+<div class="w-full px-4 mx-auto">
+    <h1 class="text-2xl font-bold text-left mt-3 mb-1" th:text="'Spieler aus dem Verein ' + ${clubName}">Verein</h1>
+    <p class="text-sm text-gray-600 mb-4">Hier finden Sie alle Spieler aus diesem Verein, die in der aktuellen Periode auf der Rangliste geführt sind.</p>
+    <div th:each="entry : ${players}" class="mb-6">
+        <h2 class="text-lg font-semibold mb-2" th:text="${entry.key}"></h2>
+        <table class="w-full" role="table">
+            <thead>
+            <tr class="bg-gray-100">
+                <th scope="col" class="py-2 px-2">DTB-ID</th>
+                <th scope="col" class="py-2 px-2 text-left">Nachname, Vorname</th>
+                <th scope="col" class="py-2 px-2">Position</th>
+                <th scope="col" class="py-2 px-2">Punkte</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${entry.value}" class="border-b border-gray-200 even:bg-gray-50">
+                <td class="py-1 px-2">
+                    <a th:href="@{/players/{id}(id=${p['dtb_id']})}" class="text-brand"
+                       th:text="${p['dtb_id']}"></a>
+                </td>
+                <td class="py-1 px-2" th:text="${p['lastname'] + ', ' + p['firstname']}"></td>
+                <td class="py-1 px-2 text-center" th:text="${p['rank']}"></td>
+                <td class="py-1 px-2 text-center" th:text="${p['score']}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

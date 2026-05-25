@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ranking_info}
+    username: ${DB_USER:ranking_info}
+    password: ${DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ranking_info}
+    user: ${DB_USER:ranking_info}
+    password: ${DB_PASSWORD:}
+  thymeleaf:
+    cache: true

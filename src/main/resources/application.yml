@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: ranking-info
+  profiles:
+    active: dev
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=1h
+  thymeleaf:
+    cache: false
+  security:
+    user:
+      password: disabled
+
+server:
+  port: 8080
+
+api:
+  tokens: []
+
+import:
+  folder: ${IMPORT_FOLDER:${user.home}/ranking-import}
+  schedule: "0 0 12 * * ?"
+
+imprint:
+  domain: ${DOMAIN:localhost}
+  name: ${IMPRINT_NAME:}
+  street: ${IMPRINT_STREET:}
+  zipcode: ${IMPRINT_ZIPCODE:}
+  city: ${IMPRINT_CITY:}
+  phone: ${IMPRINT_PHONE:}
+  mail: ${IMPRINT_MAIL:}
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Spielersuche | Ranking-Info</title>
+    <meta name="description" content="Suchen von Spielern auf der Deutschen Tennis-Rangliste.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { brand: '#3e8ed0' } } } }</script>
+    <link rel="stylesheet" th:href="@{/css/application.css}">
+</head>
+<body>
+<th:block th:replace="~{fragments/nav :: nav}"></th:block>
+<div class="w-full px-4 mx-auto">
+    <h1 class="text-2xl font-bold text-left mb-3 mt-3">Spielersuche</h1>
+    <form th:action="@{/players}" method="get" class="mb-3">
+        <div class="flex flex-wrap items-center gap-2">
+            <input type="search" name="dtb_id" class="border border-gray-300 rounded px-2 py-1 text-sm"
+                   placeholder="DTB-ID" th:value="${params != null ? params['dtb_id'] : ''}">
+            <input type="search" name="lastname" class="border border-gray-300 rounded px-2 py-1 text-sm"
+                   placeholder="Nachname" th:value="${params != null ? params['lastname'] : ''}">
+            <input type="search" name="yob" class="border border-gray-300 rounded px-2 py-1 text-sm"
+                   placeholder="Geburtsjahr" th:value="${params != null ? params['yob'] : ''}">
+            <button type="submit" name="commit" value="1"
+                    class="bg-brand text-white px-3 py-1 text-sm rounded hover:opacity-90 cursor-pointer">suchen</button>
+        </div>
+    </form>
+    <div th:if="${players != null and !#lists.isEmpty(players)}">
+        <table class="w-full" role="table" aria-label="Spielerliste">
+            <thead>
+            <tr class="bg-gray-100">
+                <th scope="col" class="py-2 px-2 text-left">Nachname, Vorname</th>
+                <th scope="col" class="py-2 px-2">DTB-ID</th>
+                <th scope="col" class="py-2 px-2 hidden md:table-cell">Verein</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${players}" class="border-b border-gray-200 even:bg-gray-50">
+                <td class="py-1 px-2">
+                    <a th:href="@{/players/{id}(id=${p.dtbId})}" class="text-brand"
+                       th:text="${p.lastname + ', ' + p.firstname}"></a>
+                </td>
+                <td class="py-1 px-2 text-center" th:text="${p.dtbId}"></td>
+                <td class="py-1 px-2 hidden md:table-cell" th:text="${p.club}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${players != null and #lists.isEmpty(players)}">Es wurden keine Spieler gefunden.</div>
+</div>
+</body>
+</html>

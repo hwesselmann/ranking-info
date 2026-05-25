@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${title != null ? title + ' | Ranking-Info' : 'Ranking-Info'}">Ranking-Info</title>
+    <meta name="description" th:content="${metaContent ?: 'Ranglisteninformationen'}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/application.css}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { brand: '#3e8ed0' } } } }
+    </script>
+    <th:block th:replace="${headFragment} ?: ~{}"></th:block>
+</head>
+<body>
+<header>
+    <nav class="bg-brand" role="navigation" aria-label="Hauptnavigation">
+        <div class="flex flex-wrap items-center justify-between px-4 py-2">
+            <div class="flex items-center">
+                <a th:href="@{/}" class="flex items-center">
+                    <img th:src="@{/images/ri-logo.png}" class="max-h-7" alt="Ranking-Info Logo">
+                </a>
+            </div>
+            <button type="button" id="nav-burger" class="md:hidden text-white p-2 rounded hover:bg-white/20"
+                    aria-label="Menü" aria-expanded="false" aria-controls="nav-menu">
+                <span class="block w-5 h-0.5 bg-white mb-1"></span>
+                <span class="block w-5 h-0.5 bg-white mb-1"></span>
+                <span class="block w-5 h-0.5 bg-white"></span>
+            </button>
+            <div id="nav-menu" class="hidden w-full md:flex md:w-auto md:items-center md:gap-1 pb-2 md:pb-0">
+                <a th:href="@{/players}" class="text-white hover:bg-white/20 px-3 py-2 rounded text-sm block md:inline-block">Spieler</a>
+                <a th:href="@{/listings}" class="text-white hover:bg-white/20 px-3 py-2 rounded text-sm block md:inline-block">Listen</a>
+                <a th:href="@{/clubs}" class="text-white hover:bg-white/20 px-3 py-2 rounded text-sm block md:inline-block">Vereine</a>
+                <a th:href="@{/federations}" class="text-white hover:bg-white/20 px-3 py-2 rounded text-sm block md:inline-block">Verbände</a>
+                <a th:href="@{/status}" class="text-white hover:bg-white/20 px-3 py-2 rounded text-sm block md:inline-block">Status</a>
+                <a th:href="@{/help}" class="text-white hover:bg-white/20 px-3 py-2 rounded text-sm block md:inline-block">Hilfe</a>
+                <a th:href="@{/privacy}" class="text-white hover:bg-white/20 px-3 py-2 rounded text-sm block md:inline-block">Datenschutz</a>
+                <a th:href="@{/about}" class="text-white hover:bg-white/20 px-3 py-2 rounded text-sm block md:inline-block">Über</a>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="w-full px-4 mx-auto">
+    <div th:if="${danger}" class="bg-red-100 border border-red-400 text-red-800 px-4 py-2 rounded mt-2"
+         th:text="${danger}"></div>
+    <th:block th:replace="${content} ?: ~{}"></th:block>
+    <layout:fragment name="content" th:remove="tag"></layout:fragment>
+</div>
+<script>
+    const burger = document.getElementById('nav-burger');
+    const menu = document.getElementById('nav-menu');
+    burger?.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+        burger.setAttribute('aria-expanded', menu.classList.contains('hidden') ? 'false' : 'true');
+    });
+</script>
+</body>
+</html>
