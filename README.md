@@ -1,8 +1,8 @@
-# ranking-info-kt
+# ranking-info
 
 [![test](https://github.com/hwesselmann/ranking-info/actions/workflows/test.yaml/badge.svg)](https://github.com/hwesselmann/ranking-info-kt/actions/workflows/test.yaml)
 
-Kotlin/Spring Boot reimplementation of [ranking-info](https://github.com/hwesselmann/ranking-info) — a web application for browsing and analysing German national tennis youth and adult rankings.
+Kotlin/Spring Boot reimplementation of [ranking-info](https://github.com/hwesselmann/ranking-info-rails) — a web application for browsing and analysing German national tennis youth and adult rankings. All future development for ranking-info will take place in this project
 
 ## Tech stack
 
