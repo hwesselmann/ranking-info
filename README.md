@@ -1,6 +1,6 @@
 # ranking-info-kt
 
-[![test](https://github.com/hwesselmann/ranking-info-kt/actions/workflows/test.yaml/badge.svg)](https://github.com/hwesselmann/ranking-info-kt/actions/workflows/test.yaml)
+[![test](https://github.com/hwesselmann/ranking-info/actions/workflows/test.yaml/badge.svg)](https://github.com/hwesselmann/ranking-info-kt/actions/workflows/test.yaml)
 
 Kotlin/Spring Boot reimplementation of [ranking-info](https://github.com/hwesselmann/ranking-info) — a web application for browsing and analysing German national tennis youth and adult rankings.
 
