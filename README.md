@@ -11,7 +11,7 @@ Kotlin/Spring Boot reimplementation of [ranking-info](https://github.com/hwessel
 | Language / Framework | Kotlin 2 / Spring Boot 4 |
 | Database | SQLite (dev), PostgreSQL (prod) |
 | ORM / Migrations | Exposed (JetBrains) / Liquibase |
-| Frontend | Thymeleaf + Tailwind CSS (CDN) |
+| Frontend | Thymeleaf + Tailwind CSS (local build) |
 | API docs | springdoc-openapi (Swagger UI at `/api-docs`) |
 | Scheduling | `@Scheduled` (in-process) |
 | Caching | Caffeine (in-memory) |
@@ -25,12 +25,20 @@ Kotlin/Spring Boot reimplementation of [ranking-info](https://github.com/hwessel
 ## Prerequisites
 
 - Java 21 (Eclipse Temurin or any distribution)
+- Node.js + npm (for Tailwind CSS builds)
 - Gradle wrapper included (`./gradlew`)
 - Docker + Docker Compose (for containerised setup)
 
 ## Local development
 
 ```bash
+# Install frontend dependencies (first time only)
+npm install
+
+# Build CSS (re-run after editing application.src.css or templates)
+npx @tailwindcss/cli -i src/main/resources/static/css/application.src.css \
+  -o src/main/resources/static/css/application.css
+
 # Run with dev profile (SQLite, auto-creates DB in $HOME/ranking-info-dev.db)
 ./gradlew bootRun
 ```
@@ -123,4 +131,5 @@ The stack runs the application on port 8080 and PostgreSQL internally. Configure
 ## CI/CD
 
 - **`test.yaml`** — runs tests, ktlint, Detekt, and Dokka on every push/PR
+- **`codeql.yml`** — CodeQL security analysis on every push/PR and weekly
 - **`docker.yaml`** — builds and pushes a Docker image to GHCR on every release

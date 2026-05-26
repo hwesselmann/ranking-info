@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<html lang="de"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <title>Status | Ranking-Info</title>
-    <meta name="description" content="Informationen zu den im System verfügbaren Datenständen">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { theme: { extend: { colors: { brand: '#3e8ed0' } } } }</script>
-    <link rel="stylesheet" th:href="@{/css/application.css}">
 </head>
 <body>
-<th:block th:replace="~{fragments/nav :: nav}"></th:block>
-<div class="w-full px-4 mx-auto">
+<th:block layout:fragment="content">
     <h1 class="text-2xl font-bold text-left mb-3 mt-3 tracking-normal">Status &amp; Datenbestand</h1>
 
     <div class="inline-flex rounded overflow-hidden text-sm mb-3">
@@ -50,28 +47,28 @@
             <div class="col-span-2 text-center py-2 px-1">
                 <th:block th:if="${entry.value.contains(1)}">
                     <span class="ri-icon-green">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" class="ri-icon" style="display:inline-block;"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+                        <svg th:replace="~{fragments/icons :: check-circle}"></svg>
                     </span>
                 </th:block>
             </div>
             <div class="col-span-2 text-center py-2 px-1">
                 <th:block th:if="${entry.value.contains(4)}">
                     <span class="ri-icon-green">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" class="ri-icon" style="display:inline-block;"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+                        <svg th:replace="~{fragments/icons :: check-circle}"></svg>
                     </span>
                 </th:block>
             </div>
             <div class="col-span-2 text-center py-2 px-1">
                 <th:block th:if="${entry.value.contains(7)}">
                     <span class="ri-icon-green">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" class="ri-icon" style="display:inline-block;"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+                        <svg th:replace="~{fragments/icons :: check-circle}"></svg>
                     </span>
                 </th:block>
             </div>
             <div class="col-span-2 text-center py-2 px-1">
                 <th:block th:if="${entry.value.contains(10)}">
                     <span class="ri-icon-green">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" class="ri-icon" style="display:inline-block;"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+                        <svg th:replace="~{fragments/icons :: check-circle}"></svg>
                     </span>
                 </th:block>
             </div>
@@ -80,6 +77,6 @@
     <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 px-3 py-2 text-sm mt-3">
         In Quartal 3/2020 wurde wegen der COVID-19-Pandemie keine neue Rangliste veröffentlicht
     </div>
-</div>
+</th:block>
 </body>
 </html>

@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<html lang="de"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <title>Ranking-Info</title>
-    <meta name="description" content="Ranglisteninformationen - Der Anlaufpunkt zur Deutschen Tennis-Jugendrangliste">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { theme: { extend: { colors: { brand: '#3e8ed0' } } } }</script>
-    <link rel="stylesheet" th:href="@{/css/application.css}">
 </head>
 <body>
-<th:block th:replace="~{fragments/nav :: nav}"></th:block>
-<div class="w-full px-4 mx-auto">
+<th:block layout:fragment="content">
     <section class="bg-gray-50 py-12">
         <div class="px-4">
             <h1 class="text-3xl font-bold">Willkommen bei Ranking-Info</h1>
@@ -36,6 +33,6 @@
             <a th:href="@{/federations}" class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50 border-l border-gray-200">Verbandsstatistik</a>
         </footer>
     </div>
-</div>
+</th:block>
 </body>
 </html>

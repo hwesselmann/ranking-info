@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<html lang="de"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <title>Verbandsstatistik | Ranking-Info</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { theme: { extend: { colors: { brand: '#3e8ed0' } } } }</script>
-    <link rel="stylesheet" th:href="@{/css/application.css}">
 </head>
 <body>
-<th:block th:replace="~{fragments/nav :: nav}"></th:block>
-<div class="w-full px-4 mx-auto">
+<th:block layout:fragment="content">
     <h1 class="text-2xl font-bold text-left mb-3 mt-3 tracking-normal">Daten zu den Landesverbänden</h1>
     <p class="mb-3">Hier finden Sie Daten, wie viele Spielerinnen und Spieler der DTB Landesverbände nach Altersklasse in der aktuellen Periode auf der Rangliste geführt sind.</p>
     <div class="overflow-x-auto mt-3 mb-3">
@@ -25,16 +23,16 @@
             </tr>
             <tr class="bg-gray-100 text-gray-900">
                 <th scope="col" class="py-1 px-2"></th>
-                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><i class="fas fa-mars fa-lg" title="männlich" aria-hidden="true"></i><span class="sr-only">männlich</span></th>
-                <th scope="col" class="py-2 px-2 text-center"><i class="fas fa-venus fa-lg" title="weiblich" aria-hidden="true"></i><span class="sr-only">weiblich</span></th>
-                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><i class="fas fa-mars fa-lg" aria-hidden="true"></i></th>
-                <th scope="col" class="py-2 px-2 text-center"><i class="fas fa-venus fa-lg" aria-hidden="true"></i></th>
-                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><i class="fas fa-mars fa-lg" aria-hidden="true"></i></th>
-                <th scope="col" class="py-2 px-2 text-center"><i class="fas fa-venus fa-lg" aria-hidden="true"></i></th>
-                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><i class="fas fa-mars fa-lg" aria-hidden="true"></i></th>
-                <th scope="col" class="py-2 px-2 text-center"><i class="fas fa-venus fa-lg" aria-hidden="true"></i></th>
-                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><i class="fas fa-mars fa-lg" aria-hidden="true"></i></th>
-                <th scope="col" class="py-2 px-2 text-center"><i class="fas fa-venus fa-lg" aria-hidden="true"></i></th>
+                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><svg th:replace="~{fragments/icons :: mars}"></svg><span class="sr-only">männlich</span></th>
+                <th scope="col" class="py-2 px-2 text-center"><svg th:replace="~{fragments/icons :: venus}"></svg><span class="sr-only">weiblich</span></th>
+                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><svg th:replace="~{fragments/icons :: mars}"></svg><span class="sr-only">männlich</span></th>
+                <th scope="col" class="py-2 px-2 text-center"><svg th:replace="~{fragments/icons :: venus}"></svg><span class="sr-only">weiblich</span></th>
+                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><svg th:replace="~{fragments/icons :: mars}"></svg><span class="sr-only">männlich</span></th>
+                <th scope="col" class="py-2 px-2 text-center"><svg th:replace="~{fragments/icons :: venus}"></svg><span class="sr-only">weiblich</span></th>
+                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><svg th:replace="~{fragments/icons :: mars}"></svg><span class="sr-only">männlich</span></th>
+                <th scope="col" class="py-2 px-2 text-center"><svg th:replace="~{fragments/icons :: venus}"></svg><span class="sr-only">weiblich</span></th>
+                <th scope="col" class="py-2 px-2 text-center border-l border-gray-300"><svg th:replace="~{fragments/icons :: mars}"></svg><span class="sr-only">männlich</span></th>
+                <th scope="col" class="py-2 px-2 text-center"><svg th:replace="~{fragments/icons :: venus}"></svg><span class="sr-only">weiblich</span></th>
             </tr>
             </thead>
             <tbody>
@@ -54,6 +52,6 @@
             </tbody>
         </table>
     </div>
-</div>
+</th:block>
 </body>
 </html>

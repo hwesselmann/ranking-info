@@ -1,0 +1,25 @@
+{
+  "name": "ranking-info",
+  "version": "1.0.0",
+  "description": "[![test](https://github.com/hwesselmann/ranking-info/actions/workflows/test.yaml/badge.svg)](https://github.com/hwesselmann/ranking-info-kt/actions/workflows/test.yaml)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hwesselmann/ranking-info.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hwesselmann/ranking-info/issues"
+  },
+  "homepage": "https://github.com/hwesselmann/ranking-info#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.0",
+    "tailwindcss": "^4.3.0"
+  }
+}

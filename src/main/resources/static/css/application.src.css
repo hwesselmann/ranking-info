@@ -1,0 +1,100 @@
+@import "tailwindcss" source("../../templates");
+@source inline("{hover:,}bg-white/20");
+@source inline("{hover:,}bg-gray-50");
+@source inline("{hover:,}opacity-90");
+@source inline("md:hidden");
+@source inline("md:flex");
+@source inline("md:gap-1");
+@source inline("md:grid-cols-2");
+@source inline("md:inline-block");
+@source inline("md:items-center");
+@source inline("md:pb-0");
+@source inline("md:table-cell");
+@source inline("md:w-auto");
+@source inline("even:bg-gray-50");
+
+@theme {
+    --color-brand: #3e8ed0;
+}
+
+@layer components {
+    .striped {
+        background-color: #efefef;
+    }
+
+    .table th.center,
+    .table td.center {
+        text-align: center;
+    }
+
+    .ri-icon {
+        vertical-align: -0.125em;
+        width: 1em;
+        height: 1em;
+        display: inline-block;
+    }
+
+    .ri-icon-green {
+        color: green;
+        font-size: 1em;
+    }
+
+    .ri-icon-red {
+        color: red;
+        font-size: 1em;
+    }
+
+    .ri-icon-yellow {
+        color: #d4a017;
+        font-size: 1em;
+    }
+
+    .debug_dump {
+        clear: both;
+        float: left;
+        background-color: #ddd7d7;
+        border-radius: 6px;
+        width: 100%;
+        margin-top: 45px;
+        padding: 10px;
+    }
+}
+
+@layer base {
+    h1, h2, h3, h4, h5, h6 {
+        line-height: 1;
+    }
+
+    h1 {
+        letter-spacing: -2px;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 3em;
+    }
+
+    h2 {
+        letter-spacing: -1px;
+        text-align: center;
+        color: #999;
+        margin-bottom: 30px;
+        font-size: 1.2em;
+        font-weight: 400;
+    }
+
+    p {
+        font-size: 1.1em;
+        line-height: 1.7em;
+    }
+
+    td, th {
+        padding: 0.5em 0.75em;
+    }
+
+    section {
+        overflow: auto;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+}

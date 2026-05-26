@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<html lang="de"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <title>Spielersuche | Ranking-Info</title>
-    <meta name="description" content="Suchen von Spielern auf der Deutschen Tennis-Rangliste.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { theme: { extend: { colors: { brand: '#3e8ed0' } } } }</script>
-    <link rel="stylesheet" th:href="@{/css/application.css}">
 </head>
 <body>
-<th:block th:replace="~{fragments/nav :: nav}"></th:block>
-<div class="w-full px-4 mx-auto">
+<th:block layout:fragment="content">
     <h1 class="text-2xl font-bold text-left mb-3 mt-3">Spielersuche</h1>
     <form th:action="@{/players}" method="get" class="mb-3">
         <div class="flex flex-wrap items-center gap-2">
@@ -24,6 +21,28 @@
                     class="bg-brand text-white px-3 py-1 text-sm rounded hover:opacity-90 cursor-pointer">suchen</button>
         </div>
     </form>
+    <div th:if="${players == null}" class="rounded shadow mt-3">
+        <header class="bg-gray-100 px-4 py-3 rounded-t font-semibold border-b border-gray-200">
+            <span>Spielersuche</span>
+        </header>
+        <div class="p-4">
+            <h6 class="text-sm font-semibold mb-2">Der direkte Weg zum Spielerprofil</h6>
+            Über die Spielersuche kann gezielt nach einer Spielerin oder einem Spieler gesucht werden.
+            Wenn Du keine Suchkriterien angibst und auf 'suchen' klickst, erhältst du alle Spieler,
+            die im System vorhanden sind - diese Liste kann allerdings ziemlich lang sein.
+            <br/><br/>
+            Bei den Suchkriterien stehen die Suche nach der <b>DTB-ID</b>, <b>Nachnamen oder Teilen des Nachnamens</b>
+            oder dem <b>Geburtsjahrgang</b> zur Verfügung. Gibst Du eine DTB-ID ein, wird immer nur nach dieser
+            gesucht. Die Suche nach Nachname und Geburtsjahr sind kombinierbar.
+            <br/><br/>
+            Filterbare Ranglisten und Informationen zu den im System verfügbaren Datenständen sind ebenfalls abrufbar:
+        </div>
+        <footer class="flex border-t border-gray-200 rounded-b">
+            <a class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50" th:href="@{/listings}">Ranglisten</a>
+            <a class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50 border-l border-gray-200" th:href="@{/clubs}">Vereinssuche</a>
+            <a class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50 border-l border-gray-200" th:href="@{/federations}">Verbandsstatistik</a>
+        </footer>
+    </div>
     <div th:if="${players != null and !#lists.isEmpty(players)}">
         <table class="w-full" role="table" aria-label="Spielerliste">
             <thead>
@@ -46,6 +65,6 @@
         </table>
     </div>
     <div th:if="${players != null and #lists.isEmpty(players)}">Es wurden keine Spieler gefunden.</div>
-</div>
+</th:block>
 </body>
 </html>
