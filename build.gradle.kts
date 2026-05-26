@@ -51,7 +51,7 @@ dependencies {
     implementation("com.bucket4j:bucket4j_jdk17-core:8.14.0")
 
     // Caching
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.4")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
