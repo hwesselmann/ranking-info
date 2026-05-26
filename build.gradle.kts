@@ -42,7 +42,7 @@ dependencies {
     implementation("org.springframework.data:spring-data-commons")
 
     // CSV parsing
-    implementation("com.opencsv:opencsv:5.10")
+    implementation("com.opencsv:opencsv:5.12.0")
 
     // API docs
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
