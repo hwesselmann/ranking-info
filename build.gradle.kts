@@ -35,7 +35,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-spring-boot4-starter:1.3.0")
     implementation("org.jetbrains.exposed:exposed-java-time:1.3.0")
     implementation("org.springframework.boot:spring-boot-starter-liquibase")
-    implementation("org.postgresql:postgresql:42.7.6")
+    implementation("org.postgresql:postgresql:42.7.11")
     runtimeOnly("org.xerial:sqlite-jdbc:3.49.1.0")
 
     // Pagination types (Page<T>, PageImpl, PageRequest)
