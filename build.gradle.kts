@@ -48,7 +48,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
 
     // Rate limiting
-    implementation("com.bucket4j:bucket4j_jdk17-core:8.14.0")
+    implementation("com.bucket4j:bucket4j_jdk17-core:8.19.0")
 
     // Caching
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.4")
