@@ -71,6 +71,10 @@ kotlin {
     }
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 tasks.named("check") {
     dependsOn("ktlintCheck", "detekt")
 }
