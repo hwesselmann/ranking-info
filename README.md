@@ -1,6 +1,10 @@
 # ranking-info
 
 [![test](https://github.com/hwesselmann/ranking-info/actions/workflows/test.yaml/badge.svg)](https://github.com/hwesselmann/ranking-info-kt/actions/workflows/test.yaml)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=hwesselmann_ranking-info2&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=hwesselmann_ranking-info2)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hwesselmann_ranking-info2&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=hwesselmann_ranking-info2)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hwesselmann_ranking-info2&metric=coverage)](https://sonarcloud.io/summary/new_code?id=hwesselmann_ranking-info2)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=hwesselmann_ranking-info2&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=hwesselmann_ranking-info2)
 
 Kotlin/Spring Boot reimplementation of [ranking-info](https://github.com/hwesselmann/ranking-info-rails) — a web application for browsing and analysing German national tennis youth and adult rankings. All future development for ranking-info will take place in this project
 

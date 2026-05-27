@@ -69,7 +69,7 @@ class FederationController(
                     .forEach { row ->
                         val fed = FEDERATION_NAMES[row[0] as String] ?: (row[0] as String)
                         val count = (row[1] as Long).toInt()
-                        if (fed in federations) federations[fed]!![ag] = count
+                        federations[fed]?.set(ag, count)
                     }
             }
         }
