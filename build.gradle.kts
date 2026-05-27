@@ -7,6 +7,7 @@ plugins {
     id("dev.detekt") version "2.0.0-alpha.3"
     id("org.jetbrains.dokka") version "2.2.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
+    id("org.sonarqube") version "7.3.0.8198"
 }
 
 group = "de.hdawg.tennis"
@@ -90,4 +91,12 @@ kover {
 detekt {
     buildUponDefaultConfig = true
     baseline = file("detekt-baseline.xml")
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "hwesselmann_ranking-info2")
+        property("sonar.organization", "hwesselmann")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/kover/report.xml")
+    }
 }
