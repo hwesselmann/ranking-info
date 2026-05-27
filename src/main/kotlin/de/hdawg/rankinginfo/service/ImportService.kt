@@ -99,7 +99,7 @@ class ImportService(
             throw DuplicateImportError("Rankings for '$category' / $period have already been imported")
         }
 
-        val ageGroup = AGE_GROUP_MAP[category]!!
+        val ageGroup = AGE_GROUP_MAP[category] ?: error("No age group mapping for category '$category'")
         storeFromCsv(file, period, ageGroup)
 
         GENDER_FACTORS[category]?.let { genderFactor ->
