@@ -8,6 +8,10 @@ plugins {
     id("org.jetbrains.dokka") version "2.2.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.sonarqube") version "7.3.0.8198"
+    `jacoco`
+    `pmd`
+    id("com.diffplug.spotless") version "6.25.0"
+    id("com.github.spotbugs") version "6.0.27"
 }
 
 group = "de.hdawg.tennis"
@@ -60,7 +64,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.testcontainers:postgresql:1.21.4")
     testImplementation("org.testcontainers:junit-jupiter:1.21.4")
-    testRuntimeOnly("com.h2database:h2")
+    runtimeOnly("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation(kotlin("stdlib"))
 }
@@ -76,11 +80,12 @@ dependencyLocking {
 }
 
 tasks.named("check") {
-    dependsOn("ktlintCheck", "detekt")
+    dependsOn("ktlintCheck", "detekt", "spotlessCheck", "pmdMain")
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+    finalizedBy(tasks.named("jacocoTestReport"))
 }
 
 kover {
@@ -97,10 +102,53 @@ detekt {
     baseline = file("detekt-baseline.xml")
 }
 
+spotless {
+    java {
+        target("src/main/java/**/*.java", "src/test/java/**/*.java")
+        googleJavaFormat("1.24.0")
+        removeUnusedImports()
+    }
+}
+
+tasks.named<JacocoReport>("jacocoTestReport") {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+
+pmd {
+    toolVersion = "7.3.0"
+    isConsoleOutput = true
+    ruleSets =
+        listOf(
+            "category/java/bestpractices.xml",
+            "category/java/errorprone.xml",
+        )
+}
+
+spotbugs {
+    toolVersion.set("4.9.3")
+    ignoreFailures.set(false)
+}
+
+tasks.withType<com.github.spotbugs.snom.SpotBugsTask>().configureEach {
+    // Disabled until Phase 10: SpotBugs 4.9.3 does not support Java 25 bytecode (class version 69).
+    // Re-enable once all Kotlin sources are replaced with Java.
+    enabled = false
+    reports {
+        create("html") { required.set(true) }
+        create("xml") { required.set(false) }
+    }
+}
+
 sonar {
     properties {
         property("sonar.projectKey", "hwesselmann_ranking-info2")
         property("sonar.organization", "hwesselmann")
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/kover/report.xml")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "build/reports/kover/report.xml,build/reports/jacoco/test/jacocoTestReport.xml",
+        )
     }
 }
