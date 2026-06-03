@@ -105,7 +105,7 @@ class ClubController(
             if (dtbIds.isNotEmpty()) {
                 val ageGroupRankings =
                     rankingRepository
-                        .findAgeGroupRankingsByDateAndDtbIds(quarter, dtbIds)
+                        .findAgeGroupRankingsByDateAndDtbIds(quarter, dtbIds.toList())
                         .associateBy { it.dtbId }
                 val grouped = youth.groupBy { ageGroupRankings[it.dtbId]?.ageGroup }
                 for (ag in listOf("U12", "U14", "U16", "U18")) {
