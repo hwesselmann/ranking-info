@@ -7,7 +7,7 @@ plugins {
     id("dev.detekt") version "2.0.0-alpha.3"
     id("org.jetbrains.dokka") version "2.2.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
-    id("org.sonarqube") version "7.3.0.8198"
+    id("org.sonarqube") version "7.3.1.8318"
 }
 
 group = "de.hdawg.tennis"
