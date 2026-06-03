@@ -29,14 +29,5 @@ class ImportHistoryEntity(
     var createdAt by ImportHistories.createdAt
     var updatedAt by ImportHistories.updatedAt
 
-    fun toDomain() =
-        ImportHistory(
-            id = id.value,
-            filename = filename,
-            category = category,
-            period = period,
-            importedAt = importedAt,
-            createdAt = createdAt,
-            updatedAt = updatedAt,
-        )
+    fun toDomain() = ImportHistory(id.value, filename, category, period, importedAt, createdAt, updatedAt)
 }

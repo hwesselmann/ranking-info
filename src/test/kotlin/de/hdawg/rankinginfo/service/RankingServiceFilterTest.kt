@@ -61,25 +61,29 @@ class RankingServiceFilterTest {
 
     @Test
     fun `adult male filter returns only male dtb_ids`() {
-        val page = rankingService.findFilteredRankings(RankingFilter(q.toString(), "m00"), 1, 100)
+        val page =
+            rankingService.findFilteredRankings(RankingFilter(q.toString(), "m00", null, null, null, false), 1, 100)
         assertTrue(page.content.all { it.dtbId in 10_000_000..19_999_999 })
     }
 
     @Test
     fun `adult female filter returns only female dtb_ids`() {
-        val page = rankingService.findFilteredRankings(RankingFilter(q.toString(), "w00"), 1, 100)
+        val page =
+            rankingService.findFilteredRankings(RankingFilter(q.toString(), "w00", null, null, null, false), 1, 100)
         assertTrue(page.content.all { it.dtbId in 20_000_000..29_999_999 })
     }
 
     @Test
     fun `U14 default filter selects ageGroupRanking=true`() {
-        val page = rankingService.findFilteredRankings(RankingFilter(q.toString(), "mu14"), 1, 100)
+        val page =
+            rankingService.findFilteredRankings(RankingFilter(q.toString(), "mu14", null, null, null, false), 1, 100)
         assertTrue(page.content.all { it.ageGroupRanking })
     }
 
     @Test
     fun `U13 odd default filter selects yobRanking=true`() {
-        val page = rankingService.findFilteredRankings(RankingFilter(q.toString(), "mu13"), 1, 100)
+        val page =
+            rankingService.findFilteredRankings(RankingFilter(q.toString(), "mu13", null, null, null, false), 1, 100)
         assertTrue(page.content.all { it.yobRanking })
     }
 
@@ -87,7 +91,7 @@ class RankingServiceFilterTest {
     fun `only_yob option selects yobRanking=true`() {
         val page =
             rankingService.findFilteredRankings(
-                RankingFilter(q.toString(), "mu13", ageGroupOptions = "only_yob"),
+                RankingFilter(q.toString(), "mu13", "only_yob", null, null, false),
                 1,
                 100,
             )
@@ -98,7 +102,7 @@ class RankingServiceFilterTest {
     fun `include_younger option selects yobRanking=false and ageGroupRanking=false`() {
         val page =
             rankingService.findFilteredRankings(
-                RankingFilter(q.toString(), "m00", ageGroupOptions = "include_younger"),
+                RankingFilter(q.toString(), "m00", "include_younger", null, null, false),
                 1,
                 100,
             )
@@ -109,7 +113,7 @@ class RankingServiceFilterTest {
     fun `federation filter limits results`() {
         val page =
             rankingService.findFilteredRankings(
-                RankingFilter(q.toString(), "m00", federation = "BAD"),
+                RankingFilter(q.toString(), "m00", null, "BAD", null, false),
                 1,
                 100,
             )
@@ -120,7 +124,7 @@ class RankingServiceFilterTest {
     fun `club filter is case-insensitive`() {
         val page =
             rankingService.findFilteredRankings(
-                RankingFilter(q.toString(), "m00", club = "tc baden"),
+                RankingFilter(q.toString(), "m00", null, null, "tc baden", false),
                 1,
                 100,
             )
@@ -131,7 +135,7 @@ class RankingServiceFilterTest {
     fun `yearEnd=true on January quarter selects yearEndRanking=true`() {
         val page =
             rankingService.findFilteredRankings(
-                RankingFilter(pq.toString(), "m00", yearEnd = true),
+                RankingFilter(pq.toString(), "m00", null, null, null, true),
                 1,
                 100,
             )
@@ -142,7 +146,7 @@ class RankingServiceFilterTest {
     fun `yearEnd=true on non-January quarter selects yearEndRanking=false`() {
         val page =
             rankingService.findFilteredRankings(
-                RankingFilter(q.toString(), "m00", yearEnd = true),
+                RankingFilter(q.toString(), "m00", null, null, null, true),
                 1,
                 100,
             )
@@ -159,7 +163,11 @@ class RankingServiceFilterTest {
 
     @Test
     fun `findPreviousPositions returns empty map when no dtbIds`() {
-        val result = rankingService.findPreviousPositions(RankingFilter(q.toString(), "m00"), emptyList())
+        val result =
+            rankingService.findPreviousPositions(
+                RankingFilter(q.toString(), "m00", null, null, null, false),
+                emptyList(),
+            )
         assertTrue(result.isEmpty())
     }
 
@@ -176,20 +184,21 @@ class RankingServiceFilterTest {
         now: LocalDateTime = LocalDateTime.now(),
         yearEndRanking: Boolean = false,
     ) = Ranking(
-        dtbId = dtbId,
-        lastname = "Test",
-        firstname = "Test",
-        nationality = "GER",
-        ageGroup = ageGroup,
-        date = date,
-        rankingPosition = pos,
-        score = score,
-        club = club,
-        federation = federation,
-        ageGroupRanking = ageGroupRanking,
-        yobRanking = yobRanking,
-        yearEndRanking = yearEndRanking,
-        createdAt = now,
-        updatedAt = now,
+        0L,
+        dtbId,
+        "Test",
+        "Test",
+        "GER",
+        ageGroup,
+        date,
+        pos,
+        score,
+        club,
+        federation,
+        ageGroupRanking,
+        yobRanking,
+        yearEndRanking,
+        now,
+        now,
     )
 }

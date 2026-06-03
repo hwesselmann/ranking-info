@@ -105,8 +105,12 @@ detekt {
 spotless {
     java {
         target("src/main/java/**/*.java", "src/test/java/**/*.java")
-        googleJavaFormat("1.24.0")
+        // googleJavaFormat requires internal JDK APIs removed in JDK 25; use basic rules until
+        // a compatible release is available (tracked in PLAN.md Phase 10 / SpotBugs note).
         removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+        importOrder("java", "javax", "jakarta", "", "de.hdawg")
     }
 }
 

@@ -13,25 +13,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 /**
- * Parameters for filtering a ranking list query.
- *
- * @property quarter ISO date string for the ranking period (e.g. "2024-01-01")
- * @property ageGroupSlug slug encoding gender and age group (e.g. "m12", "wu18", "m00")
- * @property ageGroupOptions optional variant selector: "only_yob" or "include_younger"
- * @property federation optional federation abbreviation filter
- * @property club optional club name filter (case-insensitive substring)
- * @property yearEnd when true, selects year-end rankings (relevant for January quarters only)
- */
-data class RankingFilter(
-    val quarter: String,
-    val ageGroupSlug: String,
-    val ageGroupOptions: String? = null,
-    val federation: String? = null,
-    val club: String? = null,
-    val yearEnd: Boolean = false,
-)
-
-/**
  * Service for querying and filtering ranking data.
  *
  * All read operations are transactional (read-only). Frequently accessed lookups
@@ -83,15 +64,16 @@ class RankingService(
 
             val isJanuary = quarter.monthValue == 1
             return RankingQueryFilter(
-                date = quarter,
-                ageGroup = ageGroup,
-                dtbIdStart = dtbIdStart,
-                dtbIdEnd = dtbIdEnd,
-                yobRanking = yobRanking,
-                ageGroupRanking = ageGroupRanking,
-                yearEndRanking = filter.yearEnd && isJanuary,
-                federation = filter.federation?.takeIf { it.isNotBlank() },
-                club = filter.club?.takeIf { it.isNotBlank() },
+                quarter,
+                ageGroup,
+                dtbIdStart,
+                dtbIdEnd,
+                yobRanking,
+                ageGroupRanking,
+                filter.yearEnd && isJanuary,
+                filter.federation?.takeIf { it.isNotBlank() },
+                filter.club?.takeIf { it.isNotBlank() },
+                null,
             )
         }
     }
@@ -152,7 +134,7 @@ class RankingService(
                 .findDistinctDatesDesc()
                 .firstOrNull { it < LocalDate.parse(filter.quarter) } ?: return emptyMap()
 
-        val prevFilter = buildQueryFilter(filter.copy(quarter = prevDate.toString())).copy(dtbIds = dtbIds)
+        val prevFilter = buildQueryFilter(filter.withQuarter(prevDate.toString())).withDtbIds(dtbIds)
         return rankingRepository.findFiltered(prevFilter).associate { it.dtbId to it.rankingPosition }
     }
 

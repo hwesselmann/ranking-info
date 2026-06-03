@@ -58,15 +58,7 @@ class ListingsApiController(
         @RequestParam(name = "year_end", defaultValue = "false") yearEnd: Boolean,
         request: HttpServletRequest,
     ): ResponseEntity<ListingResponse> {
-        val filter =
-            RankingFilter(
-                quarter = quarter,
-                ageGroupSlug = ageGroupSlug,
-                ageGroupOptions = ageGroupOptions,
-                federation = federation,
-                club = club,
-                yearEnd = yearEnd,
-            )
+        val filter = RankingFilter(quarter, ageGroupSlug, ageGroupOptions, federation, club, yearEnd)
         val cappedPerPage = minOf(perPage, MAX_PER_PAGE)
 
         val maxImportedAt = rankingService.maxImportedAt()

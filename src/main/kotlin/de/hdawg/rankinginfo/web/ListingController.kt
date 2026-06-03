@@ -53,12 +53,12 @@ class ListingController(
             val slug = toAgeGroupSlug(gender, ageGroup)
             val filter =
                 RankingFilter(
-                    quarter = quarter,
-                    ageGroupSlug = slug,
-                    ageGroupOptions = ageGroupOptions?.takeIf { it.isNotBlank() },
-                    federation = federation,
-                    club = club,
-                    yearEnd = yearEnd == "1",
+                    quarter,
+                    slug,
+                    ageGroupOptions?.takeIf { it.isNotBlank() },
+                    federation,
+                    club,
+                    yearEnd == "1",
                 )
             val rankings = rankingService.findFilteredRankings(filter, 1, 1000)
             val dtbIds = rankings.content.map { it.dtbId }

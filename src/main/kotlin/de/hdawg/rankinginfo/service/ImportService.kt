@@ -35,6 +35,13 @@ class ImportService(
         private val AGE_GROUP_MAP = mapOf("herren" to "m00", "damen" to "w00", "junioren" to "overall", "juniorinnen" to "overall")
         private val CSV_SPLIT_REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)".toRegex()
 
+        private const val CSV_COL_POSITION = 0
+        private const val CSV_COL_LASTNAME = 1
+        private const val CSV_COL_FIRSTNAME = 2
+        private const val CSV_COL_NATIONALITY = 3
+        private const val CSV_COL_CLUB = 5
+        private const val CSV_COL_SCORE = 6
+
         fun extractPeriodFromFilename(filename: String): LocalDate {
             val parts = File(filename).nameWithoutExtension.split("_")
             require(parts.size >= 2) { "Could not retrieve period part from filename '$filename'" }
@@ -108,14 +115,7 @@ class ImportService(
 
         val now = LocalDateTime.now()
         importHistoryRepository.save(
-            ImportHistory(
-                filename = filename,
-                category = capitalizedCategory,
-                period = period,
-                importedAt = now,
-                createdAt = now,
-                updatedAt = now,
-            ),
+            ImportHistory(0L, filename, capitalizedCategory, period, now, now, now),
         )
         log.info("Import of '{}' completed", filename)
     }
@@ -136,21 +136,22 @@ class ImportService(
                 val dtbId = dtbParts[0].toIntOrNull() ?: continue
                 records +=
                     Ranking(
-                        dtbId = dtbId,
-                        ageGroup = ageGroup,
-                        date = period,
-                        rankingPosition = parts[0].trim().toIntOrNull() ?: 0,
-                        lastname = parts[1].trim(),
-                        firstname = parts[2].trim(),
-                        nationality = parts[3].trim().ifEmpty { "nil" },
-                        score = parts[6].trim().removeSurrounding("\""),
-                        ageGroupRanking = false,
-                        yobRanking = false,
-                        yearEndRanking = false,
-                        club = parts[5].trim().removeSurrounding("\""),
-                        federation = dtbParts[1],
-                        createdAt = now,
-                        updatedAt = now,
+                        0L,
+                        dtbId,
+                        parts[CSV_COL_LASTNAME].trim(),
+                        parts[CSV_COL_FIRSTNAME].trim(),
+                        parts[CSV_COL_NATIONALITY].trim().ifEmpty { "nil" },
+                        ageGroup,
+                        period,
+                        parts[CSV_COL_POSITION].trim().toIntOrNull() ?: 0,
+                        parts[CSV_COL_SCORE].trim().removeSurrounding("\""),
+                        parts[CSV_COL_CLUB].trim().removeSurrounding("\""),
+                        dtbParts[1],
+                        false,
+                        false,
+                        false,
+                        now,
+                        now,
                     )
             }
         }
@@ -223,21 +224,22 @@ class ImportService(
             }
             records +=
                 Ranking(
-                    ageGroup = "U$ageGroup",
-                    date = curr.date,
-                    yobRanking = yobRanking,
-                    ageGroupRanking = ageGroupRanking,
-                    yearEndRanking = yearEndRanking,
-                    rankingPosition = startRanking,
-                    dtbId = curr.dtbId,
-                    lastname = curr.lastname,
-                    firstname = curr.firstname,
-                    nationality = curr.nationality,
-                    club = curr.club,
-                    federation = curr.federation,
-                    score = curr.score,
-                    createdAt = now,
-                    updatedAt = now,
+                    0L,
+                    curr.dtbId,
+                    curr.lastname,
+                    curr.firstname,
+                    curr.nationality,
+                    "U$ageGroup",
+                    curr.date,
+                    startRanking,
+                    curr.score,
+                    curr.club,
+                    curr.federation,
+                    ageGroupRanking,
+                    yobRanking,
+                    yearEndRanking,
+                    now,
+                    now,
                 )
             // foreign players and players with special scores do not advance the counter
             if (curr.nationality == "GER" && curr.score !in SPECIAL_SCORES) {

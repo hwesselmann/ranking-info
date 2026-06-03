@@ -26,23 +26,6 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
-/**
- * Filter parameters resolved from a [de.hdawg.rankinginfo.service.RankingFilter] slug,
- * ready to be translated directly into a database where-clause.
- */
-data class RankingQueryFilter(
-    val date: LocalDate,
-    val ageGroup: String,
-    val dtbIdStart: Int,
-    val dtbIdEnd: Int,
-    val yobRanking: Boolean,
-    val ageGroupRanking: Boolean,
-    val yearEndRanking: Boolean,
-    val federation: String? = null,
-    val club: String? = null,
-    val dtbIds: List<Int>? = null,
-)
-
 /** Repository for [de.hdawg.rankinginfo.domain.Ranking] backed by Exposed DAO/DSL. */
 @Repository
 @Transactional

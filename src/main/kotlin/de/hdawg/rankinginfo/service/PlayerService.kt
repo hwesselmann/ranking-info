@@ -39,13 +39,13 @@ class PlayerService(
                 .distinctBy { it.name }
                 .sortedBy { it.name }
         return Player(
-            dtbId = dtbId,
-            lastname = current.lastname,
-            firstname = current.firstname,
-            nationality = current.nationality,
-            club = current.club,
-            federation = current.federation,
-            clubs = clubs,
+            dtbId,
+            current.lastname,
+            current.firstname,
+            current.nationality,
+            current.club,
+            current.federation,
+            clubs,
         )
     }
 
