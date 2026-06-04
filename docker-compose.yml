@@ -24,6 +24,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+          cpus: "1.0"
     restart: unless-stopped
 
   postgres:
@@ -39,6 +44,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+          cpus: "0.5"
     restart: unless-stopped
 
 volumes:

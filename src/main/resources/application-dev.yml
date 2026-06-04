@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:sqlite:${user.home}/ranking-info-dev.db
-    driver-class-name: org.sqlite.JDBC
+    url: jdbc:h2:file:${user.home}/ranking-info-dev;MODE=PostgreSQL;NON_KEYWORDS=USER;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+    driver-class-name: org.h2.Driver
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 

@@ -1,36 +1,35 @@
 # ranking-info
 
-[![test](https://github.com/hwesselmann/ranking-info/actions/workflows/test.yaml/badge.svg)](https://github.com/hwesselmann/ranking-info-kt/actions/workflows/test.yaml)
+[![test](https://github.com/hwesselmann/ranking-info/actions/workflows/test.yaml/badge.svg)](https://github.com/hwesselmann/ranking-info/actions/workflows/test.yaml)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=hwesselmann_ranking-info2&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=hwesselmann_ranking-info2)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hwesselmann_ranking-info2&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=hwesselmann_ranking-info2)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hwesselmann_ranking-info2&metric=coverage)](https://sonarcloud.io/summary/new_code?id=hwesselmann_ranking-info2)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=hwesselmann_ranking-info2&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=hwesselmann_ranking-info2)
 
-Kotlin/Spring Boot reimplementation of [ranking-info](https://github.com/hwesselmann/ranking-info-rails) — a web application for browsing and analysing German national tennis youth and adult rankings. All future development for ranking-info will take place in this project
+Java/Spring Boot reimplementation of [ranking-info](https://github.com/hwesselmann/ranking-info-rails) — a web application for browsing and analysing German national tennis youth and adult rankings.
 
 ## Tech stack
 
 | Concern | Technology |
 |---|---|
-| Language / Framework | Kotlin 2 / Spring Boot 4 |
-| Database | SQLite (dev), PostgreSQL (prod) |
-| ORM / Migrations | Exposed (JetBrains) / Liquibase |
+| Language / Framework | Java 25 / Spring Boot 4 |
+| Database | H2 file-mode (dev), PostgreSQL (prod) |
+| ORM | Spring Data JDBC |
 | Frontend | Thymeleaf + Tailwind CSS (local build) |
 | API docs | springdoc-openapi (Swagger UI at `/api-docs`) |
 | Scheduling | `@Scheduled` (in-process) |
 | Caching | Caffeine (in-memory) |
 | Rate limiting | Bucket4j |
-| Build | Gradle |
+| Build | Maven (wrapper: `./mvnw`) |
 | Tests | JUnit 5 + MockMvc + H2 |
-| Coverage | Kover |
-| Static analysis | Detekt + ktlint |
-| Documentation | Dokka |
+| Coverage | JaCoCo |
+| Static analysis | Spotless + PMD + SpotBugs |
 
 ## Prerequisites
 
-- Java 21 (Eclipse Temurin or any distribution)
+- Java 25 (Eclipse Temurin or any distribution)
+- Maven 3.9.16 or newer (wrapper included via `./mvnw` — local installation not required)
 - Node.js + npm (for Tailwind CSS builds)
-- Gradle wrapper included (`./gradlew`)
 - Docker + Docker Compose (for containerised setup)
 
 ## Local development
@@ -43,19 +42,50 @@ npm install
 npx @tailwindcss/cli -i src/main/resources/static/css/application.src.css \
   -o src/main/resources/static/css/application.css
 
-# Run with dev profile (SQLite, auto-creates DB in $HOME/ranking-info-dev.db)
-./gradlew bootRun
+# Run with dev profile (H2 file-mode, auto-creates DB at ~/ranking-info-dev.mv.db)
+./mvnw spring-boot:run
 ```
 
 The application starts on [http://localhost:8080](http://localhost:8080).
 
+## Local development with PostgreSQL
+
+Use `docker-compose-local.yml` to run a PostgreSQL instance on `localhost:5432` and connect to it via the `local` Spring profile:
+
+```bash
+# Start PostgreSQL (data persisted in a named Docker volume)
+docker compose -f docker-compose-local.yml up -d
+
+# Run the app against it (import scheduler fires every 5 minutes)
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+Credentials: `ranking_info` / `changeme`. Liquibase applies all migrations (including trigram indexes) automatically on first startup.
+
 ## Tests
 
 ```bash
-./gradlew test
+./mvnw test
 ```
 
 The test suite uses an in-memory H2 database and the fixture CSV files in `src/test/resources/fixtures/`. No external services are needed.
+
+## Linting
+
+```bash
+# Check (Spotless + PMD)
+./mvnw spotless:check pmd:check
+
+# Auto-fix Spotless violations
+./mvnw spotless:apply
+```
+
+## Full build
+
+```bash
+# Compiles, tests, lints, coverage report, SpotBugs
+./mvnw verify
+```
 
 ## API
 
@@ -134,6 +164,6 @@ The stack runs the application on port 8080 and PostgreSQL internally. Configure
 
 ## CI/CD
 
-- **`test.yaml`** — runs tests, ktlint, Detekt, and Dokka on every push/PR
+- **`test.yaml`** — runs `./mvnw verify` (tests, Spotless, PMD, SpotBugs, JaCoCo) and SonarCloud analysis on every push/PR
 - **`codeql.yml`** — CodeQL security analysis on every push/PR and weekly
 - **`docker.yaml`** — builds and pushes a Docker image to GHCR on every release

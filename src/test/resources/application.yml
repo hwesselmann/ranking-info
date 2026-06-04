@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;NON_KEYWORDS=USER
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;NON_KEYWORDS=USER;CASE_INSENSITIVE_IDENTIFIERS=TRUE
     driver-class-name: org.h2.Driver
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml

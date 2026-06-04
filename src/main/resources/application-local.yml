@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ranking_info
+    username: ranking_info
+    password: changeme
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+
+import:
+  schedule: "0 */5 * * * ?"

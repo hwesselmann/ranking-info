@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs exclude filter.
+  EI_EXPOSE_REP / EI_EXPOSE_REP2 on Spring-managed bean fields (repositories, services)
+  are false positives: these objects are singleton beans managed by the container and
+  are never mutated externally after injection.
+-->
+<FindBugsFilter>
+
+  <!-- Spring Data repositories injected via constructor are not externally mutable -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    <Field name="rankingRepository"/>
+  </Match>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    <Field name="importHistoryRepository"/>
+  </Match>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    <Field name="objectMapper"/>
+  </Match>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    <Field name="namedJdbc"/>
+  </Match>
+
+  <!-- RankingFilter/RankingQueryFilter: yearEnd is a boolean, club/fed are Strings (immutable) -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    <Class name="de.hdawg.rankinginfo.service.RankingFilter"/>
+  </Match>
+
+</FindBugsFilter>

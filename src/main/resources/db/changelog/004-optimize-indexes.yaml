@@ -1,0 +1,77 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-optimize-indexes
+      author: ranking-info
+      changes:
+        # Covering index for the main listing query:
+        # WHERE date=? AND age_group=? AND yob_ranking=? AND age_group_ranking=? AND year_end_ranking=?
+        #   AND dtb_id BETWEEN ? AND ?
+        # ORDER BY ranking_position ASC
+        # Equality conditions first, range condition last, then the sort column.
+        - createIndex:
+            indexName: idx_rankings_listing
+            tableName: rankings
+            columns:
+              - column: {name: date}
+              - column: {name: age_group}
+              - column: {name: yob_ranking}
+              - column: {name: age_group_ranking}
+              - column: {name: year_end_ranking}
+              - column: {name: dtb_id}
+              - column: {name: ranking_position}
+
+        # Single-column date index for SELECT DISTINCT date queries.
+        - createIndex:
+            indexName: idx_rankings_date
+            tableName: rankings
+            columns:
+              - column: {name: date}
+
+        # Drop superseded / redundant indexes.
+        # idx_rankings_listing makes this one obsolete.
+        - dropIndex:
+            indexName: idx_rankings_full_filter_set
+            tableName: rankings
+        # Prefix of index_rankings_on_dtb_id_and_date — never needed on its own.
+        - dropIndex:
+            indexName: index_rankings_on_dtb_id
+            tableName: rankings
+        # Prefix of idx_rankings_federation_date — never needed on its own.
+        - dropIndex:
+            indexName: index_rankings_on_federation
+            tableName: rankings
+        # (dtb_id, date, federation): no query filters on all three starting with dtb_id.
+        - dropIndex:
+            indexName: index_rankings_on_dtb_id_and_date_and_federation
+            tableName: rankings
+        # B-tree index on lastname is unused: all queries use LOWER(lastname) LIKE '%…%'.
+        - dropIndex:
+            indexName: index_rankings_on_lastname
+            tableName: rankings
+        # B-tree index on club is unused: all queries use LOWER(club) LIKE '%…%'.
+        - dropIndex:
+            indexName: index_rankings_on_club
+            tableName: rankings
+
+  - changeSet:
+      id: 004c-dtbid-search-index
+      author: ranking-info
+      changes:
+        - createIndex:
+            indexName: idx_rankings_dtbid_agegroup_date
+            tableName: rankings
+            columns:
+              - column: {name: dtb_id}
+              - column: {name: age_group}
+              - column: {name: date}
+
+  - changeSet:
+      id: 004b-trigram-indexes
+      author: ranking-info
+      dbms: postgresql
+      changes:
+        - sql:
+            sql: >-
+              CREATE EXTENSION IF NOT EXISTS pg_trgm;
+              CREATE INDEX idx_rankings_lastname_trgm ON rankings USING GIN (lower(lastname) gin_trgm_ops);
+              CREATE INDEX idx_rankings_club_trgm ON rankings USING GIN (lower(club) gin_trgm_ops);
