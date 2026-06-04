@@ -37,6 +37,8 @@ out/
 
 ### Claude Code ###
 .mcp.json
+.claude/
+CLAUDE.md
 
 ### node modules ###
 node_modules
