@@ -8,13 +8,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -42,8 +42,7 @@ public class ImportService {
       Map.of(CATEGORY_JUNIOREN, 100, CATEGORY_JUNIORINNEN, 200);
   private static final Map<String, String> AGE_GROUP_MAP =
       Map.of("herren", "m00", "damen", "w00", CATEGORY_JUNIOREN, "overall", CATEGORY_JUNIORINNEN, "overall");
-  private static final Pattern CSV_SPLIT_PATTERN =
-      Pattern.compile(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+  private static final char CSV_QUOTE_CHAR = '"';
 
   private static final int CSV_COL_POSITION = 0;
   private static final int CSV_COL_LASTNAME = 1;
@@ -142,7 +141,7 @@ public class ImportService {
       calculateRankings(period, genderFactor);
     }
 
-    var now = LocalDateTime.now();
+    var now = LocalDateTime.now(ZoneOffset.UTC);
     importHistoryRepository.save(
         new ImportHistory(0L, filename, capitalizedCategory, period, now, now, now));
     log.info("Import of '{}' completed", filename);
@@ -186,12 +185,12 @@ public class ImportService {
   }
 
   private void storeFromCsv(Path file, LocalDate period, String ageGroup) throws IOException {
-    var now = LocalDateTime.now();
+    var now = LocalDateTime.now(ZoneOffset.UTC);
     var records = new ArrayList<Ranking>();
     try (var reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
       var line = reader.readLine();
       while (line != null) {
-        var parts = CSV_SPLIT_PATTERN.split(line);
+        var parts = splitCsvLine(line);
         if (parts.length >= CSV_MIN_COLS) {
           var dtbParts = parts[CSV_COL_DTB_INFO].trim().split(" ");
           if (dtbParts.length >= DTB_INFO_PARTS_MIN) {
@@ -278,7 +277,7 @@ public class ImportService {
     int lastRank = 0;
     int startRanking = 0;
     int countUp = 1;
-    var now = LocalDateTime.now();
+    var now = LocalDateTime.now(ZoneOffset.UTC);
     var records = new ArrayList<Ranking>();
 
     for (var curr : rankingsFromDb) {
@@ -322,6 +321,26 @@ public class ImportService {
     } catch (IOException e) {
       log.warn("Could not write to error log '{}': {}", logFilePath, e.getMessage());
     }
+  }
+
+  private static String[] splitCsvLine(String line) {
+    var fields = new ArrayList<String>();
+    var field = new StringBuilder();
+    boolean inQuotes = false;
+    for (int i = 0; i < line.length(); i++) {
+      char c = line.charAt(i);
+      if (c == CSV_QUOTE_CHAR) {
+        inQuotes = !inQuotes;
+        field.append(c);
+      } else if (c == ',' && !inQuotes) {
+        fields.add(field.toString());
+        field.setLength(0);
+      } else {
+        field.append(c);
+      }
+    }
+    fields.add(field.toString());
+    return fields.toArray(String[]::new);
   }
 
   @Nullable

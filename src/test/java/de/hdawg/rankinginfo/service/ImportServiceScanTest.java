@@ -64,6 +64,7 @@ class ImportServiceScanTest {
   @DisplayName("scanAndImport handles non-existent folder gracefully")
   void scanAndImportHandlesNonExistentFolderGracefully() {
     importService.scanAndImport("/tmp/does_not_exist_xyz_123");
+    assertEquals(0, rankingRepository.count());
   }
 
   @Test
