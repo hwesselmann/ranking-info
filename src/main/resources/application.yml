@@ -5,16 +5,6 @@ spring:
     active: dev
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
-  jpa:
-    hibernate:
-      ddl-auto: none
-    open-in-view: false
-    properties:
-      hibernate:
-        jdbc:
-          batch_size: 50
-        order_inserts: true
-        order_updates: true
   cache:
     type: caffeine
     caffeine:
@@ -43,6 +33,10 @@ imprint:
   city: ${IMPRINT_CITY:}
   phone: ${IMPRINT_PHONE:}
   mail: ${IMPRINT_MAIL:}
+
+logging:
+  level:
+    "[org.apache.catalina.webresources.AbstractFileResourceSet]": ERROR
 
 springdoc:
   api-docs:

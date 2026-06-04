@@ -48,21 +48,20 @@ public class FederationController {
     if (quarter != null) {
       for (var gender : new String[] {"m", "w"}) {
         int dtbIdStart = "m".equals(gender) ? 10_000_000 : 20_000_000;
-        for (Object[] row :
+        for (var row :
             rankingRepository.countYouthByFederationAndAgeGroup(
                 quarter, dtbIdStart, dtbIdStart + 9_999_999)) {
-          var fed = FEDERATION_NAMES.getOrDefault((String) row[0], (String) row[0]);
-          var ag = (String) row[1];
-          var count = ((Long) row[2]).intValue();
-          federations.computeIfAbsent(fed, k -> new LinkedHashMap<>()).put(ag + gender, count);
+          var fed = FEDERATION_NAMES.getOrDefault(row.federation(), row.federation());
+          federations
+              .computeIfAbsent(fed, k -> new LinkedHashMap<>())
+              .put(row.ageGroup() + gender, (int) row.count());
         }
       }
       for (var ag : new String[] {"m00", "w00"}) {
-        for (Object[] row : rankingRepository.countAdultByFederation(quarter, ag)) {
-          var fed = FEDERATION_NAMES.getOrDefault((String) row[0], (String) row[0]);
-          var count = ((Long) row[1]).intValue();
+        for (var row : rankingRepository.countAdultByFederation(quarter, ag)) {
+          var fed = FEDERATION_NAMES.getOrDefault(row.federation(), row.federation());
           if (federations.containsKey(fed)) {
-            federations.get(fed).put(ag, count);
+            federations.get(fed).put(ag, (int) row.count());
           }
         }
       }

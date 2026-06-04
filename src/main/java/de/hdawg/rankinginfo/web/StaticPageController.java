@@ -60,7 +60,7 @@ public class StaticPageController {
 
   @GetMapping("/")
   public String home(Model model) {
-    var firstDate = rankingRepository.findAllDistinctDatesDesc().stream().reduce((a, b) -> b).orElse(null);
+    var firstDate = rankingRepository.findDistinctDatesDesc().stream().reduce((a, b) -> b).orElse(null);
     model.addAttribute("start", firstDate != null ? firstDate.minusDays(1).format(dtf) : "xx.xx.xxxx");
     return "static_pages/home";
   }

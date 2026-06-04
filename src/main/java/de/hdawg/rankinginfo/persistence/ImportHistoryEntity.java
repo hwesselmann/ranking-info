@@ -3,37 +3,37 @@ package de.hdawg.rankinginfo.persistence;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import de.hdawg.rankinginfo.domain.ImportHistory;
 
-@Entity
-@Table(name = "import_histories")
+@Table("import_histories")
 public class ImportHistoryEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column("filename")
   private String filename;
+
+  @Column("category")
   private String category;
+
+  @Column("period")
   private LocalDate period;
 
-  @Column(name = "imported_at")
+  @Column("imported_at")
   private LocalDateTime importedAt;
 
-  @Column(name = "created_at")
+  @Column("created_at")
   private LocalDateTime createdAt;
 
-  @Column(name = "updated_at")
+  @Column("updated_at")
   private LocalDateTime updatedAt;
 
-  protected ImportHistoryEntity() {}
+  ImportHistoryEntity() {}
 
   public static ImportHistoryEntity fromDomain(ImportHistory h) {
     var e = new ImportHistoryEntity();

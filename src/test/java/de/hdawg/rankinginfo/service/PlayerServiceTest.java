@@ -31,11 +31,12 @@ class PlayerServiceTest {
   void seed() {
     var now = LocalDateTime.now();
     var q = LocalDate.of(2026, 4, 1);
+    var prevQ = LocalDate.of(2026, 1, 1);
     rankingRepository.saveAll(
         List.of(
             r(maleId, "Mueller", "Hans", "m00", q, 1, now),
             r(femaleId, "Meyer", "Anna", "w00", q, 1, now),
-            r(maleId, "Mueller", "Hans", "overall", q, 2, now)));
+            r(maleId, "Mueller", "Hans", "m00", prevQ, 2, now)));
   }
 
   @AfterEach

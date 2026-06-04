@@ -113,7 +113,7 @@ public class ImportService {
 
   @Transactional
   @CacheEvict(
-      cacheNames = {"available_quarters", "available_dates", "federations"},
+      cacheNames = {"available_quarters", "available_dates", "federations", "player_counts", "federation_stats"},
       allEntries = true)
   public void importRankings(Path file) throws DuplicateImportError, IOException {
     var fileNamePart = file.getFileName();
@@ -146,14 +146,14 @@ public class ImportService {
   }
 
   @CacheEvict(
-      cacheNames = {"available_quarters", "available_dates", "federations"},
+      cacheNames = {"available_quarters", "available_dates", "federations", "player_counts", "federation_stats"},
       allEntries = true)
   public void scanAndImport(String folderPath) {
     doScanAndImport(folderPath, null);
   }
 
   @CacheEvict(
-      cacheNames = {"available_quarters", "available_dates", "federations"},
+      cacheNames = {"available_quarters", "available_dates", "federations", "player_counts", "federation_stats"},
       allEntries = true)
   public void scanAndImport(String folderPath, @Nullable String errorLogPath) {
     doScanAndImport(folderPath, errorLogPath);

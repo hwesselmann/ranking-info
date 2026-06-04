@@ -34,7 +34,7 @@ public class PlayerController {
       List.of("U12", "U14", "U16", "U18", "m00", "w00");
   private static final int DTB_ID_LENGTH = 8;
   private static final int DATE_PARTS_SIZE = 2;
-  private static final String REDIRECT_PLAYER = "redirect:/player/";
+  private static final String REDIRECT_PLAYER = "redirect:/players/";
   private static final String MODEL_PLAYERS = "players";
   private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -105,7 +105,7 @@ public class PlayerController {
       var fullRankings =
           rankingRepository.findByDtbIdAndYearEndRankingFalseOrderByDateAscAgeGroupAsc(id);
 
-      var allDates = rankingRepository.findAllDistinctDatesDesc();
+      var allDates = rankingRepository.findDistinctDatesDesc();
       var currentQuarter = allDates.isEmpty() ? null : allDates.get(0);
       var previousQuarter = allDates.size() > 1 ? allDates.get(1) : null;
       var recent4Dates = Set.copyOf(allDates.stream().limit(4).toList());

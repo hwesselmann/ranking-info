@@ -13,30 +13,30 @@ import de.hdawg.rankinginfo.persistence.ImportHistoryEntity;
 @Repository
 public class ImportHistoryRepository {
 
-  private final ImportHistoryEntityRepository jpa;
+  private final ImportHistoryEntityRepository jdbc;
 
-  public ImportHistoryRepository(ImportHistoryEntityRepository jpa) {
-    this.jpa = jpa;
+  public ImportHistoryRepository(ImportHistoryEntityRepository jdbc) {
+    this.jdbc = jdbc;
   }
 
   public List<ImportHistory> findAll() {
-    return jpa.findAll().stream().map(ImportHistoryEntity::toDomain).toList();
+    return jdbc.findAll().stream().map(ImportHistoryEntity::toDomain).toList();
   }
 
   public void deleteAll() {
-    jpa.deleteAll();
+    jdbc.deleteAll();
   }
 
   public ImportHistory save(ImportHistory importHistory) {
-    return jpa.save(ImportHistoryEntity.fromDomain(importHistory)).toDomain();
+    return jdbc.save(ImportHistoryEntity.fromDomain(importHistory)).toDomain();
   }
 
   public boolean existsByCategoryAndPeriod(String category, LocalDate period) {
-    return jpa.existsByCategoryAndPeriod(category, period);
+    return jdbc.existsByCategoryAndPeriod(category, period);
   }
 
   @Nullable
   public LocalDateTime findMaxImportedAt() {
-    return jpa.findMaxImportedAt();
+    return jdbc.findMaxImportedAt();
   }
 }

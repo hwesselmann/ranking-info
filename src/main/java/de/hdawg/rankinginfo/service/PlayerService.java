@@ -1,6 +1,5 @@
 package de.hdawg.rankinginfo.service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,34 +45,27 @@ public class PlayerService {
   }
 
   public List<Ranking> findPlayersByLastname(String lastname) {
-    return deduplicateByDtbId(rankingRepository.findByLastnameLike(lastname));
+    return rankingRepository.findByLastnameLike(lastname);
   }
 
   public List<Ranking> findPlayersByLastnameAndYob(String lastname, int yobMale, int yobFemale) {
-    return deduplicateByDtbId(
-        rankingRepository.findByLastnameAndYob(
-            lastname,
-            yobMale * 100_000,
-            yobMale * 100_000 + 99_999,
-            yobFemale * 100_000,
-            yobFemale * 100_000 + 99_999));
+    return rankingRepository.findByLastnameAndYob(
+        lastname,
+        yobMale * 100_000,
+        yobMale * 100_000 + 99_999,
+        yobFemale * 100_000,
+        yobFemale * 100_000 + 99_999);
   }
 
   public List<Ranking> findPlayersByYob(int yobMale, int yobFemale) {
-    return deduplicateByDtbId(
-        rankingRepository.findByYob(
-            yobMale * 100_000,
-            yobMale * 100_000 + 99_999,
-            yobFemale * 100_000,
-            yobFemale * 100_000 + 99_999));
+    return rankingRepository.findByYob(
+        yobMale * 100_000,
+        yobMale * 100_000 + 99_999,
+        yobFemale * 100_000,
+        yobFemale * 100_000 + 99_999);
   }
 
   public List<Ranking> findPlayersByDtbIdRange(int dtbIdStart, int dtbIdEnd) {
-    return deduplicateByDtbId(rankingRepository.findByDtbIdRange(dtbIdStart, dtbIdEnd));
-  }
-
-  private List<Ranking> deduplicateByDtbId(List<Ranking> rankings) {
-    var seen = new HashSet<Integer>();
-    return rankings.stream().filter(r -> seen.add(r.dtbId())).toList();
+    return rankingRepository.findByDtbIdRange(dtbIdStart, dtbIdEnd);
   }
 }

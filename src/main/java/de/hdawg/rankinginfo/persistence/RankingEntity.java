@@ -3,58 +3,64 @@ package de.hdawg.rankinginfo.persistence;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import de.hdawg.rankinginfo.domain.Ranking;
 
-@Entity
-@Table(name = "rankings")
+@Table("rankings")
 public class RankingEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "dtb_id")
+  @Column("dtb_id")
   private Integer dtbId;
 
+  @Column("lastname")
   private String lastname;
+
+  @Column("firstname")
   private String firstname;
+
+  @Column("nationality")
   private String nationality;
 
-  @Column(name = "age_group")
+  @Column("age_group")
   private String ageGroup;
 
+  @Column("date")
   private LocalDate date;
 
-  @Column(name = "ranking_position")
+  @Column("ranking_position")
   private Integer rankingPosition;
 
+  @Column("score")
   private String score;
+
+  @Column("club")
   private String club;
+
+  @Column("federation")
   private String federation;
 
-  @Column(name = "age_group_ranking")
+  @Column("age_group_ranking")
   private Boolean ageGroupRanking;
 
-  @Column(name = "yob_ranking")
+  @Column("yob_ranking")
   private Boolean yobRanking;
 
-  @Column(name = "year_end_ranking")
+  @Column("year_end_ranking")
   private Boolean yearEndRanking;
 
-  @Column(name = "created_at")
+  @Column("created_at")
   private LocalDateTime createdAt;
 
-  @Column(name = "updated_at")
+  @Column("updated_at")
   private LocalDateTime updatedAt;
 
-  protected RankingEntity() {}
+  RankingEntity() {}
 
   public static RankingEntity fromDomain(Ranking r) {
     var e = new RankingEntity();

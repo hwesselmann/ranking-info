@@ -3,62 +3,64 @@ package de.hdawg.rankinginfo.repository;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import de.hdawg.rankinginfo.persistence.RankingEntity;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-interface RankingEntityRepository
-    extends JpaRepository<RankingEntity, Long>, JpaSpecificationExecutor<RankingEntity> {
-
-  List<RankingEntity> findByDtbIdAndAgeGroupInOrderByDateDesc(
-      Integer dtbId, List<String> ageGroups);
+interface RankingEntityRepository extends ListCrudRepository<RankingEntity, Long> {
 
   @Query(
-      "SELECT r FROM RankingEntity r WHERE r.dtbId = :dtbId "
-          + "AND r.yobRanking = false AND r.ageGroupRanking = false AND r.yearEndRanking = false "
-          + "ORDER BY r.date DESC, r.ageGroup ASC")
+      "SELECT * FROM rankings WHERE dtb_id = :dtbId AND age_group IN (:ageGroups)"
+          + " ORDER BY date DESC")
+  List<RankingEntity> findByDtbIdAndAgeGroupInOrderByDateDesc(
+      @Param("dtbId") Integer dtbId, @Param("ageGroups") List<String> ageGroups);
+
+  @Query(
+      "SELECT * FROM rankings WHERE dtb_id = :dtbId"
+          + " AND yob_ranking = false AND age_group_ranking = false AND year_end_ranking = false"
+          + " ORDER BY date DESC, age_group ASC")
   List<RankingEntity> findOverallByDtbId(@Param("dtbId") Integer dtbId);
 
   @Query(
-      "SELECT r FROM RankingEntity r WHERE r.dtbId = :dtbId AND r.yearEndRanking = false "
-          + "ORDER BY r.date ASC, r.ageGroup ASC")
+      "SELECT * FROM rankings WHERE dtb_id = :dtbId AND year_end_ranking = false"
+          + " ORDER BY date ASC, age_group ASC")
   List<RankingEntity> findNonYearEndByDtbId(@Param("dtbId") Integer dtbId);
 
-  @Query(
-      "SELECT DISTINCT r.date FROM RankingEntity r WHERE r.date < :today ORDER BY r.date DESC")
+  @Query("SELECT DISTINCT date FROM rankings WHERE date < :today ORDER BY date DESC")
   List<LocalDate> queryDistinctDatesDesc(@Param("today") LocalDate today);
 
-  @Query("SELECT DISTINCT r.date FROM RankingEntity r ORDER BY r.date DESC")
-  List<LocalDate> queryAllDistinctDatesDesc();
-
-  @Query(
-      "SELECT COUNT(DISTINCT r.dtbId) FROM RankingEntity r WHERE r.dtbId BETWEEN :start AND :end")
+  @Query("SELECT COUNT(DISTINCT dtb_id) FROM rankings WHERE dtb_id BETWEEN :start AND :end")
   long countDistinctDtbIdInRange(@Param("start") int start, @Param("end") int end);
 
-  @Query("SELECT DISTINCT r.federation FROM RankingEntity r ORDER BY r.federation ASC")
+  @Query("SELECT DISTINCT federation FROM rankings ORDER BY federation ASC")
   List<String> queryDistinctFederations();
 
   @Query(
-      "SELECT r FROM RankingEntity r WHERE r.date = :date "
-          + "AND r.dtbId BETWEEN :start AND :end AND r.ageGroup = 'overall' "
-          + "ORDER BY r.rankingPosition ASC, r.dtbId DESC")
+      "SELECT * FROM rankings WHERE date = :date"
+          + " AND dtb_id BETWEEN :start AND :end AND age_group = 'overall'"
+          + " ORDER BY ranking_position ASC, dtb_id DESC")
   List<RankingEntity> findForAgeRangeInPeriod(
       @Param("date") LocalDate date, @Param("start") int start, @Param("end") int end);
 
   @Query(
-      "SELECT r FROM RankingEntity r WHERE LOWER(r.lastname) LIKE :pattern "
-          + "ORDER BY r.lastname ASC, r.dtbId ASC, r.date DESC")
+      "SELECT * FROM ("
+          + "SELECT DISTINCT ON (dtb_id) * FROM rankings"
+          + " WHERE LOWER(lastname) LIKE :pattern AND age_group IN ('overall', 'm00', 'w00')"
+          + " ORDER BY dtb_id, date DESC"
+          + ") sub ORDER BY lastname ASC")
   List<RankingEntity> findByLastnameLikeIgnoreCase(@Param("pattern") String pattern);
 
   @Query(
-      "SELECT r FROM RankingEntity r WHERE LOWER(r.lastname) LIKE :pattern "
-          + "AND (r.dtbId BETWEEN :maleStart AND :maleEnd "
-          + "OR r.dtbId BETWEEN :femaleStart AND :femaleEnd) "
-          + "ORDER BY r.lastname ASC, r.dtbId ASC, r.date DESC")
+      "SELECT * FROM ("
+          + "SELECT DISTINCT ON (dtb_id) * FROM rankings"
+          + " WHERE LOWER(lastname) LIKE :pattern"
+          + " AND (dtb_id BETWEEN :maleStart AND :maleEnd OR dtb_id BETWEEN :femaleStart AND :femaleEnd)"
+          + " AND age_group IN ('overall', 'm00', 'w00')"
+          + " ORDER BY dtb_id, date DESC"
+          + ") sub ORDER BY lastname ASC")
   List<RankingEntity> findByLastnameAndYob(
       @Param("pattern") String pattern,
       @Param("maleStart") int maleStart,
@@ -67,10 +69,12 @@ interface RankingEntityRepository
       @Param("femaleEnd") int femaleEnd);
 
   @Query(
-      "SELECT r FROM RankingEntity r "
-          + "WHERE (r.dtbId BETWEEN :maleStart AND :maleEnd "
-          + "OR r.dtbId BETWEEN :femaleStart AND :femaleEnd) "
-          + "ORDER BY r.lastname ASC, r.dtbId ASC, r.date DESC")
+      "SELECT * FROM ("
+          + "SELECT DISTINCT ON (dtb_id) * FROM rankings"
+          + " WHERE (dtb_id BETWEEN :maleStart AND :maleEnd OR dtb_id BETWEEN :femaleStart AND :femaleEnd)"
+          + " AND age_group IN ('overall', 'm00', 'w00')"
+          + " ORDER BY dtb_id, date DESC"
+          + ") sub ORDER BY lastname ASC")
   List<RankingEntity> findByYob(
       @Param("maleStart") int maleStart,
       @Param("maleEnd") int maleEnd,
@@ -78,37 +82,40 @@ interface RankingEntityRepository
       @Param("femaleEnd") int femaleEnd);
 
   @Query(
-      "SELECT r FROM RankingEntity r WHERE r.dtbId BETWEEN :start AND :end "
-          + "ORDER BY r.lastname ASC, r.dtbId ASC, r.date DESC")
+      "SELECT * FROM ("
+          + "SELECT DISTINCT ON (dtb_id) * FROM rankings"
+          + " WHERE dtb_id BETWEEN :start AND :end AND age_group IN ('overall', 'm00', 'w00')"
+          + " ORDER BY dtb_id, date DESC"
+          + ") sub ORDER BY lastname ASC")
   List<RankingEntity> findByDtbIdRange(@Param("start") int start, @Param("end") int end);
 
   @Query(
-      "SELECT r.federation, r.ageGroup, COUNT(r.id) FROM RankingEntity r "
-          + "WHERE r.date = :date AND r.yobRanking = false AND r.ageGroupRanking = true "
-          + "AND r.yearEndRanking = false AND r.dtbId BETWEEN :start AND :end "
-          + "GROUP BY r.federation, r.ageGroup")
-  List<Object[]> countYouthByFederationAndAgeGroup(
+      "SELECT federation, age_group AS ageGroup, COUNT(id) AS count FROM rankings"
+          + " WHERE date = :date AND yob_ranking = false AND age_group_ranking = true"
+          + " AND year_end_ranking = false AND dtb_id BETWEEN :start AND :end"
+          + " GROUP BY federation, age_group")
+  List<FederationAgeGroupCount> countYouthByFederationAndAgeGroup(
       @Param("date") LocalDate date, @Param("start") int start, @Param("end") int end);
 
   @Query(
-      "SELECT r.federation, COUNT(r.id) FROM RankingEntity r "
-          + "WHERE r.date = :date AND r.ageGroup = :ageGroup "
-          + "GROUP BY r.federation")
-  List<Object[]> countAdultByFederation(
+      "SELECT federation, COUNT(id) AS count FROM rankings"
+          + " WHERE date = :date AND age_group = :ageGroup"
+          + " GROUP BY federation")
+  List<FederationCount> countAdultByFederation(
       @Param("date") LocalDate date, @Param("ageGroup") String ageGroup);
 
   @Query(
-      "SELECT r FROM RankingEntity r WHERE r.date = :date AND r.ageGroup = :ageGroup "
-          + "AND LOWER(r.club) LIKE :clubPattern ORDER BY r.rankingPosition ASC")
+      "SELECT * FROM rankings WHERE date = :date AND age_group = :ageGroup"
+          + " AND LOWER(club) LIKE :clubPattern ORDER BY ranking_position ASC")
   List<RankingEntity> findByDateAgeGroupAndClub(
       @Param("date") LocalDate date,
       @Param("ageGroup") String ageGroup,
       @Param("clubPattern") String clubPattern);
 
   @Query(
-      "SELECT r FROM RankingEntity r WHERE r.date = :date "
-          + "AND r.yobRanking = false AND r.ageGroupRanking = true AND r.yearEndRanking = false "
-          + "AND r.dtbId IN :dtbIds")
+      "SELECT * FROM rankings"
+          + " WHERE date = :date AND yob_ranking = false AND age_group_ranking = true"
+          + " AND year_end_ranking = false AND dtb_id IN (:dtbIds)")
   List<RankingEntity> findAgeGroupRankingsByDateAndDtbIds(
       @Param("date") LocalDate date, @Param("dtbIds") List<Integer> dtbIds);
 }

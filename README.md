@@ -14,7 +14,7 @@ Java/Spring Boot reimplementation of [ranking-info](https://github.com/hwesselma
 |---|---|
 | Language / Framework | Java 25 / Spring Boot 4 |
 | Database | H2 file-mode (dev), PostgreSQL (prod) |
-| ORM | Spring Data JPA |
+| ORM | Spring Data JDBC |
 | Frontend | Thymeleaf + Tailwind CSS (local build) |
 | API docs | springdoc-openapi (Swagger UI at `/api-docs`) |
 | Scheduling | `@Scheduled` (in-process) |
@@ -28,8 +28,8 @@ Java/Spring Boot reimplementation of [ranking-info](https://github.com/hwesselma
 ## Prerequisites
 
 - Java 25 (Eclipse Temurin or any distribution)
+- Maven 3.9.16 or newer (wrapper included via `./mvnw` — local installation not required)
 - Node.js + npm (for Tailwind CSS builds)
-- Maven wrapper included (`./mvnw`) — no local Maven installation required
 - Docker + Docker Compose (for containerised setup)
 
 ## Local development
@@ -47,6 +47,20 @@ npx @tailwindcss/cli -i src/main/resources/static/css/application.src.css \
 ```
 
 The application starts on [http://localhost:8080](http://localhost:8080).
+
+## Local development with PostgreSQL
+
+Use `docker-compose-local.yml` to run a PostgreSQL instance on `localhost:5432` and connect to it via the `local` Spring profile:
+
+```bash
+# Start PostgreSQL (data persisted in a named Docker volume)
+docker compose -f docker-compose-local.yml up -d
+
+# Run the app against it (import scheduler fires every 5 minutes)
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+Credentials: `ranking_info` / `changeme`. Liquibase applies all migrations (including trigram indexes) automatically on first startup.
 
 ## Tests
 
