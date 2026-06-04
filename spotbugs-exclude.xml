@@ -20,6 +20,10 @@
     <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
     <Field name="objectMapper"/>
   </Match>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    <Field name="namedJdbc"/>
+  </Match>
 
   <!-- RankingFilter/RankingQueryFilter: yearEnd is a boolean, club/fed are Strings (immutable) -->
   <Match>
