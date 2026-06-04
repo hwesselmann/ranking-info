@@ -1,6 +1,7 @@
 package de.hdawg.rankinginfo.repository;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import jakarta.persistence.criteria.Predicate;
 
@@ -27,7 +28,7 @@ class RankingSpecifications {
       }
       if (filter.club() != null) {
         predicates.add(
-            cb.like(cb.lower(root.get("club")), "%" + filter.club().toLowerCase() + "%"));
+            cb.like(cb.lower(root.get("club")), "%" + filter.club().toLowerCase(Locale.ROOT) + "%"));
       }
       if (filter.dtbIds() != null) {
         predicates.add(root.get("dtbId").in(filter.dtbIds()));

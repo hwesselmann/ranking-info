@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Tools & Plugins
 
-- **IntelliJ MCP** — Use the `mcp__idea__*` tools for all IDE-level operations: running the app, executing tests, reading files, searching symbols, renaming, and checking diagnostics. Prefer these over raw Bash/Gradle calls whenever the MCP provides an equivalent action.
+- **IntelliJ MCP** — Use the `mcp__idea__*` tools for all IDE-level operations: running the app, executing tests, reading files, searching symbols, renaming, and checking diagnostics. Prefer these over raw Bash/Maven calls whenever the MCP provides an equivalent action.
 - **frontend-design plugin** — Use `/frontend-design` (or the plugin's skill) whenever editing HTML templates or CSS. It provides visual diffing and design context that plain file edits lack.
 
 ## Commits & Pull Requests
@@ -13,17 +13,17 @@ Do **not** add a `Co-Authored-By` trailer or any other AI-attribution line to co
 
 ## After Every Code Change
 
-Run all three steps in sequence after **any** change to Kotlin, HTML, or CSS files:
+Run all three steps in sequence after **any** change to Java, HTML, or CSS files:
 
 ```bash
 # 1. Build & test
-./gradlew test
+./mvnw test
 
 # 2. Lint
-./gradlew ktlintCheck detekt
+./mvnw spotless:check pmd:check
 
-# 3. If lint violations are auto-fixable, apply and re-verify
-./gradlew ktlintFormat && ./gradlew ktlintCheck detekt
+# 3. If Spotless violations exist, apply and re-verify
+./mvnw spotless:apply && ./mvnw spotless:check pmd:check
 ```
 
 Stop and report failures before proceeding. Do not skip this sequence even for "trivial" changes.
@@ -31,32 +31,26 @@ Stop and report failures before proceeding. Do not skip this sequence even for "
 ## Commands
 
 ```bash
-# Run locally (dev profile, SQLite at ~/ranking-info-dev.db)
-./gradlew bootRun
+# Run locally (dev profile, H2 at ~/ranking-info-dev.mv.db)
+./mvnw spring-boot:run
 
 # Run all tests
-./gradlew test
+./mvnw test
 
 # Run a single test class
-./gradlew test --tests "de.hdawg.rankinginfo.service.ImportServiceTest"
+./mvnw test -Dtest="de.hdawg.rankinginfo.service.ImportServiceTest"
 
-# Lint (ktlint + detekt) — also runs as part of `check`
-./gradlew ktlintCheck
-./gradlew detekt
+# Lint (Spotless + PMD) — also runs as part of verify
+./mvnw spotless:check pmd:check
 
-# Auto-fix ktlint violations
-./gradlew ktlintFormat
+# Auto-fix Spotless violations
+./mvnw spotless:apply
 
-# Full build (compiles, tests, lint, coverage)
-./gradlew build
-
-# Generate API docs (Dokka)
-./gradlew dokkaGeneratePublicationHtml
+# Full build (compiles, tests, lint, coverage, SpotBugs)
+./mvnw verify
 ```
 
-The build uses Kotlin DSL (`build.gradle.kts`). Build caching and parallel execution are enabled in `gradle.properties`.
-
-The app starts on `http://localhost:8080`. Swagger UI is at `/api-docs`.
+The build uses Maven with `spring-boot-starter-parent`. The app starts on `http://localhost:8080`. Swagger UI is at `/api-docs`.
 
 ## Architecture
 
@@ -105,7 +99,7 @@ Two Spring Security filter chains (`SecurityConfig`):
 
 | Profile | Database |
 |---|---|
-| `dev` (default) | SQLite at `~/ranking-info-dev.db` |
+| `dev` (default) | H2 file-mode at `~/ranking-info-dev.mv.db` |
 | `prod` | PostgreSQL (via `DB_*` env vars) |
 | `test` | H2 in-memory |
 
@@ -113,4 +107,4 @@ Two Spring Security filter chains (`SecurityConfig`):
 
 Web controller tests extend `WebControllerTestBase`, which seeds a small set of `Ranking` rows via the real repository before each test and deletes them after. The `ImportIntegrationTest` runs the full import pipeline against H2 using fixture CSVs in `src/test/resources/fixtures/`.
 
-CI (`test.yaml`) spins up a real PostgreSQL 16 container and runs `./gradlew build` with `SPRING_PROFILES_ACTIVE=test`.
+CI (`test.yaml`) spins up a real PostgreSQL 16 container and runs `./mvnw verify` with `SPRING_PROFILES_ACTIVE=test`.

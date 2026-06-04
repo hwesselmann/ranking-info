@@ -2,6 +2,7 @@ package de.hdawg.rankinginfo.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -82,7 +83,7 @@ public class RankingRepository {
   }
 
   public List<Ranking> findByLastnameLike(String lastname) {
-    return jpa.findByLastnameLikeIgnoreCase("%" + lastname.toLowerCase() + "%").stream()
+    return jpa.findByLastnameLikeIgnoreCase("%" + lastname.toLowerCase(Locale.ROOT) + "%").stream()
         .map(RankingEntity::toDomain)
         .toList();
   }
@@ -95,7 +96,7 @@ public class RankingRepository {
       int yobFemaleEnd) {
     return jpa
         .findByLastnameAndYob(
-            "%" + lastname.toLowerCase() + "%",
+            "%" + lastname.toLowerCase(Locale.ROOT) + "%",
             yobMaleStart,
             yobMaleEnd,
             yobFemaleStart,
@@ -129,7 +130,7 @@ public class RankingRepository {
 
   public List<Ranking> findByDateAndAgeGroupAndClubContaining(
       LocalDate date, String ageGroup, String club) {
-    return jpa.findByDateAgeGroupAndClub(date, ageGroup, "%" + club.toLowerCase() + "%").stream()
+    return jpa.findByDateAgeGroupAndClub(date, ageGroup, "%" + club.toLowerCase(Locale.ROOT) + "%").stream()
         .map(RankingEntity::toDomain)
         .toList();
   }

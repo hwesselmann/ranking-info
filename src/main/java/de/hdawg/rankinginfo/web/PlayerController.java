@@ -22,12 +22,7 @@ import de.hdawg.rankinginfo.domain.Ranking;
 import de.hdawg.rankinginfo.repository.RankingRepository;
 import de.hdawg.rankinginfo.service.PlayerService;
 
-@SuppressWarnings({
-  "PMD.CyclomaticComplexity",
-  "PMD.NPathComplexity",
-  "PMD.LooseCoupling",
-  "PMD.AvoidLiteralsInIfCondition"
-})
+@SuppressWarnings({"PMD.LooseCoupling", "PMD.AvoidLiteralsInIfCondition"})
 @Controller
 @RequestMapping("/players")
 public class PlayerController {
@@ -98,6 +93,7 @@ public class PlayerController {
   }
 
   @GetMapping("/{id}")
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public String show(@PathVariable int id, Model model, RedirectAttributes redirect) {
     try {
       var player = playerService.loadPlayerProfile(id);

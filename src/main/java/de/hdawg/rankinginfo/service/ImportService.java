@@ -11,14 +11,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,7 @@ import de.hdawg.rankinginfo.domain.Ranking;
 import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
 import de.hdawg.rankinginfo.repository.RankingRepository;
 
-@SuppressWarnings({"PMD.LooseCoupling", "PMD.GuardLogStatement"})
+@SuppressWarnings("PMD.GuardLogStatement")
 @Service
 public class ImportService {
 
@@ -63,6 +64,8 @@ public class ImportService {
   }
 
   public static class DuplicateImportError extends Exception {
+    private static final long serialVersionUID = 1L;
+
     public DuplicateImportError(String message) {
       super(message);
     }
@@ -113,7 +116,9 @@ public class ImportService {
       cacheNames = {"available_quarters", "available_dates", "federations"},
       allEntries = true)
   public void importRankings(Path file) throws DuplicateImportError, IOException {
-    var filename = file.getFileName().toString();
+    var fileNamePart = file.getFileName();
+    if (fileNamePart == null) throw new IllegalArgumentException("Path has no filename: " + file);
+    var filename = fileNamePart.toString();
     var period = extractPeriodFromFilename(filename);
     var category = fileCategoryFromFilename(filename);
     var capitalizedCategory = Character.toUpperCase(category.charAt(0)) + category.substring(1);
@@ -154,13 +159,14 @@ public class ImportService {
     doScanAndImport(folderPath, errorLogPath);
   }
 
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   private void doScanAndImport(String folderPath, @Nullable String errorLogPath) {
     var folder = new File(folderPath);
     if (!folder.isDirectory()) {
       log.warn("Import folder '{}' does not exist or is not a directory", folderPath);
       return;
     }
-    var csvFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
+    var csvFiles = folder.listFiles((dir, name) -> name.toLowerCase(Locale.ROOT).endsWith(".csv"));
     if (csvFiles == null) return;
     for (var csvFile : csvFiles) {
       try {
@@ -308,7 +314,7 @@ public class ImportService {
   private static void writeErrorLog(String logFilePath, String message) {
     var logFile = new File(logFilePath);
     var separator = logFile.exists() ? "\n\n" : "";
-    try (var writer = new FileWriter(logFile, true)) {
+    try (var writer = new FileWriter(logFile, StandardCharsets.UTF_8, true)) {
       writer.write(separator + message);
     } catch (IOException e) {
       log.warn("Could not write to error log '{}': {}", logFilePath, e.getMessage());

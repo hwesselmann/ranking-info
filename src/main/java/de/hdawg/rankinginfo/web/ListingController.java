@@ -1,6 +1,7 @@
 package de.hdawg.rankinginfo.web;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,9 +71,9 @@ public class ListingController {
       case "Herren" -> "m00";
       case "Damen" -> "w00";
       case "Junioren" ->
-          (ageGroup == null || ageGroup.isBlank()) ? "overall" : "m" + ageGroup.toLowerCase();
+          (ageGroup == null || ageGroup.isBlank()) ? "overall" : "m" + ageGroup.toLowerCase(Locale.ROOT);
       case "Juniorinnen" ->
-          (ageGroup == null || ageGroup.isBlank()) ? "overall" : "w" + ageGroup.toLowerCase();
+          (ageGroup == null || ageGroup.isBlank()) ? "overall" : "w" + ageGroup.toLowerCase(Locale.ROOT);
       default -> "overall";
     };
   }

@@ -6,12 +6,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,6 @@ import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
 import de.hdawg.rankinginfo.repository.RankingQueryFilter;
 import de.hdawg.rankinginfo.repository.RankingRepository;
 
-@SuppressWarnings("PMD.LooseCoupling")
 @Service
 @Transactional(readOnly = true)
 public class RankingService {
@@ -121,12 +121,10 @@ public class RankingService {
       ageGroupRanking = flags.ageGroupRanking();
     }
 
-    var fed =
-        filter.federation() != null && !filter.federation().isBlank()
-            ? filter.federation()
-            : null;
-    var club =
-        filter.club() != null && !filter.club().isBlank() ? filter.club() : null;
+    var fedValue = filter.federation();
+    var fed = fedValue != null && !fedValue.isBlank() ? fedValue : null;
+    var clubValue = filter.club();
+    var club = clubValue != null && !clubValue.isBlank() ? clubValue : null;
 
     return new RankingQueryFilter(
         quarter,
@@ -144,7 +142,7 @@ public class RankingService {
   private static String slugToAgeGroup(String slug) {
     if (AGE_GROUP_M00.equals(slug)) return AGE_GROUP_M00;
     if (AGE_GROUP_W00.equals(slug)) return AGE_GROUP_W00;
-    return "U" + slug.substring(2).toUpperCase();
+    return "U" + slug.substring(2).toUpperCase(Locale.ROOT);
   }
 
   private static int parseAgeGroupNumber(String ageGroup) {

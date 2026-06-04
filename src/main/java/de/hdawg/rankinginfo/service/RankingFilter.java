@@ -1,6 +1,6 @@
 package de.hdawg.rankinginfo.service;
 
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record RankingFilter(
     String quarter,

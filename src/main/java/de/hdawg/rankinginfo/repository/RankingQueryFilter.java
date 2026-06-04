@@ -3,7 +3,7 @@ package de.hdawg.rankinginfo.repository;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record RankingQueryFilter(
     LocalDate date,
@@ -16,6 +16,11 @@ public record RankingQueryFilter(
     @Nullable String federation,
     @Nullable String club,
     @Nullable List<Integer> dtbIds) {
+
+  @SuppressWarnings("PMD.NullAssignment")
+  public RankingQueryFilter {
+    dtbIds = dtbIds != null ? List.copyOf(dtbIds) : null;
+  }
 
   public RankingQueryFilter withDtbIds(@Nullable List<Integer> dtbIds) {
     return new RankingQueryFilter(

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import de.hdawg.rankinginfo.domain.Ranking;
 import de.hdawg.rankinginfo.repository.RankingRepository;
 
-@SuppressWarnings("PMD.LooseCoupling")
 @Controller
 @RequestMapping("/clubs")
 public class ClubController {

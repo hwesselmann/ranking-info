@@ -27,7 +27,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/ranking-info-kt:latest
-            ghcr.io/${{ github.repository_owner }}/ranking-info-kt:${{ github.event.release.tag_name }}
+            ghcr.io/${{ github.repository_owner }}/ranking-info:latest
+            ghcr.io/${{ github.repository_owner }}/ranking-info:${{ github.event.release.tag_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

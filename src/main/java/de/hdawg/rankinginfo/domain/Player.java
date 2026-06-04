@@ -9,4 +9,9 @@ public record Player(
     String nationality,
     String club,
     String federation,
-    List<Club> clubs) {}
+    List<Club> clubs) {
+
+  public Player {
+    clubs = List.copyOf(clubs);
+  }
+}
