@@ -34,11 +34,14 @@ public class ImportService {
 
   private static final Logger log = LoggerFactory.getLogger(ImportService.class);
 
+  private static final String CATEGORY_JUNIOREN = "junioren";
+  private static final String CATEGORY_JUNIORINNEN = "juniorinnen";
+
   private static final Set<String> SPECIAL_SCORES = Set.of("0,0", "PR", "Einst.");
   private static final Map<String, Integer> GENDER_FACTORS =
-      Map.of("junioren", 100, "juniorinnen", 200);
+      Map.of(CATEGORY_JUNIOREN, 100, CATEGORY_JUNIORINNEN, 200);
   private static final Map<String, String> AGE_GROUP_MAP =
-      Map.of("herren", "m00", "damen", "w00", "junioren", "overall", "juniorinnen", "overall");
+      Map.of("herren", "m00", "damen", "w00", CATEGORY_JUNIOREN, "overall", CATEGORY_JUNIORINNEN, "overall");
   private static final Pattern CSV_SPLIT_PATTERN =
       Pattern.compile(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
@@ -89,8 +92,8 @@ public class ImportService {
     if (dotIdx > 0) name = name.substring(0, dotIdx);
     var prefix = name.split("_")[0];
     return switch (prefix) {
-      case "Junioren" -> "junioren";
-      case "Juniorinnen" -> "juniorinnen";
+      case "Junioren" -> CATEGORY_JUNIOREN;
+      case "Juniorinnen" -> CATEGORY_JUNIORINNEN;
       case "Herren" -> "herren";
       case "Damen" -> "damen";
       default ->

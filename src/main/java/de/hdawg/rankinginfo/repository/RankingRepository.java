@@ -171,6 +171,8 @@ public class RankingRepository {
         .toList();
   }
 
+  // buildOptionalClauses appends only static SQL fragments; all values are bound as named parameters
+  @SuppressWarnings("java:S2077")
   public Page<Ranking> findFiltered(RankingQueryFilter filter, int page, int perPage) {
     var params = buildBaseParams(filter);
     var optionalSql = buildOptionalClauses(params, filter);
@@ -188,6 +190,7 @@ public class RankingRepository {
     return new PageImpl<>(content, PageRequest.of(page - 1, perPage), total);
   }
 
+  @SuppressWarnings("java:S2077")
   public List<Ranking> findFiltered(RankingQueryFilter filter) {
     var params = buildBaseParams(filter);
     var optionalSql = buildOptionalClauses(params, filter);

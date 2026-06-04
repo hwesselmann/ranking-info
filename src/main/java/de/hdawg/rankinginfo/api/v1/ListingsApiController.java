@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.hdawg.rankinginfo.domain.Ranking;
 import de.hdawg.rankinginfo.service.RankingFilter;
 import de.hdawg.rankinginfo.service.RankingService;
 
@@ -67,7 +68,7 @@ public class ListingsApiController {
     }
 
     var rankings = rankingService.findFilteredRankings(filter, page, cappedPerPage);
-    var dtbIds = rankings.getContent().stream().map(r -> r.dtbId()).toList();
+    var dtbIds = rankings.getContent().stream().map(Ranking::dtbId).toList();
     var prevPositions = rankingService.findPreviousPositions(filter, dtbIds);
 
     var data =

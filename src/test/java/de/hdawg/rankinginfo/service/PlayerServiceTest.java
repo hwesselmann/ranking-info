@@ -24,12 +24,14 @@ class PlayerServiceTest {
 
   @Autowired RankingRepository rankingRepository;
 
+  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 0, 0);
+
   private final int maleId = 10_001_001;
   private final int femaleId = 20_001_001;
 
   @BeforeEach
   void seed() {
-    var now = LocalDateTime.now();
+    var now = NOW;
     var q = LocalDate.of(2026, 4, 1);
     var prevQ = LocalDate.of(2026, 1, 1);
     rankingRepository.saveAll(

@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,17 +29,15 @@ public class PlayersApiController {
   }
 
   @Operation(summary = "Search players by lastname and optional year of birth")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        content = @Content(schema = @Schema(implementation = PlayerSearchResponse.class))),
-    @ApiResponse(
-        responseCode = "400",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    @ApiResponse(
-        responseCode = "404",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      content = @Content(schema = @Schema(implementation = PlayerSearchResponse.class)))
+  @ApiResponse(
+      responseCode = "400",
+      content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+  @ApiResponse(
+      responseCode = "404",
+      content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
   @GetMapping
   public ResponseEntity<Object> search(
       @RequestParam(required = false) String lastname,
@@ -80,14 +77,12 @@ public class PlayersApiController {
   }
 
   @Operation(summary = "Get player profile with full ranking history")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        content = @Content(schema = @Schema(implementation = PlayerDetailResponse.class))),
-    @ApiResponse(
-        responseCode = "404",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      content = @Content(schema = @Schema(implementation = PlayerDetailResponse.class)))
+  @ApiResponse(
+      responseCode = "404",
+      content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
   @GetMapping("/{id}")
   public ResponseEntity<Object> show(@PathVariable int id) {
     var rankings =

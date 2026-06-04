@@ -24,12 +24,14 @@ class RankingServiceFilterTest {
 
   @Autowired RankingRepository rankingRepository;
 
+  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 0, 0);
+
   private final LocalDate q = LocalDate.of(2026, 4, 1);
   private final LocalDate pq = LocalDate.of(2026, 1, 1);
 
   @BeforeEach
   void seed() {
-    var now = LocalDateTime.now();
+    var now = NOW;
     rankingRepository.saveAll(
         List.of(
             r(10_001_001, "m00", q, 1, "500", false, false, "TC Baden", "BAD", now),
@@ -168,7 +170,7 @@ class RankingServiceFilterTest {
       String score,
       boolean ageGroupRanking,
       boolean yobRanking) {
-    return r(dtbId, ageGroup, date, pos, score, ageGroupRanking, yobRanking, "TC Test", "TST", LocalDateTime.now(), false);
+    return r(dtbId, ageGroup, date, pos, score, ageGroupRanking, yobRanking, "TC Test", "TST", NOW, false);
   }
 
   private Ranking r(

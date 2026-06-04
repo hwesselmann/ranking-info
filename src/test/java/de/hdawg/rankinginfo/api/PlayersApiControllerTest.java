@@ -31,12 +31,13 @@ class PlayersApiControllerTest {
 
   @Autowired ImportHistoryRepository importHistoryRepository;
 
+  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 0, 0);
+
   private final String auth = "Bearer test-api-token";
   private final LocalDate q = LocalDate.of(2026, 4, 1);
 
   @BeforeEach
   void seed() {
-    var now = LocalDateTime.now();
     rankingRepository.saveAll(
         List.of(
             r(10_001_001, "Mustermann", "Max", "m00", q, 1, false, false),
@@ -211,6 +212,6 @@ class PlayersApiControllerTest {
     return new Ranking(
         0L, dtbId, lastname, firstname, "GER", ageGroup, date, pos, "100",
         "TC Test", "TST", ageGroupRanking, yobRanking, false,
-        LocalDateTime.now(), LocalDateTime.now());
+        NOW, NOW);
   }
 }

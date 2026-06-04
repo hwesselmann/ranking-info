@@ -33,6 +33,8 @@ class ListingsApiControllerTest {
 
   @Autowired ImportHistoryRepository importHistoryRepository;
 
+  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 0, 0);
+
   private final String quarter = "2026-04-01";
   private final String prevQuarter = "2026-01-01";
   private final String auth = "Bearer test-api-token";
@@ -41,7 +43,7 @@ class ListingsApiControllerTest {
   void seed() {
     var q = LocalDate.parse(quarter);
     var pq = LocalDate.parse(prevQuarter);
-    var now = LocalDateTime.now();
+    var now = NOW;
 
     rankingRepository.saveAll(
         List.of(
