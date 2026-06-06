@@ -1,0 +1,15 @@
+integrations:
+  - name: nri-postgresql
+    env:
+      USERNAME: ranking_info
+      PASSWORD: ${DB_PASSWORD}
+      HOSTNAME: postgres
+      PORT: 5432
+      DATABASE: ranking_info
+      COLLECT_DB_LOCK_METRICS: "true"
+      COLLECT_BLOAT_METRICS: "false"
+      ENABLE_SSL: "false"
+    interval: 30s
+    labels:
+      service: ranking-info
+      env: production
