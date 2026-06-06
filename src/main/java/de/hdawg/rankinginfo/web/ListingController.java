@@ -6,6 +6,7 @@ import java.util.Locale;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -32,6 +33,7 @@ public class ListingController {
       @RequestParam(required = false) String club,
       @RequestParam(name = "year_end", defaultValue = "0") String yearEnd,
       @RequestParam(required = false) String commit,
+      @RequestHeader(value = "HX-Request", required = false) String htmxRequest,
       Model model) {
 
     model.addAttribute("quarters", rankingService.fetchAvailableQuarters());
@@ -63,7 +65,7 @@ public class ListingController {
       model.addAttribute("rankings", rankings.getContent());
       model.addAttribute("previousPositions", prevPositions);
     }
-    return "listing/index";
+    return htmxRequest != null ? "listing/index :: results" : "listing/index";
   }
 
   private static String toAgeGroupSlug(String gender, String ageGroup) {
