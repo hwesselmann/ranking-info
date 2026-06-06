@@ -24,6 +24,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
+      - name: Extract version tag
+        id: version
+        run: echo "tag=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -31,6 +35,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/ranking-info:latest
-            ghcr.io/${{ github.repository_owner }}/ranking-info:${{ github.event.release.tag_name }}
+            ghcr.io/${{ github.repository_owner }}/ranking-info:${{ steps.version.outputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
