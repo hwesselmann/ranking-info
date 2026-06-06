@@ -1,0 +1,30 @@
+common: &default_settings
+  # License key is read from NEW_RELIC_LICENSE_KEY environment variable.
+  # App name is read from NEW_RELIC_APP_NAME environment variable.
+  license_key: '<%= ENV["NEW_RELIC_LICENSE_KEY"] %>'
+  app_name: <%= ENV["NEW_RELIC_APP_NAME"] || "ranking-info" %>
+
+  log_level: info
+  # Log to stdout so Docker captures all output in one stream.
+  log_file_name: STDOUT
+
+  distributed_tracing:
+    enabled: true
+
+  application_logging:
+    enabled: true
+    forwarding:
+      enabled: true
+    local_decorating:
+      enabled: false
+
+production:
+  <<: *default_settings
+
+development:
+  <<: *default_settings
+  monitor_mode: false
+
+test:
+  <<: *default_settings
+  monitor_mode: false

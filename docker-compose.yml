@@ -19,6 +19,8 @@ services:
       IMPRINT_CITY: ${IMPRINT_CITY:-}
       IMPRINT_PHONE: ${IMPRINT_PHONE:-}
       IMPRINT_MAIL: ${IMPRINT_MAIL:-}
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY:-}
+      NEW_RELIC_APP_NAME: ${NEW_RELIC_APP_NAME:-ranking-info}
     volumes:
       - import-data:/data/import
     depends_on:
