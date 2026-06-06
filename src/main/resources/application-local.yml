@@ -9,4 +9,4 @@ spring:
       minimum-idle: 2
 
 import:
-  schedule: "0 */5 * * * ?"
+  schedule: "${IMPORT_SCHEDULE:0 */5 * * * ?}"
