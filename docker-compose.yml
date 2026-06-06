@@ -55,7 +55,7 @@ services:
     restart: unless-stopped
 
   newrelic-infra:
-    image: newrelic/infrastructure-bundle:3.3.13
+    image: newrelic/infrastructure-bundle:3.3.30
     privileged: true
     pid: host
     cap_add:
