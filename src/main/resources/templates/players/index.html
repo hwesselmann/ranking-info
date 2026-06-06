@@ -9,7 +9,8 @@
 <body>
 <th:block layout:fragment="content">
     <h1 class="text-2xl font-bold text-left mb-3 mt-3">Spielersuche</h1>
-    <form th:action="@{/players}" method="get" class="mb-3">
+    <form th:action="@{/players}" method="get" class="mb-3"
+          hx-get="/players" hx-target="#results" hx-indicator="#results-loading" hx-push-url="true">
         <div class="flex flex-wrap items-center gap-2">
             <input type="search" name="dtb_id" class="border border-gray-300 rounded px-2 py-1 text-sm"
                    placeholder="DTB-ID" th:value="${params != null ? params['dtb_id'] : ''}">
@@ -21,6 +22,10 @@
                     class="bg-brand text-white px-3 py-1 text-sm rounded hover:opacity-90 cursor-pointer">suchen</button>
         </div>
     </form>
+
+    <div id="results-loading" class="htmx-indicator text-gray-500 text-sm mt-2">Laden…</div>
+
+    <div id="results" th:fragment="results">
     <div th:if="${players == null}" class="rounded shadow mt-3">
         <header class="bg-gray-100 px-4 py-3 rounded-t font-semibold border-b border-gray-200">
             <span>Spielersuche</span>
@@ -65,6 +70,7 @@
         </table>
     </div>
     <div th:if="${players != null and #lists.isEmpty(players)}">Es wurden keine Spieler gefunden.</div>
+    </div>
 </th:block>
 </body>
 </html>

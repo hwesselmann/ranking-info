@@ -1,7 +1,9 @@
 package de.hdawg.rankinginfo.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,5 +75,30 @@ class PlayerWebControllerTest extends WebControllerTestBase {
   @DisplayName("GET player show redirects for unknown player")
   void getPlayerShowRedirectsForUnknownPlayer() throws Exception {
     mockMvc.perform(get("/players/99999999")).andExpect(status().is3xxRedirection());
+  }
+
+  @Test
+  @DisplayName("GET players with HX-Request and multiple results returns fragment")
+  void getPlayersWithHtmxHeaderReturnsFragment() throws Exception {
+    rankingRepository.save(r(10_003_003, "Mueller", "Fritz", "m00", q, 3, "400", false, false));
+    mockMvc
+        .perform(
+            get("/players")
+                .param("lastname", "Mueller")
+                .header("HX-Request", "true"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("players/index :: results"));
+  }
+
+  @Test
+  @DisplayName("GET players with HX-Request and single result sets HX-Redirect header")
+  void getPlayersWithHtmxSingleResultSetsRedirectHeader() throws Exception {
+    mockMvc
+        .perform(
+            get("/players")
+                .param("lastname", "Schmidt")
+                .header("HX-Request", "true"))
+        .andExpect(status().isOk())
+        .andExpect(header().string("HX-Redirect", "/players/10002002"));
   }
 }

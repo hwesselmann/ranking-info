@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -118,5 +119,19 @@ class ListingControllerTest extends WebControllerTestBase {
                 .param("commit", "1"))
         .andExpect(status().isOk())
         .andExpect(model().attribute("rankings", hasSize(1)));
+  }
+
+  @Test
+  @DisplayName("GET listings with HX-Request header returns results fragment")
+  void getListingsWithHtmxHeaderReturnsFragment() throws Exception {
+    mockMvc
+        .perform(
+            get("/listings")
+                .param("quarter", q.toString())
+                .param("gender", "Herren")
+                .param("commit", "1")
+                .header("HX-Request", "true"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("listing/index :: results"));
   }
 }

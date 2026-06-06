@@ -9,7 +9,8 @@
 <body>
 <th:block layout:fragment="content">
     <h1 class="text-2xl font-bold mt-3 mb-3">Vereinssuche</h1>
-    <form th:action="@{/clubs}" method="get" class="mb-3">
+    <form th:action="@{/clubs}" method="get" class="mb-3"
+          hx-get="/clubs" hx-target="#results" hx-indicator="#results-loading" hx-push-url="true">
         <div class="flex flex-wrap items-center gap-2">
             <input type="search" name="club" class="border border-gray-300 rounded px-2 py-1 text-sm"
                    placeholder="Vereinsname" th:value="${params != null ? params['club'] : ''}">
@@ -17,6 +18,10 @@
                     class="bg-brand text-white px-3 py-1 text-sm rounded hover:opacity-90 cursor-pointer">suchen</button>
         </div>
     </form>
+
+    <div id="results-loading" class="htmx-indicator text-gray-500 text-sm mt-2">Laden…</div>
+
+    <div id="results" th:fragment="results">
     <div th:if="${clubs == null}" class="rounded shadow mt-3">
         <header class="bg-gray-100 px-4 py-3 rounded-t font-semibold border-b border-gray-200">
             <span>Vereinssuche</span>
@@ -54,6 +59,7 @@
         </table>
     </div>
     <div th:if="${clubs != null and #lists.isEmpty(clubs)}">Es wurden keine Vereine gefunden.</div>
+    </div>
 </th:block>
 </body>
 </html>

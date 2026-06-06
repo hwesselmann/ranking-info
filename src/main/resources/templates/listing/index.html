@@ -10,7 +10,8 @@
 <th:block layout:fragment="content">
 <main>
     <h1 class="text-2xl font-bold text-left mb-3 mt-3">Ranglisten</h1>
-    <form th:action="@{/listings}" method="get" class="mb-4">
+    <form th:action="@{/listings}" method="get" class="mb-4"
+          hx-get="/listings" hx-target="#results" hx-indicator="#results-loading" hx-push-url="true">
         <div class="flex flex-wrap items-start gap-3">
             <div>
                 <label for="quarter" class="block text-xs text-gray-500">Stichtag</label>
@@ -75,6 +76,9 @@
         </div>
     </form>
 
+    <div id="results-loading" class="htmx-indicator text-gray-500 text-sm mt-2">Laden…</div>
+
+    <div id="results" th:fragment="results">
     <div th:if="${rankings == null}" class="rounded shadow mt-3">
         <header class="bg-gray-100 px-4 py-3 rounded-t font-semibold border-b border-gray-200">
             <span>Ranglisten - Suchen und Filtern, auch in historischen Daten</span>
@@ -152,6 +156,7 @@
     </div>
     <div th:if="${rankings != null and #lists.isEmpty(rankings)}" class="mt-4 text-gray-600">
         Es wurden leider keine Daten für diese Suchkriterien gefunden.
+    </div>
     </div>
 </main>
 </th:block>

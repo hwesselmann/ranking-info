@@ -10,10 +10,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -52,8 +55,10 @@ public class PlayerController {
       @RequestParam(required = false) String yob,
       @RequestParam(name = "dtb_id", required = false) String dtbId,
       @RequestParam(required = false) String commit,
+      @RequestHeader(value = "HX-Request", required = false) String htmxRequest,
       Model model,
-      RedirectAttributes redirect) {
+      RedirectAttributes redirect,
+      HttpServletResponse response) {
 
     if (dtbId != null && !dtbId.isBlank()) {
       long idNum;
@@ -66,21 +71,21 @@ public class PlayerController {
       int start = (int) (idNum * Math.pow(10.0, missing));
       int end = start + (int) Math.pow(10.0, missing) - 1;
       var players = playerService.findPlayersByDtbIdRange(start, end);
-      if (players.size() == 1) return REDIRECT_PLAYER + players.get(0).dtbId();
+      if (players.size() == 1) return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
       model.addAttribute(MODEL_PLAYERS, players);
     } else if (lastname != null && !lastname.isBlank() && yob != null && !yob.isBlank()) {
       int yobMale = Integer.parseInt(yob.trim().substring(2, 4)) + 100;
       var players = playerService.findPlayersByLastnameAndYob(lastname.trim(), yobMale, yobMale + 100);
-      if (players.size() == 1) return REDIRECT_PLAYER + players.get(0).dtbId();
+      if (players.size() == 1) return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
       model.addAttribute(MODEL_PLAYERS, players);
     } else if (lastname != null && !lastname.isBlank()) {
       var players = playerService.findPlayersByLastname(lastname.trim());
-      if (players.size() == 1) return REDIRECT_PLAYER + players.get(0).dtbId();
+      if (players.size() == 1) return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
       model.addAttribute(MODEL_PLAYERS, players);
     } else if (yob != null && !yob.isBlank()) {
       int yobMale = Integer.parseInt(yob.trim().substring(2, 4)) + 100;
       var players = playerService.findPlayersByYob(yobMale, yobMale + 100);
-      if (players.size() == 1) return REDIRECT_PLAYER + players.get(0).dtbId();
+      if (players.size() == 1) return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
       model.addAttribute(MODEL_PLAYERS, players);
     }
 
@@ -89,7 +94,15 @@ public class PlayerController {
     params.put("yob", yob);
     params.put("dtb_id", dtbId);
     model.addAttribute("params", params);
-    return "players/index";
+    return htmxRequest != null ? "players/index :: results" : "players/index";
+  }
+
+  private String redirectToPlayer(int dtbId, String htmxRequest, HttpServletResponse response) {
+    if (htmxRequest != null) {
+      response.setHeader("HX-Redirect", "/players/" + dtbId);
+      return "players/index :: results";
+    }
+    return REDIRECT_PLAYER + dtbId;
   }
 
   @GetMapping("/{id}")

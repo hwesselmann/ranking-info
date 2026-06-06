@@ -58,6 +58,16 @@
         margin-top: 45px;
         padding: 10px;
     }
+
+    .htmx-indicator {
+        opacity: 0;
+        transition: opacity 200ms ease-in;
+    }
+
+    .htmx-request .htmx-indicator,
+    .htmx-request.htmx-indicator {
+        opacity: 1;
+    }
 }
 
 @layer base {
