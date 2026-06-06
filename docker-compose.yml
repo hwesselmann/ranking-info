@@ -12,6 +12,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-changeme}
       API_BEARER_TOKEN: ${API_BEARER_TOKEN:-changeme}
       IMPORT_FOLDER: /data/import
+      IMPORT_SCHEDULE: ${IMPORT_SCHEDULE:-0 0 12 * * ?}
       DOMAIN: ${DOMAIN:-localhost}
       IMPRINT_NAME: ${IMPRINT_NAME:-}
       IMPRINT_STREET: ${IMPRINT_STREET:-}
