@@ -6,7 +6,7 @@ RUN ./mvnw dependency:go-offline -q
 COPY src src
 RUN ./mvnw package -DskipTests --no-transfer-progress
 
-ARG NEW_RELIC_AGENT_VERSION=8.21.0
+ARG NEW_RELIC_AGENT_VERSION=8.25.1
 RUN apt-get update -q && apt-get install -y -q --no-install-recommends unzip curl \
     && curl -fsSL "https://download.newrelic.com/newrelic/java-agent/newrelic-agent/${NEW_RELIC_AGENT_VERSION}/newrelic-java-${NEW_RELIC_AGENT_VERSION}.zip" \
        -o newrelic-java.zip \
