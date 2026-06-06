@@ -29,7 +29,7 @@ interface RankingEntityRepository extends ListCrudRepository<RankingEntity, Long
           + " ORDER BY date ASC, age_group ASC")
   List<RankingEntity> findNonYearEndByDtbId(@Param("dtbId") Integer dtbId);
 
-  @Query("SELECT DISTINCT date FROM rankings WHERE date < :today ORDER BY date DESC")
+  @Query("SELECT DISTINCT date FROM rankings WHERE date <= :today ORDER BY date DESC")
   List<LocalDate> queryDistinctDatesDesc(@Param("today") LocalDate today);
 
   @Query("SELECT COUNT(DISTINCT dtb_id) FROM rankings WHERE dtb_id BETWEEN :start AND :end")

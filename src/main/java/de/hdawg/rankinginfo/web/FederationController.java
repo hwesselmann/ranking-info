@@ -60,9 +60,7 @@ public class FederationController {
       for (var ag : new String[] {"m00", "w00"}) {
         for (var row : rankingRepository.countAdultByFederation(quarter, ag)) {
           var fed = FEDERATION_NAMES.getOrDefault(row.federation(), row.federation());
-          if (federations.containsKey(fed)) {
-            federations.get(fed).put(ag, (int) row.count());
-          }
+          federations.computeIfAbsent(fed, k -> new LinkedHashMap<>()).put(ag, (int) row.count());
         }
       }
     }
