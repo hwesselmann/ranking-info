@@ -43,12 +43,12 @@
                         <th scope="col" class="py-2 px-2"></th>
                     </tr>
                     <tr th:each="r : ${currentRankings}"
-                        th:classappend="${r['age_group'] == 'm00' or r['age_group'] == 'w00'} ? 'border-b border-gray-200 bg-blue-50' : 'border-b border-gray-200'">
+                        th:classappend="${r.ageGroup == 'm00' or r.ageGroup == 'w00'} ? 'border-b border-gray-200 bg-blue-50' : 'border-b border-gray-200'">
                         <td class="text-center py-1 px-2"
-                            th:text="${r['age_group'] == 'm00' or r['age_group'] == 'w00' ? 'Aktive' : r['age_group']}"></td>
-                        <td class="py-1 px-2" th:text="${r['position']}"></td>
+                            th:text="${r.ageGroup == 'm00' or r.ageGroup == 'w00' ? 'Aktive' : r.ageGroup}"></td>
+                        <td class="py-1 px-2" th:text="${r.position}"></td>
                         <td class="py-1 px-2">
-                            <th:block th:with="pc=${r['position_change']}">
+                            <th:block th:with="pc=${r.positionChange}">
                                 <span th:if="${pc == null or pc == '0'}">
                                     <svg th:replace="~{fragments/icons :: neutral}"></svg>
                                 </span>
@@ -60,9 +60,9 @@
                                 </span>
                             </th:block>
                         </td>
-                        <td class="py-1 px-2" th:text="${r['score']}"></td>
+                        <td class="py-1 px-2" th:text="${r.score}"></td>
                         <td class="py-1 px-2">
-                            <th:block th:with="sc=${r['score_change']}">
+                            <th:block th:with="sc=${r.scoreChange}">
                                 <span th:if="${sc != null and #strings.startsWith(sc, '+')}" class="ri-icon-green">
                                     <svg th:replace="~{fragments/icons :: arrow-up}"></svg>
                                 </span>
@@ -189,17 +189,17 @@
                 </div>
                 <div th:each="r, stat : ${completeRankings}"
                      th:class="${'grid grid-cols-12 border-b border-gray-200 min-w-max ' + (stat.odd ? 'striped' : '')}">
-                    <div class="col-span-2 py-1 px-1" th:text="${r['date']}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['score']}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['U11'] ?: ''}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['U12'] ?: ''}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['U13'] ?: ''}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['U14'] ?: ''}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['U15'] ?: ''}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['U16'] ?: ''}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['U17'] ?: ''}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['U18'] ?: ''}"></div>
-                    <div class="col-span-1 py-1 px-1" th:text="${r['Aktive'] ?: ''}"></div>
+                    <div class="col-span-2 py-1 px-1" th:text="${r.date}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.score}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.ageGroupPositions['U11'] ?: ''}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.ageGroupPositions['U12'] ?: ''}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.ageGroupPositions['U13'] ?: ''}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.ageGroupPositions['U14'] ?: ''}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.ageGroupPositions['U15'] ?: ''}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.ageGroupPositions['U16'] ?: ''}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.ageGroupPositions['U17'] ?: ''}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.ageGroupPositions['U18'] ?: ''}"></div>
+                    <div class="col-span-1 py-1 px-1" th:text="${r.ageGroupPositions['Aktive'] ?: ''}"></div>
                 </div>
             </div>
         </div>

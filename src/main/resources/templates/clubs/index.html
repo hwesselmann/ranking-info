@@ -49,11 +49,11 @@
             <tbody>
             <tr th:each="club : ${clubs}" class="border-b border-gray-200 even:bg-gray-50">
                 <td class="py-1 px-2">
-                    <a th:href="@{/clubs/{name}(name=${club['name']})}" class="text-brand"
-                       th:text="${club['name']}"></a>
+                    <a th:href="@{/clubs/{name}(name=${club.name})}" class="text-brand"
+                       th:text="${club.name}"></a>
                 </td>
-                <td class="py-1 px-2 text-center" th:text="${club['youth_count']}"></td>
-                <td class="py-1 px-2 text-center" th:text="${club['adult_count']}"></td>
+                <td class="py-1 px-2 text-center" th:text="${club.youthCount}"></td>
+                <td class="py-1 px-2 text-center" th:text="${club.adultCount}"></td>
             </tr>
             </tbody>
         </table>

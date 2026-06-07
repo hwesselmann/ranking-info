@@ -139,6 +139,22 @@ public class RankingService {
         null);
   }
 
+  public static String toAgeGroupSlug(String gender, @Nullable String ageGroup) {
+    return switch (gender) {
+      case "Herren" -> "m00";
+      case "Damen" -> "w00";
+      case "Junioren" ->
+          (ageGroup == null || ageGroup.isBlank())
+              ? "overall"
+              : "m" + ageGroup.toLowerCase(Locale.ROOT);
+      case "Juniorinnen" ->
+          (ageGroup == null || ageGroup.isBlank())
+              ? "overall"
+              : "w" + ageGroup.toLowerCase(Locale.ROOT);
+      default -> "overall";
+    };
+  }
+
   private static String slugToAgeGroup(String slug) {
     if (AGE_GROUP_M00.equals(slug)) return AGE_GROUP_M00;
     if (AGE_GROUP_W00.equals(slug)) return AGE_GROUP_W00;

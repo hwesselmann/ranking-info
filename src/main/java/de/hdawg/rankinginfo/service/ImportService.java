@@ -3,6 +3,7 @@ package de.hdawg.rankinginfo.service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +17,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +46,6 @@ public class ImportService {
       Map.of(CATEGORY_JUNIOREN, 100, CATEGORY_JUNIORINNEN, 200);
   private static final Map<String, String> AGE_GROUP_MAP =
       Map.of("herren", "m00", "damen", "w00", CATEGORY_JUNIOREN, "overall", CATEGORY_JUNIORINNEN, "overall");
-  private static final char CSV_QUOTE_CHAR = '"';
 
   private static final int CSV_COL_POSITION = 0;
   private static final int CSV_COL_LASTNAME = 1;
@@ -187,39 +190,47 @@ public class ImportService {
   private void storeFromCsv(Path file, LocalDate period, String ageGroup) throws IOException {
     var now = LocalDateTime.now(ZoneOffset.UTC);
     var records = new ArrayList<Ranking>();
-    try (var reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
-      var line = reader.readLine();
-      while (line != null) {
-        var parts = splitCsvLine(line);
-        if (parts.length >= CSV_MIN_COLS) {
-          var dtbParts = parts[CSV_COL_DTB_INFO].trim().split(" ");
-          if (dtbParts.length >= DTB_INFO_PARTS_MIN) {
-            var dtbId = parseIntOrNull(dtbParts[0]);
-            if (dtbId != null) {
-              records.add(
-                  new Ranking(
-                      0L,
-                      dtbId,
-                      parts[CSV_COL_LASTNAME].trim(),
-                      parts[CSV_COL_FIRSTNAME].trim(),
-                      parts[CSV_COL_NATIONALITY].trim().isEmpty()
-                          ? "nil"
-                          : parts[CSV_COL_NATIONALITY].trim(),
-                      ageGroup,
-                      period,
-                      parseIntOrZero(parts[CSV_COL_POSITION].trim()),
-                      stripQuotes(parts[CSV_COL_SCORE].trim()),
-                      stripQuotes(parts[CSV_COL_CLUB].trim()),
-                      dtbParts[1],
-                      false,
-                      false,
-                      false,
-                      now,
-                      now));
+    var csvParser = new CSVParserBuilder().withSeparator(',').withQuoteChar('"').build();
+    try (var reader =
+        new CSVReaderBuilder(
+                new InputStreamReader(Files.newInputStream(file), StandardCharsets.UTF_8))
+            .withCSVParser(csvParser)
+            .build()) {
+      try {
+        var parts = reader.readNext();
+        while (parts != null) {
+          if (parts.length >= CSV_MIN_COLS) {
+            var dtbParts = parts[CSV_COL_DTB_INFO].trim().split(" ");
+            if (dtbParts.length >= DTB_INFO_PARTS_MIN) {
+              var dtbId = parseIntOrNull(dtbParts[0]);
+              if (dtbId != null) {
+                records.add(
+                    new Ranking(
+                        0L,
+                        dtbId,
+                        parts[CSV_COL_LASTNAME].trim(),
+                        parts[CSV_COL_FIRSTNAME].trim(),
+                        parts[CSV_COL_NATIONALITY].trim().isEmpty()
+                            ? "nil"
+                            : parts[CSV_COL_NATIONALITY].trim(),
+                        ageGroup,
+                        period,
+                        parseIntOrZero(parts[CSV_COL_POSITION].trim()),
+                        parts[CSV_COL_SCORE].trim(),
+                        parts[CSV_COL_CLUB].trim(),
+                        dtbParts[1],
+                        false,
+                        false,
+                        false,
+                        now,
+                        now));
+              }
             }
           }
+          parts = reader.readNext();
         }
-        line = reader.readLine();
+      } catch (CsvValidationException e) {
+        throw new IOException("Failed to parse CSV: " + e.getMessage(), e);
       }
     }
     rankingRepository.saveAll(records);
@@ -323,24 +334,8 @@ public class ImportService {
     }
   }
 
-  private static String[] splitCsvLine(String line) {
-    var fields = new ArrayList<String>();
-    var field = new StringBuilder();
-    boolean inQuotes = false;
-    for (int i = 0; i < line.length(); i++) {
-      char c = line.charAt(i);
-      if (c == CSV_QUOTE_CHAR) {
-        inQuotes = !inQuotes;
-        field.append(c);
-      } else if (c == ',' && !inQuotes) {
-        fields.add(field.toString());
-        field.setLength(0);
-      } else {
-        field.append(c);
-      }
-    }
-    fields.add(field.toString());
-    return fields.toArray(String[]::new);
+  static String[] parseCsvLine(String line) throws IOException {
+    return new CSVParserBuilder().withSeparator(',').withQuoteChar('"').build().parseLine(line);
   }
 
   @Nullable
@@ -358,10 +353,5 @@ public class ImportService {
     } catch (NumberFormatException e) {
       return 0;
     }
-  }
-
-  private static String stripQuotes(String s) {
-    if (s.startsWith("\"") && s.endsWith("\"")) return s.substring(1, s.length() - 1);
-    return s;
   }
 }
