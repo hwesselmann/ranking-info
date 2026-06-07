@@ -145,13 +145,11 @@ public class RankingRepository {
         .toList();
   }
 
-  @Cacheable("federation_stats")
   public List<FederationAgeGroupCount> countYouthByFederationAndAgeGroup(
       LocalDate date, int dtbIdStart, int dtbIdEnd) {
     return jdbc.countYouthByFederationAndAgeGroup(date, dtbIdStart, dtbIdEnd);
   }
 
-  @Cacheable("federation_stats")
   public List<FederationCount> countAdultByFederation(LocalDate date, String ageGroup) {
     return jdbc.countAdultByFederation(date, ageGroup);
   }
