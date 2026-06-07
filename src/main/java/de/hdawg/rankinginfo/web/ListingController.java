@@ -2,6 +2,7 @@ package de.hdawg.rankinginfo.web;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,8 +63,16 @@ public class ListingController {
       var rankings = rankingService.findFilteredRankings(filter, 1, 1000);
       var dtbIds = rankings.getContent().stream().map(r -> r.dtbId()).toList();
       var prevPositions = rankingService.findPreviousPositions(filter, dtbIds);
+      var positionChanges = new HashMap<Integer, String>();
+      for (var r : rankings.getContent()) {
+        var prev = prevPositions.get(r.dtbId());
+        if (prev != null) {
+          if (prev > r.rankingPosition()) positionChanges.put(r.dtbId(), "up");
+          else if (prev < r.rankingPosition()) positionChanges.put(r.dtbId(), "down");
+        }
+      }
       model.addAttribute("rankings", rankings.getContent());
-      model.addAttribute("previousPositions", prevPositions);
+      model.addAttribute("positionChanges", Map.copyOf(positionChanges));
     }
     return htmxRequest != null ? "listing/index :: results" : "listing/index";
   }
