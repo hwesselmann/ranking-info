@@ -1,8 +1,10 @@
 package de.hdawg.rankinginfo.web;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriUtils;
 
+import de.hdawg.rankinginfo.domain.Ranking;
 import de.hdawg.rankinginfo.service.RankingFilter;
 import de.hdawg.rankinginfo.service.RankingService;
 
@@ -61,20 +65,40 @@ public class ListingController {
           club,
           "1".equals(yearEnd));
       var rankings = rankingService.findFilteredRankings(filter, 1, 1000);
-      var dtbIds = rankings.getContent().stream().map(r -> r.dtbId()).toList();
+      var dtbIds = rankings.getContent().stream().map(Ranking::dtbId).toList();
       var prevPositions = rankingService.findPreviousPositions(filter, dtbIds);
-      var positionChanges = new HashMap<Integer, String>();
-      for (var r : rankings.getContent()) {
-        var prev = prevPositions.get(r.dtbId());
-        if (prev != null) {
-          if (prev > r.rankingPosition()) positionChanges.put(r.dtbId(), "up");
-          else if (prev < r.rankingPosition()) positionChanges.put(r.dtbId(), "down");
-        }
-      }
-      model.addAttribute("rankings", rankings.getContent());
-      model.addAttribute("positionChanges", Map.copyOf(positionChanges));
+      model.addAttribute("rankings", toRows(rankings.getContent(), prevPositions));
     }
     return htmxRequest != null ? "listing/index :: results" : "listing/index";
+  }
+
+  private static List<RankingRow> toRows(
+      List<Ranking> rankings, java.util.Map<Integer, Integer> prevPositions) {
+    var rows = new ArrayList<RankingRow>(rankings.size());
+    int rowNumber = 1;
+    for (var r : rankings) {
+      var prev = prevPositions.get(r.dtbId());
+      String positionChange = null;
+      if (prev != null) {
+        if (prev > r.rankingPosition()) positionChange = "up";
+        else if (prev < r.rankingPosition()) positionChange = "down";
+      }
+      rows.add(new RankingRow(
+          rowNumber,
+          r.rankingPosition(),
+          positionChange,
+          r.lastname() + ", " + r.firstname(),
+          String.valueOf(r.dtbId()),
+          "/players/" + r.dtbId(),
+          "/images/" + r.nationality().toLowerCase(Locale.ROOT) + ".svg",
+          r.nationality(),
+          r.club(),
+          "/clubs/" + UriUtils.encodePathSegment(r.club(), StandardCharsets.UTF_8),
+          r.federation(),
+          r.score()));
+      rowNumber++;
+    }
+    return rows;
   }
 
   private static String toAgeGroupSlug(String gender, String ageGroup) {
