@@ -90,7 +90,7 @@ interface RankingEntityRepository extends ListCrudRepository<RankingEntity, Long
   List<RankingEntity> findByDtbIdRange(@Param("start") int start, @Param("end") int end);
 
   @Query(
-      "SELECT federation, age_group AS ageGroup, COUNT(id) AS count FROM rankings"
+      "SELECT federation, age_group, COUNT(id) AS count FROM rankings"
           + " WHERE date = :date AND yob_ranking = false AND age_group_ranking = true"
           + " AND year_end_ranking = false AND dtb_id BETWEEN :start AND :end"
           + " GROUP BY federation, age_group")
