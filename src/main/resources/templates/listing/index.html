@@ -122,31 +122,26 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="r, stat : ${rankings}" class="border-b border-gray-200 even:bg-gray-50">
-                <td class="text-center py-1 px-2 hidden md:table-cell" th:text="${stat.index + 1}"></td>
+            <tr th:each="r : ${rankings}" class="border-b border-gray-200 even:bg-gray-50">
+                <td class="text-center py-1 px-2 hidden md:table-cell" th:text="${r.rowNumber}"></td>
                 <td class="py-1 px-2">
                     <span th:text="${r.rankingPosition}"></span>
-                    <th:block th:if="${positionChanges != null}">
-                        <th:block th:with="change=${positionChanges.get(r.dtbId)}">
-                            <span th:if="${change == 'up'}" class="ri-icon-green" style="margin-left: 5px">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" aria-hidden="true" class="ri-icon" style="display:inline-block;"><path d="M182.6 137.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8l256 0c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"/></svg>
-                            </span>
-                            <span th:if="${change == 'down'}" class="ri-icon-red" style="margin-left: 5px">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" aria-hidden="true" class="ri-icon" style="display:inline-block;"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
-                            </span>
-                        </th:block>
-                    </th:block>
+                    <span th:if="${r.positionChange == 'up'}" class="ri-icon-green" style="margin-left: 5px">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" aria-hidden="true" class="ri-icon" style="display:inline-block;"><path d="M182.6 137.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8l256 0c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"/></svg>
+                    </span>
+                    <span th:if="${r.positionChange == 'down'}" class="ri-icon-red" style="margin-left: 5px">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" aria-hidden="true" class="ri-icon" style="display:inline-block;"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
+                    </span>
                 </td>
-                <td class="py-1 px-2" th:text="${r.lastname + ', ' + r.firstname}"></td>
+                <td class="py-1 px-2" th:text="${r.displayName}"></td>
                 <td class="py-1 px-2">
-                    <a th:href="@{/players/{id}(id=${r.dtbId})}" class="text-brand" th:text="${r.dtbId}"></a>
+                    <a th:href="${r.playerUrl}" class="text-brand" th:text="${r.dtbId}"></a>
                 </td>
                 <td class="text-center py-1 px-2 hidden md:table-cell">
-                    <img th:src="@{/images/{nat}.svg(nat=${r.nationality.toLowerCase()})}"
-                         width="30" th:alt="${r.nationality}">
+                    <img th:src="${r.flagSrc}" width="30" th:alt="${r.nationality}">
                 </td>
                 <td class="py-1 px-2 hidden md:table-cell">
-                    <a th:href="@{/clubs/{name}(name=${r.club})}" class="text-brand" th:text="${r.club}"></a>
+                    <a th:href="${r.clubUrl}" class="text-brand" th:text="${r.club}"></a>
                 </td>
                 <td class="text-center py-1 px-2 hidden md:table-cell" th:text="${r.federation}"></td>
                 <td class="py-1 px-2" th:text="${r.score}"></td>
