@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +20,8 @@ class PlayerProfileServiceTest {
   private final PlayerProfileService service = new PlayerProfileService();
 
   private static Ranking r(int dtbId, String ageGroup, LocalDate date, int pos, String score) {
-    var now = LocalDateTime.now();
     return new Ranking(0L, dtbId, "Test", "Player", "GER", ageGroup, date, pos, score, "TC Test", "HH",
-        false, false, false, now, now);
+        false, false, false);
   }
 
   // --- buildCurrentRankings ---

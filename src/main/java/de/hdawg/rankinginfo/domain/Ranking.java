@@ -1,7 +1,6 @@
 package de.hdawg.rankinginfo.domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public record Ranking(
     long id,
@@ -17,6 +16,4 @@ public record Ranking(
     String federation,
     boolean ageGroupRanking,
     boolean yobRanking,
-    boolean yearEndRanking,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt) {}
+    boolean yearEndRanking) {}

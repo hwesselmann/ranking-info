@@ -2,6 +2,7 @@ package de.hdawg.rankinginfo.persistence;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -63,6 +64,7 @@ public class RankingEntity {
   RankingEntity() {}
 
   public static RankingEntity fromDomain(Ranking r) {
+    var now = LocalDateTime.now(ZoneOffset.UTC);
     var e = new RankingEntity();
     if (r.id() != 0) {
       e.id = r.id();
@@ -80,8 +82,8 @@ public class RankingEntity {
     e.ageGroupRanking = r.ageGroupRanking();
     e.yobRanking = r.yobRanking();
     e.yearEndRanking = r.yearEndRanking();
-    e.createdAt = r.createdAt();
-    e.updatedAt = r.updatedAt();
+    e.createdAt = now;
+    e.updatedAt = now;
     return e;
   }
 
@@ -100,8 +102,6 @@ public class RankingEntity {
         federation,
         ageGroupRanking,
         yobRanking,
-        yearEndRanking,
-        createdAt,
-        updatedAt);
+        yearEndRanking);
   }
 }

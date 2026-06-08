@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -23,21 +24,29 @@ import de.hdawg.rankinginfo.persistence.RankingEntity;
 @Repository
 public class RankingRepository {
 
-  private static final String BASE_FILTER_SQL =
-      "SELECT * FROM rankings"
-          + " WHERE date = :date AND age_group = :ageGroup"
-          + " AND dtb_id BETWEEN :dtbIdStart AND :dtbIdEnd"
-          + " AND yob_ranking = :yobRanking"
-          + " AND age_group_ranking = :ageGroupRanking"
-          + " AND year_end_ranking = :yearEndRanking";
+  private static final String RANKINGS_WHERE = """
+       WHERE date = :date AND age_group = :ageGroup
+         AND dtb_id BETWEEN :dtbIdStart AND :dtbIdEnd
+         AND yob_ranking = :yobRanking
+         AND age_group_ranking = :ageGroupRanking
+         AND year_end_ranking = :yearEndRanking""";
 
+  private static final String BASE_FILTER_SQL = "SELECT * FROM rankings " + RANKINGS_WHERE;
   private static final String BASE_FILTER_COUNT_SQL =
-      "SELECT COUNT(*) FROM rankings"
-          + " WHERE date = :date AND age_group = :ageGroup"
-          + " AND dtb_id BETWEEN :dtbIdStart AND :dtbIdEnd"
-          + " AND yob_ranking = :yobRanking"
-          + " AND age_group_ranking = :ageGroupRanking"
-          + " AND year_end_ranking = :yearEndRanking";
+      "SELECT COUNT(*) FROM rankings " + RANKINGS_WHERE;
+
+  private static final String BATCH_INSERT_SQL = """
+      INSERT INTO rankings
+        (dtb_id, lastname, firstname, nationality, age_group, date,
+         ranking_position, score, club, federation,
+         age_group_ranking, yob_ranking, year_end_ranking,
+         created_at, updated_at)
+      VALUES
+        (:dtbId, :lastname, :firstname, :nationality, :ageGroup, :date,
+         :rankingPosition, :score, :club, :federation,
+         :ageGroupRanking, :yobRanking, :yearEndRanking,
+         :createdAt, :updatedAt)
+      """;
 
   private static final RankingRowMapper ROW_MAPPER = new RankingRowMapper();
 
@@ -67,7 +76,27 @@ public class RankingRepository {
   }
 
   public void saveAll(List<Ranking> records) {
-    jdbc.saveAll(records.stream().map(RankingEntity::fromDomain).toList());
+    if (records.isEmpty()) return;
+    var now = LocalDateTime.now(ZoneOffset.UTC);
+    var params = records.stream()
+        .map(r -> new MapSqlParameterSource()
+            .addValue("dtbId", r.dtbId())
+            .addValue("lastname", r.lastname())
+            .addValue("firstname", r.firstname())
+            .addValue("nationality", r.nationality())
+            .addValue("ageGroup", r.ageGroup())
+            .addValue("date", r.date())
+            .addValue("rankingPosition", r.rankingPosition())
+            .addValue("score", r.score())
+            .addValue("club", r.club())
+            .addValue("federation", r.federation())
+            .addValue("ageGroupRanking", r.ageGroupRanking())
+            .addValue("yobRanking", r.yobRanking())
+            .addValue("yearEndRanking", r.yearEndRanking())
+            .addValue("createdAt", now)
+            .addValue("updatedAt", now))
+        .toArray(MapSqlParameterSource[]::new);
+    namedJdbc.batchUpdate(BATCH_INSERT_SQL, params);
   }
 
   public List<Ranking> findByDtbIdAndAgeGroupInOrderByDateDesc(int dtbId, List<String> ageGroups) {
@@ -242,9 +271,7 @@ public class RankingRepository {
           rs.getString("federation"),
           rs.getBoolean("age_group_ranking"),
           rs.getBoolean("yob_ranking"),
-          rs.getBoolean("year_end_ranking"),
-          rs.getObject("created_at", LocalDateTime.class),
-          rs.getObject("updated_at", LocalDateTime.class));
+          rs.getBoolean("year_end_ranking"));
     }
   }
 }

@@ -34,12 +34,12 @@ public abstract class WebControllerTestBase {
   protected void seed() {
     rankingRepository.saveAll(
         List.of(
-            r(10_001_001, "Mueller", "Hans", "m00", q, 1, "500", false, false, "TC Baden", "BAD", NOW),
-            r(10_002_002, "Schmidt", "Peter", "m00", q, 2, "490", false, false, "TC Other", "WTB", NOW),
-            r(10_001_001, "Mueller", "Hans", "m00", pq, 3, "460", false, false, "TC Baden", "BAD", NOW),
-            r(20_001_001, "Meyer", "Anna", "w00", q, 1, "500", false, false, "TC Baden", "BAD", NOW),
-            r(10_711_111, "Juniormann", "Max", "overall", q, 1, "100", false, false, "TC Baden", "BAD", NOW),
-            r(10_711_112, "Juniormann2", "Max", "U14", q, 1, "100", false, true, "TC Baden", "BAD", NOW)));
+            r(10_001_001, "Mueller", "Hans", "m00", q, 1, "500", false, false, "TC Baden", "BAD"),
+            r(10_002_002, "Schmidt", "Peter", "m00", q, 2, "490", false, false, "TC Other", "WTB"),
+            r(10_001_001, "Mueller", "Hans", "m00", pq, 3, "460", false, false, "TC Baden", "BAD"),
+            r(20_001_001, "Meyer", "Anna", "w00", q, 1, "500", false, false, "TC Baden", "BAD"),
+            r(10_711_111, "Juniormann", "Max", "overall", q, 1, "100", false, false, "TC Baden", "BAD"),
+            r(10_711_112, "Juniormann2", "Max", "U14", q, 1, "100", false, true, "TC Baden", "BAD")));
   }
 
   @AfterEach
@@ -58,9 +58,8 @@ public abstract class WebControllerTestBase {
       String score,
       boolean ageGroupRanking,
       boolean yobRanking) {
-    return r(
-        dtbId, lastname, firstname, ageGroup, date, pos, score,
-        ageGroupRanking, yobRanking, "TC Test", "TST", NOW);
+    return r(dtbId, lastname, firstname, ageGroup, date, pos, score,
+        ageGroupRanking, yobRanking, "TC Test", "TST");
   }
 
   protected Ranking r(
@@ -74,10 +73,9 @@ public abstract class WebControllerTestBase {
       boolean ageGroupRanking,
       boolean yobRanking,
       String club,
-      String federation,
-      LocalDateTime now) {
+      String federation) {
     return new Ranking(
         0L, dtbId, lastname, firstname, "GER", ageGroup, date, pos, score,
-        club, federation, ageGroupRanking, yobRanking, false, now, now);
+        club, federation, ageGroupRanking, yobRanking, false);
   }
 }

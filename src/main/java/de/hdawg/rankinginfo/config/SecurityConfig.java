@@ -16,7 +16,7 @@ import de.hdawg.rankinginfo.api.security.RateLimitFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties(ApiProperties.class)
+@EnableConfigurationProperties({ApiProperties.class, ImportProperties.class})
 public class SecurityConfig {
 
   @Bean

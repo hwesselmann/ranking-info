@@ -101,7 +101,7 @@ class ImportIntegrationTest {
     importService.importRankings(fixture("Herren_20180401.csv"));
 
     assertThrows(
-        ImportService.DuplicateImportError.class,
+        DuplicateImportError.class,
         () -> importService.importRankings(fixture("Herren_20180401.csv")));
   }
 
