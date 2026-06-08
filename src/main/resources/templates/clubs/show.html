@@ -24,12 +24,12 @@
             <tbody>
             <tr th:each="p : ${entry.value}" class="border-b border-gray-200 even:bg-gray-50">
                 <td class="py-1 px-2">
-                    <a th:href="@{/players/{id}(id=${p['dtb_id']})}" class="text-brand"
-                       th:text="${p['dtb_id']}"></a>
+                    <a th:href="@{/players/{id}(id=${p.dtbId})}" class="text-brand"
+                       th:text="${p.dtbId}"></a>
                 </td>
-                <td class="py-1 px-2" th:text="${p['lastname'] + ', ' + p['firstname']}"></td>
-                <td class="py-1 px-2 text-center" th:text="${p['rank']}"></td>
-                <td class="py-1 px-2 text-center" th:text="${p['score']}"></td>
+                <td class="py-1 px-2" th:text="${p.lastname + ', ' + p.firstname}"></td>
+                <td class="py-1 px-2 text-center" th:text="${p.rank}"></td>
+                <td class="py-1 px-2 text-center" th:text="${p.score}"></td>
             </tr>
             </tbody>
         </table>

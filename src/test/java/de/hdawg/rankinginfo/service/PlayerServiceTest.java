@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -24,21 +23,18 @@ class PlayerServiceTest {
 
   @Autowired RankingRepository rankingRepository;
 
-  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 0, 0);
-
   private final int maleId = 10_001_001;
   private final int femaleId = 20_001_001;
 
   @BeforeEach
   void seed() {
-    var now = NOW;
     var q = LocalDate.of(2026, 4, 1);
     var prevQ = LocalDate.of(2026, 1, 1);
     rankingRepository.saveAll(
         List.of(
-            r(maleId, "Mueller", "Hans", "m00", q, 1, now),
-            r(femaleId, "Meyer", "Anna", "w00", q, 1, now),
-            r(maleId, "Mueller", "Hans", "m00", prevQ, 2, now)));
+            r(maleId, "Mueller", "Hans", "m00", q, 1),
+            r(femaleId, "Meyer", "Anna", "w00", q, 1),
+            r(maleId, "Mueller", "Hans", "m00", prevQ, 2)));
   }
 
   @AfterEach
@@ -125,10 +121,9 @@ class PlayerServiceTest {
       String firstname,
       String ageGroup,
       LocalDate date,
-      int pos,
-      LocalDateTime now) {
+      int pos) {
     return new Ranking(
         0L, dtbId, lastname, firstname, "GER", ageGroup, date, pos, "100",
-        "TC Test", "TST", false, false, false, now, now);
+        "TC Test", "TST", false, false, false);
   }
 }

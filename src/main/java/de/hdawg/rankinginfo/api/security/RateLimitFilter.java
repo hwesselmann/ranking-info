@@ -3,8 +3,6 @@ package de.hdawg.rankinginfo.api.security;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class RateLimitFilter extends OncePerRequestFilter {
 
   private final ObjectMapper objectMapper;
-  private final ConcurrentMap<String, Bucket> buckets = new ConcurrentHashMap<>();
+  private final Cache<String, Bucket> buckets =
+      Caffeine.newBuilder().expireAfterAccess(Duration.ofHours(2)).build();
 
   public RateLimitFilter(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
@@ -38,7 +39,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     var auth = request.getHeader("Authorization");
     var key = auth != null ? auth : request.getRemoteAddr();
-    var bucket = buckets.computeIfAbsent(key, k -> createBucket());
+    var bucket = buckets.get(key, k -> createBucket());
 
     if (bucket.tryConsume(1)) {
       filterChain.doFilter(request, response);

@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -24,23 +23,20 @@ class RankingServiceFilterTest {
 
   @Autowired RankingRepository rankingRepository;
 
-  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 0, 0);
-
   private final LocalDate q = LocalDate.of(2026, 4, 1);
   private final LocalDate pq = LocalDate.of(2026, 1, 1);
 
   @BeforeEach
   void seed() {
-    var now = NOW;
     rankingRepository.saveAll(
         List.of(
-            r(10_001_001, "m00", q, 1, "500", false, false, "TC Baden", "BAD", now),
-            r(10_002_002, "m00", q, 2, "490", false, false, "TC Other", "WTB", now),
-            r(10_001_001, "m00", pq, 3, "460", false, false, "TC Baden", "BAD", now),
-            r(20_001_001, "w00", q, 1, "500", false, false, "TC Baden", "BAD", now),
-            r(10_711_111, "U14", q, 1, "100", true, false, "TC Baden", "BAD", now),
-            r(10_711_112, "U13", q, 1, "90", false, true, "TC Baden", "BAD", now),
-            r(10_001_001, "m00", LocalDate.of(2026, 1, 1), 1, "500", false, false, "TC Baden", "BAD", now, true)));
+            r(10_001_001, "m00", q, 1, "500", false, false, "TC Baden", "BAD"),
+            r(10_002_002, "m00", q, 2, "490", false, false, "TC Other", "WTB"),
+            r(10_001_001, "m00", pq, 3, "460", false, false, "TC Baden", "BAD"),
+            r(20_001_001, "w00", q, 1, "500", false, false, "TC Baden", "BAD"),
+            r(10_711_111, "U14", q, 1, "100", true, false, "TC Baden", "BAD"),
+            r(10_711_112, "U13", q, 1, "90", false, true, "TC Baden", "BAD"),
+            r(10_001_001, "m00", LocalDate.of(2026, 1, 1), 1, "500", false, false, "TC Baden", "BAD", true)));
   }
 
   @AfterEach
@@ -170,7 +166,20 @@ class RankingServiceFilterTest {
       String score,
       boolean ageGroupRanking,
       boolean yobRanking) {
-    return r(dtbId, ageGroup, date, pos, score, ageGroupRanking, yobRanking, "TC Test", "TST", NOW, false);
+    return r(dtbId, ageGroup, date, pos, score, ageGroupRanking, yobRanking, "TC Test", "TST", false);
+  }
+
+  private Ranking r(
+      int dtbId,
+      String ageGroup,
+      LocalDate date,
+      int pos,
+      String score,
+      boolean ageGroupRanking,
+      boolean yobRanking,
+      String club,
+      String federation) {
+    return r(dtbId, ageGroup, date, pos, score, ageGroupRanking, yobRanking, club, federation, false);
   }
 
   private Ranking r(
@@ -183,24 +192,9 @@ class RankingServiceFilterTest {
       boolean yobRanking,
       String club,
       String federation,
-      LocalDateTime now) {
-    return r(dtbId, ageGroup, date, pos, score, ageGroupRanking, yobRanking, club, federation, now, false);
-  }
-
-  private Ranking r(
-      int dtbId,
-      String ageGroup,
-      LocalDate date,
-      int pos,
-      String score,
-      boolean ageGroupRanking,
-      boolean yobRanking,
-      String club,
-      String federation,
-      LocalDateTime now,
       boolean yearEndRanking) {
     return new Ranking(
         0L, dtbId, "Test", "Test", "GER", ageGroup, date, pos, score,
-        club, federation, ageGroupRanking, yobRanking, yearEndRanking, now, now);
+        club, federation, ageGroupRanking, yobRanking, yearEndRanking);
   }
 }

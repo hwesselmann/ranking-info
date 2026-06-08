@@ -4,10 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
@@ -48,7 +49,7 @@ public class RankingService {
 
   @Cacheable("available_quarters")
   public Map<String, List<QuarterEntry>> fetchAvailableQuarters() {
-    var years = new LinkedHashMap<String, List<QuarterEntry>>();
+    var years = new TreeMap<String, List<QuarterEntry>>(Comparator.reverseOrder());
     for (var date : rankingRepository.findDistinctDatesDesc()) {
       if (date.getMonthValue() == 12 && date.getDayOfMonth() == 31) continue;
       var adjusted = date.minusDays(1);
@@ -56,13 +57,7 @@ public class RankingService {
           .computeIfAbsent(String.valueOf(adjusted.getYear()), k -> new ArrayList<>())
           .add(new QuarterEntry(adjusted.format(DATE_FORMATTER), date.toString()));
     }
-    return years.entrySet().stream()
-        .sorted(
-            java.util.Comparator.comparingInt(
-                (Map.Entry<String, List<QuarterEntry>> e) -> -Integer.parseInt(e.getKey())))
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
+    return years;
   }
 
   @Cacheable("federations")
@@ -137,6 +132,22 @@ public class RankingService {
         fed,
         club,
         null);
+  }
+
+  public static String toAgeGroupSlug(String gender, @Nullable String ageGroup) {
+    return switch (gender) {
+      case "Herren" -> "m00";
+      case "Damen" -> "w00";
+      case "Junioren" ->
+          (ageGroup == null || ageGroup.isBlank())
+              ? "overall"
+              : "m" + ageGroup.toLowerCase(Locale.ROOT);
+      case "Juniorinnen" ->
+          (ageGroup == null || ageGroup.isBlank())
+              ? "overall"
+              : "w" + ageGroup.toLowerCase(Locale.ROOT);
+      default -> "overall";
+    };
   }
 
   private static String slugToAgeGroup(String slug) {

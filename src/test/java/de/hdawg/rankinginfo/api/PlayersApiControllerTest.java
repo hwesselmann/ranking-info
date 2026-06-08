@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -30,8 +29,6 @@ class PlayersApiControllerTest {
   @Autowired RankingRepository rankingRepository;
 
   @Autowired ImportHistoryRepository importHistoryRepository;
-
-  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 0, 0);
 
   private final String auth = "Bearer test-api-token";
   private final LocalDate q = LocalDate.of(2026, 4, 1);
@@ -211,7 +208,6 @@ class PlayersApiControllerTest {
       boolean yobRanking) {
     return new Ranking(
         0L, dtbId, lastname, firstname, "GER", ageGroup, date, pos, "100",
-        "TC Test", "TST", ageGroupRanking, yobRanking, false,
-        NOW, NOW);
+        "TC Test", "TST", ageGroupRanking, yobRanking, false);
   }
 }

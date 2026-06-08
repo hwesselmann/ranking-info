@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -33,8 +32,6 @@ class ListingsApiControllerTest {
 
   @Autowired ImportHistoryRepository importHistoryRepository;
 
-  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 0, 0);
-
   private final String quarter = "2026-04-01";
   private final String prevQuarter = "2026-01-01";
   private final String auth = "Bearer test-api-token";
@@ -43,15 +40,14 @@ class ListingsApiControllerTest {
   void seed() {
     var q = LocalDate.parse(quarter);
     var pq = LocalDate.parse(prevQuarter);
-    var now = NOW;
 
     rankingRepository.saveAll(
         List.of(
-            ranking(10_001_001, "Mueller", "Hans", "m00", q, 1, "500", false, false, now),
-            ranking(10_002_002, "Schmidt", "Peter", "m00", q, 2, "490", false, false, now),
-            ranking(10_003_003, "Wagner", "Karl", "m00", q, 3, "480", false, false, now),
-            ranking(10_001_001, "Mueller", "Hans", "m00", pq, 3, "460", false, false, now),
-            ranking(20_001_001, "Meyer", "Anna", "w00", q, 1, "500", false, false, now)));
+            ranking(10_001_001, "Mueller", "Hans", "m00", q, 1, "500", false, false),
+            ranking(10_002_002, "Schmidt", "Peter", "m00", q, 2, "490", false, false),
+            ranking(10_003_003, "Wagner", "Karl", "m00", q, 3, "480", false, false),
+            ranking(10_001_001, "Mueller", "Hans", "m00", pq, 3, "460", false, false),
+            ranking(20_001_001, "Meyer", "Anna", "w00", q, 1, "500", false, false)));
   }
 
   @AfterEach
@@ -254,10 +250,9 @@ class ListingsApiControllerTest {
       int pos,
       String score,
       boolean ageGroupRanking,
-      boolean yobRanking,
-      LocalDateTime now) {
+      boolean yobRanking) {
     return new Ranking(
         0L, dtbId, lastname, firstname, "GER", ageGroup, date, pos, score,
-        "TC Test", "TST", ageGroupRanking, yobRanking, false, now, now);
+        "TC Test", "TST", ageGroupRanking, yobRanking, false);
   }
 }

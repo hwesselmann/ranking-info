@@ -31,4 +31,16 @@
     <Class name="de.hdawg.rankinginfo.service.RankingFilter"/>
   </Match>
 
+  <!-- createdAt/updatedAt are written for DB INSERT and read by Spring Data JDBC via reflection -->
+  <Match>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+    <Class name="de.hdawg.rankinginfo.persistence.RankingEntity"/>
+    <Field name="createdAt"/>
+  </Match>
+  <Match>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+    <Class name="de.hdawg.rankinginfo.persistence.RankingEntity"/>
+    <Field name="updatedAt"/>
+  </Match>
+
 </FindBugsFilter>

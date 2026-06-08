@@ -15,10 +15,29 @@ import de.hdawg.rankinginfo.repository.RankingRepository;
 @Transactional(readOnly = true)
 public class PlayerService {
 
+  private static final int DTB_ID_LENGTH = 8;
+
   private final RankingRepository rankingRepository;
 
   public PlayerService(RankingRepository rankingRepository) {
     this.rankingRepository = rankingRepository;
+  }
+
+  public int[] dtbIdRange(String dtbId) {
+    long idNum;
+    try {
+      idNum = Long.parseLong(dtbId.trim());
+    } catch (NumberFormatException e) {
+      idNum = 0L;
+    }
+    int missing = DTB_ID_LENGTH - Long.toString(idNum).length();
+    int start = (int) (idNum * Math.pow(10.0, missing));
+    int end = start + (int) Math.pow(10.0, missing) - 1;
+    return new int[] {start, end};
+  }
+
+  public int yobToMaleMarker(String yob) {
+    return Integer.parseInt(yob.trim().substring(2, 4)) + 100;
   }
 
   public Player loadPlayerProfile(int dtbId) {

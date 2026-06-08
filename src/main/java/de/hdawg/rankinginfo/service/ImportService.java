@@ -3,6 +3,7 @@ package de.hdawg.rankinginfo.service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +17,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +46,6 @@ public class ImportService {
       Map.of(CATEGORY_JUNIOREN, 100, CATEGORY_JUNIORINNEN, 200);
   private static final Map<String, String> AGE_GROUP_MAP =
       Map.of("herren", "m00", "damen", "w00", CATEGORY_JUNIOREN, "overall", CATEGORY_JUNIORINNEN, "overall");
-  private static final char CSV_QUOTE_CHAR = '"';
 
   private static final int CSV_COL_POSITION = 0;
   private static final int CSV_COL_LASTNAME = 1;
@@ -55,6 +58,7 @@ public class ImportService {
   private static final int FILENAME_PARTS_MIN = 2;
   private static final int DTB_INFO_PARTS_MIN = 2;
   private static final int JANUARY_MONTH = 1;
+  private static final int YOUNGEST_AGE_GROUP = 11;
 
   private final RankingRepository rankingRepository;
   private final ImportHistoryRepository importHistoryRepository;
@@ -63,14 +67,6 @@ public class ImportService {
       RankingRepository rankingRepository, ImportHistoryRepository importHistoryRepository) {
     this.rankingRepository = rankingRepository;
     this.importHistoryRepository = importHistoryRepository;
-  }
-
-  public static class DuplicateImportError extends Exception {
-    private static final long serialVersionUID = 1L;
-
-    public DuplicateImportError(String message) {
-      super(message);
-    }
   }
 
   public static LocalDate extractPeriodFromFilename(String filename) {
@@ -185,41 +181,46 @@ public class ImportService {
   }
 
   private void storeFromCsv(Path file, LocalDate period, String ageGroup) throws IOException {
-    var now = LocalDateTime.now(ZoneOffset.UTC);
     var records = new ArrayList<Ranking>();
-    try (var reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
-      var line = reader.readLine();
-      while (line != null) {
-        var parts = splitCsvLine(line);
-        if (parts.length >= CSV_MIN_COLS) {
-          var dtbParts = parts[CSV_COL_DTB_INFO].trim().split(" ");
-          if (dtbParts.length >= DTB_INFO_PARTS_MIN) {
-            var dtbId = parseIntOrNull(dtbParts[0]);
-            if (dtbId != null) {
-              records.add(
-                  new Ranking(
-                      0L,
-                      dtbId,
-                      parts[CSV_COL_LASTNAME].trim(),
-                      parts[CSV_COL_FIRSTNAME].trim(),
-                      parts[CSV_COL_NATIONALITY].trim().isEmpty()
-                          ? "nil"
-                          : parts[CSV_COL_NATIONALITY].trim(),
-                      ageGroup,
-                      period,
-                      parseIntOrZero(parts[CSV_COL_POSITION].trim()),
-                      stripQuotes(parts[CSV_COL_SCORE].trim()),
-                      stripQuotes(parts[CSV_COL_CLUB].trim()),
-                      dtbParts[1],
-                      false,
-                      false,
-                      false,
-                      now,
-                      now));
+    var csvParser = new CSVParserBuilder().withSeparator(',').withQuoteChar('"').build();
+    try (var reader =
+        new CSVReaderBuilder(
+                new InputStreamReader(Files.newInputStream(file), StandardCharsets.UTF_8))
+            .withCSVParser(csvParser)
+            .build()) {
+      try {
+        var parts = reader.readNext();
+        while (parts != null) {
+          if (parts.length >= CSV_MIN_COLS) {
+            var dtbParts = parts[CSV_COL_DTB_INFO].trim().split(" ");
+            if (dtbParts.length >= DTB_INFO_PARTS_MIN) {
+              var dtbId = parseIntOrNull(dtbParts[0]);
+              if (dtbId != null) {
+                records.add(
+                    new Ranking(
+                        0L,
+                        dtbId,
+                        parts[CSV_COL_LASTNAME].trim(),
+                        parts[CSV_COL_FIRSTNAME].trim(),
+                        parts[CSV_COL_NATIONALITY].trim().isEmpty()
+                            ? "nil"
+                            : parts[CSV_COL_NATIONALITY].trim(),
+                        ageGroup,
+                        period,
+                        parseIntOrZero(parts[CSV_COL_POSITION].trim()),
+                        parts[CSV_COL_SCORE].trim(),
+                        parts[CSV_COL_CLUB].trim(),
+                        dtbParts[1],
+                        false,
+                        false,
+                        false));
+              }
             }
           }
+          parts = reader.readNext();
         }
-        line = reader.readLine();
+      } catch (CsvValidationException e) {
+        throw new IOException("Failed to parse CSV: " + e.getMessage(), e);
       }
     }
     rankingRepository.saveAll(records);
@@ -227,9 +228,9 @@ public class ImportService {
   }
 
   private void calculateRankings(LocalDate period, int genderFactor) {
-    var yobYoungest = String.valueOf(period.getYear() - 11);
+    var yobYoungest = String.valueOf(period.getYear() - YOUNGEST_AGE_GROUP);
 
-    for (int ageGroup = 11; ageGroup <= 18; ageGroup++) {
+    for (int ageGroup = YOUNGEST_AGE_GROUP; ageGroup <= 18; ageGroup++) {
       var yobsGeneral =
           yobRangeToFetch(yobYoungest, ageGroup, period, genderFactor).stream()
               .sorted()
@@ -237,15 +238,12 @@ public class ImportService {
       rankingsForAgeRange(yobsGeneral, period, ageGroup, false, false, false);
 
       int yobSingle =
-          Integer.parseInt(String.valueOf(period.getYear() - ageGroup).substring(2, 4))
-              + genderFactor;
+          (period.getYear() - ageGroup) % 100 + genderFactor;
       rankingsForAgeRange(List.of(yobSingle), period, ageGroup, true, false, false);
     }
 
     for (int ageGroup : List.of(12, 14, 16, 18)) {
-      int base =
-          Integer.parseInt(String.valueOf(period.getYear() - ageGroup).substring(2, 4))
-              + genderFactor;
+      int base = (period.getYear() - ageGroup) % 100 + genderFactor;
       var yobs = List.of(base, base + 1).stream().sorted().toList();
       rankingsForAgeRange(yobs, period, ageGroup, false, true, false);
     }
@@ -253,9 +251,7 @@ public class ImportService {
     if (period.getMonthValue() == JANUARY_MONTH) {
       var yeDate = period.minusDays(1);
       for (int ageGroup : List.of(12, 14, 16, 18)) {
-        int base =
-            Integer.parseInt(String.valueOf(yeDate.getYear() - ageGroup).substring(2, 4))
-                + genderFactor;
+        int base = (yeDate.getYear() - ageGroup) % 100 + genderFactor;
         var yobs = List.of(base, base + 1).stream().sorted().toList();
         rankingsForAgeRange(yobs, period, ageGroup, false, true, true);
       }
@@ -277,7 +273,6 @@ public class ImportService {
     int lastRank = 0;
     int startRanking = 0;
     int countUp = 1;
-    var now = LocalDateTime.now(ZoneOffset.UTC);
     var records = new ArrayList<Ranking>();
 
     for (var curr : rankingsFromDb) {
@@ -300,9 +295,7 @@ public class ImportService {
               curr.federation(),
               ageGroupRanking,
               yobRanking,
-              yearEndRanking,
-              now,
-              now));
+              yearEndRanking));
       if ("GER".equals(curr.nationality()) && !SPECIAL_SCORES.contains(curr.score())) {
         countUp++;
       }
@@ -323,24 +316,8 @@ public class ImportService {
     }
   }
 
-  private static String[] splitCsvLine(String line) {
-    var fields = new ArrayList<String>();
-    var field = new StringBuilder();
-    boolean inQuotes = false;
-    for (int i = 0; i < line.length(); i++) {
-      char c = line.charAt(i);
-      if (c == CSV_QUOTE_CHAR) {
-        inQuotes = !inQuotes;
-        field.append(c);
-      } else if (c == ',' && !inQuotes) {
-        fields.add(field.toString());
-        field.setLength(0);
-      } else {
-        field.append(c);
-      }
-    }
-    fields.add(field.toString());
-    return fields.toArray(String[]::new);
+  static String[] parseCsvLine(String line) throws IOException {
+    return new CSVParserBuilder().withSeparator(',').withQuoteChar('"').build().parseLine(line);
   }
 
   @Nullable
@@ -358,10 +335,5 @@ public class ImportService {
     } catch (NumberFormatException e) {
       return 0;
     }
-  }
-
-  private static String stripQuotes(String s) {
-    if (s.startsWith("\"") && s.endsWith("\"")) return s.substring(1, s.length() - 1);
-    return s;
   }
 }

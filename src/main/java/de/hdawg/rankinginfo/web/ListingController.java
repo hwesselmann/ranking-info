@@ -56,7 +56,7 @@ public class ListingController {
 
     if (commit != null && quarter != null && !quarter.isBlank()
         && gender != null && !gender.isBlank()) {
-      var slug = toAgeGroupSlug(gender, ageGroup);
+      var slug = RankingService.toAgeGroupSlug(gender, ageGroup);
       var filter = new RankingFilter(
           quarter,
           slug,
@@ -101,15 +101,4 @@ public class ListingController {
     return rows;
   }
 
-  private static String toAgeGroupSlug(String gender, String ageGroup) {
-    return switch (gender) {
-      case "Herren" -> "m00";
-      case "Damen" -> "w00";
-      case "Junioren" ->
-          (ageGroup == null || ageGroup.isBlank()) ? "overall" : "m" + ageGroup.toLowerCase(Locale.ROOT);
-      case "Juniorinnen" ->
-          (ageGroup == null || ageGroup.isBlank()) ? "overall" : "w" + ageGroup.toLowerCase(Locale.ROOT);
-      default -> "overall";
-    };
-  }
 }
