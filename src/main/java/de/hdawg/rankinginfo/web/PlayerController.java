@@ -86,7 +86,6 @@ public class PlayerController {
   }
 
   @GetMapping("/{id}")
-  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public String show(@PathVariable int id, Model model, RedirectAttributes redirect) {
     try {
       var player = playerService.loadPlayerProfile(id);
@@ -121,7 +120,7 @@ public class PlayerController {
       model.addAttribute("recent12mScoreData", recent12mDiagram.scores());
       model.addAttribute("availableData", availableData);
       return "players/show";
-    } catch (Exception e) {
+    } catch (IndexOutOfBoundsException e) {
       redirect.addFlashAttribute("danger", "Spieler nicht gefunden");
       return "redirect:/players";
     }
