@@ -102,7 +102,7 @@ public class PlayerProfileService {
   public DiagramDataView buildDiagramData(List<Ranking> rankings) {
     var positions = new LinkedHashMap<String, LinkedHashMap<String, Integer>>();
     var scores = new LinkedHashMap<String, String>();
-    for (var r : rankings) {
+    for (var r : rankings.stream().sorted(Comparator.comparing(Ranking::date)).toList()) {
       if (!DIAGRAM_AGE_GROUPS.contains(r.ageGroup())) continue;
       var groupKey = ADULT_AGE_GROUPS.contains(r.ageGroup()) ? AKTIVE_LABEL : r.ageGroup();
       var period = r.date().minusDays(1).format(DTF);
