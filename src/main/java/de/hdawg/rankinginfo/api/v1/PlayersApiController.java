@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.hdawg.rankinginfo.repository.RankingRepository;
+import de.hdawg.rankinginfo.domain.RankingCoding;
 import de.hdawg.rankinginfo.service.PlayerService;
 
 @RestController
@@ -21,11 +21,9 @@ import de.hdawg.rankinginfo.service.PlayerService;
 public class PlayersApiController {
 
   private final PlayerService playerService;
-  private final RankingRepository rankingRepository;
 
-  public PlayersApiController(PlayerService playerService, RankingRepository rankingRepository) {
+  public PlayersApiController(PlayerService playerService) {
     this.playerService = playerService;
-    this.rankingRepository = rankingRepository;
   }
 
   @Operation(summary = "Search players by lastname and optional year of birth")
@@ -51,8 +49,8 @@ public class PlayersApiController {
         (yob != null && !yob.isBlank())
             ? playerService.findPlayersByLastnameAndYob(
                 lastname,
-                Integer.parseInt(yob.substring(2, 4)) + 100,
-                Integer.parseInt(yob.substring(2, 4)) + 200)
+                Integer.parseInt(yob.substring(2, 4)) + RankingCoding.GENDER_FACTOR_JUNIOREN,
+                Integer.parseInt(yob.substring(2, 4)) + RankingCoding.GENDER_FACTOR_JUNIORINNEN)
             : playerService.findPlayersByLastname(lastname);
 
     if (players.isEmpty()) {
@@ -85,10 +83,7 @@ public class PlayersApiController {
       content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
   @GetMapping("/{id}")
   public ResponseEntity<Object> show(@PathVariable int id) {
-    var rankings =
-        rankingRepository
-            .findByDtbIdAndYobRankingFalseAndAgeGroupRankingFalseAndYearEndRankingFalseOrderByDateDescAgeGroupAsc(
-                id);
+    var rankings = playerService.findNonAggregateRankings(id);
     if (rankings.isEmpty()) {
       return ResponseEntity.status(404).body(new ErrorResponse("Not Found"));
     }

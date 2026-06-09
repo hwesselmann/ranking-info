@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.hdawg.rankinginfo.domain.RankingCoding;
 import de.hdawg.rankinginfo.repository.RankingRepository;
 
 @Service
@@ -17,9 +18,6 @@ public class FederationService {
   private static final String GENDER_FEMALE = "w";
   private static final String AGE_GROUP_M00 = "m00";
   private static final String AGE_GROUP_W00 = "w00";
-  private static final int MALE_DTB_ID_START = 10_000_000;
-  private static final int FEMALE_DTB_ID_START = 20_000_000;
-  private static final int DTB_RANGE_OFFSET = 9_999_999;
 
   private static final Map<String, String> FEDERATION_NAMES =
       Map.ofEntries(
@@ -54,10 +52,16 @@ public class FederationService {
     if (quarter == null) return federations;
 
     for (var gender : new String[] {GENDER_MALE, GENDER_FEMALE}) {
-      int dtbIdStart = GENDER_MALE.equals(gender) ? MALE_DTB_ID_START : FEMALE_DTB_ID_START;
+      int dtbIdStart =
+          GENDER_MALE.equals(gender)
+              ? RankingCoding.MALE_DTB_ID_START
+              : RankingCoding.FEMALE_DTB_ID_START;
+      int dtbIdEnd =
+          GENDER_MALE.equals(gender)
+              ? RankingCoding.MALE_DTB_ID_END
+              : RankingCoding.FEMALE_DTB_ID_END;
       for (var row :
-          rankingRepository.countYouthByFederationAndAgeGroup(
-              quarter, dtbIdStart, dtbIdStart + DTB_RANGE_OFFSET)) {
+          rankingRepository.countYouthByFederationAndAgeGroup(quarter, dtbIdStart, dtbIdEnd)) {
         var fed = FEDERATION_NAMES.getOrDefault(row.federation(), row.federation());
         federations
             .computeIfAbsent(fed, k -> new LinkedHashMap<>())
