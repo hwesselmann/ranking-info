@@ -7,11 +7,14 @@ spring:
     hikari:
       maximum-pool-size: 5
       minimum-idle: 2
-  thymeleaf:
-    cache: true
 
 server:
   tomcat:
     threads:
       max: 25
       min-spare: 5
+
+gg:
+  jte:
+    developmentMode: false
+    usePrecompiledTemplates: true

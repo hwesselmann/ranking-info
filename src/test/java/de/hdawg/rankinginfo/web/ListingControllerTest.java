@@ -132,6 +132,6 @@ class ListingControllerTest extends WebControllerTestBase {
                 .param("commit", "1")
                 .header("HX-Request", "true"))
         .andExpect(status().isOk())
-        .andExpect(view().name("listing/index :: results"));
+        .andExpect(view().name("listing/results"));
   }
 }

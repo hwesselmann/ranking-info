@@ -1,9 +1,11 @@
 package de.hdawg.rankinginfo.web;
 
-import java.util.Set;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.hdawg.rankinginfo.repository.RankingRepository;
+import de.hdawg.rankinginfo.service.PlayerService;
 import jakarta.servlet.http.HttpServletResponse;
-
+import java.util.Set;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import de.hdawg.rankinginfo.repository.RankingRepository;
-import de.hdawg.rankinginfo.service.PlayerService;
 
 @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
 @Controller
@@ -27,14 +26,17 @@ public class PlayerController {
   private final PlayerService playerService;
   private final PlayerProfileService playerProfileService;
   private final RankingRepository rankingRepository;
+  private final ObjectMapper objectMapper;
 
   public PlayerController(
       PlayerService playerService,
       PlayerProfileService playerProfileService,
-      RankingRepository rankingRepository) {
+      RankingRepository rankingRepository,
+      ObjectMapper objectMapper) {
     this.playerService = playerService;
     this.playerProfileService = playerProfileService;
     this.rankingRepository = rankingRepository;
+    this.objectMapper = objectMapper;
   }
 
   @GetMapping
@@ -51,21 +53,30 @@ public class PlayerController {
     if (dtbId != null && !dtbId.isBlank()) {
       var range = playerService.dtbIdRange(dtbId);
       var players = playerService.findPlayersByDtbIdRange(range[0], range[1]);
-      if (players.size() == 1) return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+      if (players.size() == 1) {
+        return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+      }
       model.addAttribute(MODEL_PLAYERS, players);
     } else if (lastname != null && !lastname.isBlank() && yob != null && !yob.isBlank()) {
       int yobMale = playerService.yobToMaleMarker(yob);
-      var players = playerService.findPlayersByLastnameAndYob(lastname.trim(), yobMale, yobMale + 100);
-      if (players.size() == 1) return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+      var players = playerService.findPlayersByLastnameAndYob(lastname.trim(), yobMale,
+          yobMale + 100);
+      if (players.size() == 1) {
+        return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+      }
       model.addAttribute(MODEL_PLAYERS, players);
     } else if (lastname != null && !lastname.isBlank()) {
       var players = playerService.findPlayersByLastname(lastname.trim());
-      if (players.size() == 1) return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+      if (players.size() == 1) {
+        return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+      }
       model.addAttribute(MODEL_PLAYERS, players);
     } else if (yob != null && !yob.isBlank()) {
       int yobMale = playerService.yobToMaleMarker(yob);
       var players = playerService.findPlayersByYob(yobMale, yobMale + 100);
-      if (players.size() == 1) return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+      if (players.size() == 1) {
+        return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+      }
       model.addAttribute(MODEL_PLAYERS, players);
     }
 
@@ -73,14 +84,22 @@ public class PlayerController {
     params.put("lastname", lastname);
     params.put("yob", yob);
     params.put("dtb_id", dtbId);
-    model.addAttribute("params", params);
-    return htmxRequest != null ? "players/index :: results" : "players/index";
+    model.addAttribute("searchParams", params);
+    return htmxRequest != null ? "players/results" : "players/index";
+  }
+
+  private String toJson(Object value) {
+    try {
+      return objectMapper.writeValueAsString(value);
+    } catch (JsonProcessingException _) {
+      return "[]";
+    }
   }
 
   private String redirectToPlayer(int dtbId, String htmxRequest, HttpServletResponse response) {
     if (htmxRequest != null) {
       response.setHeader("HX-Redirect", "/players/" + dtbId);
-      return "players/index :: results";
+      return "players/results";
     }
     return REDIRECT_PLAYER + dtbId;
   }
@@ -114,13 +133,13 @@ public class PlayerController {
       model.addAttribute("player", player);
       model.addAttribute("currentRankings", currentRankings);
       model.addAttribute("completeRankings", completeRankings);
-      model.addAttribute("diagramData", allTimeDiagram.positions());
-      model.addAttribute("diagramScoreData", allTimeDiagram.scores());
-      model.addAttribute("recent12mData", recent12mDiagram.positions());
-      model.addAttribute("recent12mScoreData", recent12mDiagram.scores());
+      model.addAttribute("diagramDataJson", toJson(allTimeDiagram.positions()));
+      model.addAttribute("diagramScoreDataJson", toJson(allTimeDiagram.scores()));
+      model.addAttribute("recent12mDataJson", toJson(recent12mDiagram.positions()));
+      model.addAttribute("recent12mScoreDataJson", toJson(recent12mDiagram.scores()));
       model.addAttribute("availableData", availableData);
       return "players/show";
-    } catch (IndexOutOfBoundsException e) {
+    } catch (IndexOutOfBoundsException _) {
       redirect.addFlashAttribute("danger", "Spieler nicht gefunden");
       return "redirect:/players";
     }

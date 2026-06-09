@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html lang="de"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
-<head>
-    <title>Ranking-Info</title>
-</head>
-<body>
-<th:block layout:fragment="content">
+@param String start = ""
+@param String danger = null
+@template.layout(title = "Ranking-Info", danger = danger, content = @`
     <section class="bg-gray-50 py-12">
         <div class="px-4">
             <h1 class="text-3xl font-bold">Willkommen bei Ranking-Info</h1>
@@ -22,17 +15,15 @@
             Hier findest Du eine filterbare Version der Deutschen Aktiven - und Jugendranglisten.
             Die Daten werden manuell auf Basis der offiziellen Listen vom Deutschen Tennis Bund eingepflegt.<br/>
             Der Vorteil zu den offiziellen Listen? Es ist nicht nur das aktuelle Quartal und die Liste zum
-            Jahresabschluss verfügbar, es sind alle importierten Daten seit dem <span th:text="${start}"></span> enthalten!
+            Jahresabschluss verfügbar, es sind alle importierten Daten seit dem <span>${start}</span> enthalten!
             <br/><br/>
             Viel Spaß beim Stöbern!
         </div>
         <footer class="flex border-t border-gray-200 rounded-b">
-            <a th:href="@{/players}" class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50">Spielersuche</a>
-            <a th:href="@{/listings}" class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50 border-l border-gray-200">Ranglisten</a>
-            <a th:href="@{/clubs}" class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50 border-l border-gray-200">Vereinssuche</a>
-            <a th:href="@{/federations}" class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50 border-l border-gray-200">Verbandsstatistik</a>
+            <a href="/players" class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50">Spielersuche</a>
+            <a href="/listings" class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50 border-l border-gray-200">Ranglisten</a>
+            <a href="/clubs" class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50 border-l border-gray-200">Vereinssuche</a>
+            <a href="/federations" class="flex-1 text-center px-4 py-3 text-brand hover:bg-gray-50 border-l border-gray-200">Verbandsstatistik</a>
         </footer>
     </div>
-</th:block>
-</body>
-</html>
+`)

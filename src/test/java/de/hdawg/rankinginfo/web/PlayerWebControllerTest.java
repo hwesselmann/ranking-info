@@ -87,7 +87,7 @@ class PlayerWebControllerTest extends WebControllerTestBase {
                 .param("lastname", "Mueller")
                 .header("HX-Request", "true"))
         .andExpect(status().isOk())
-        .andExpect(view().name("players/index :: results"));
+        .andExpect(view().name("players/results"));
   }
 
   @Test

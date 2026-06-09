@@ -42,3 +42,6 @@ CLAUDE.md
 
 ### node modules ###
 node_modules
+
+### jte compiled templates (dev-mode hot-reload artefacts) ###
+jte-classes/

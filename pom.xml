@@ -20,7 +20,7 @@
     <java.version>25</java.version>
 
     <!-- Dependency versions not managed by Spring Boot BOM -->
-    <thymeleaf-layout-dialect.version>4.0.1</thymeleaf-layout-dialect.version>
+    <jte.version>3.2.3</jte.version>
     <opencsv.version>5.12.0</opencsv.version>
     <springdoc-openapi.version>3.0.3</springdoc-openapi.version>
     <bucket4j.version>8.19.0</bucket4j.version>
@@ -46,19 +46,15 @@
   </properties>
 
   <dependencies>
-    <!-- Web / Thymeleaf -->
+    <!-- Web / jte -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>nz.net.ultraq.thymeleaf</groupId>
-      <artifactId>thymeleaf-layout-dialect</artifactId>
-      <version>${thymeleaf-layout-dialect.version}</version>
+      <groupId>gg.jte</groupId>
+      <artifactId>jte-spring-boot-starter-4</artifactId>
+      <version>${jte.version}</version>
     </dependency>
 
     <!-- Cache / Security -->
@@ -179,6 +175,26 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+
+      <!-- jte: precompile templates into the JAR for production -->
+      <plugin>
+        <groupId>gg.jte</groupId>
+        <artifactId>jte-maven-plugin</artifactId>
+        <version>${jte.version}</version>
+        <configuration>
+          <sourceDirectory>${project.basedir}/src/main/jte</sourceDirectory>
+          <targetDirectory>${project.build.outputDirectory}</targetDirectory>
+          <contentType>Html</contentType>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>precompile</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <!-- Spotless: formatting + import ordering -->

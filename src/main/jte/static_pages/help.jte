@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="de"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
-<head>
-    <title>Hilfe | Ranking-Info</title>
-</head>
-<body>
-<th:block layout:fragment="content">
+@param String danger = null
+@template.layout(title = "Hilfe | Ranking-Info", danger = danger, content = @`
     <h1 class="text-2xl font-bold text-left mb-3 mt-3 tracking-normal">Hilfe</h1>
     <p class="mb-3">
         Hier findest Du Antworten auf einige oft gestellte Fragen. Die Anwendung möchte so selbsterklärend wie möglich
@@ -103,6 +95,4 @@
         sind auch für kleine Bildschirme, z.&#8239;B. auf Smartphones, optimiert. Manchmal bedingt die Menge der anzuzeigenden Daten aber, dass Du auch mal nach rechts scrollen musst.
         An der Mobiloptimierung wird kontinuierlich gearbeitet.
     </p>
-</th:block>
-</body>
-</html>
+`)
