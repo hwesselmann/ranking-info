@@ -15,9 +15,6 @@ import tools.jackson.databind.ObjectMapper;
 
 import de.hdawg.rankinginfo.service.PlayerService;
 
-import de.hdawg.rankinginfo.repository.RankingRepository;
-import de.hdawg.rankinginfo.service.PlayerService;
-
 @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
 @Controller
 @RequestMapping("/players")
