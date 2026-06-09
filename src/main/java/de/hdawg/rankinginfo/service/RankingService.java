@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.hdawg.rankinginfo.domain.Ranking;
+import de.hdawg.rankinginfo.domain.RankingCoding;
 import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
 import de.hdawg.rankinginfo.repository.RankingQueryFilter;
 import de.hdawg.rankinginfo.repository.RankingRepository;
@@ -97,8 +98,8 @@ public class RankingService {
     var isMale = slug.startsWith("m");
     var isAdult = AGE_GROUP_M00.equals(ageGroup) || AGE_GROUP_W00.equals(ageGroup);
 
-    int dtbIdStart = isMale ? 10_000_000 : 20_000_000;
-    int dtbIdEnd = isMale ? 19_999_999 : 29_999_999;
+    int dtbIdStart = isMale ? RankingCoding.MALE_DTB_ID_START : RankingCoding.FEMALE_DTB_ID_START;
+    int dtbIdEnd = isMale ? RankingCoding.MALE_DTB_ID_END : RankingCoding.FEMALE_DTB_ID_END;
 
     boolean yobRanking;
     boolean ageGroupRanking;

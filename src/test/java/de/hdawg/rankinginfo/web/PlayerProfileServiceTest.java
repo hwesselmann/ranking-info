@@ -17,7 +17,7 @@ import de.hdawg.rankinginfo.web.viewmodel.CompleteRankingRow;
 
 class PlayerProfileServiceTest {
 
-  private final PlayerProfileService service = new PlayerProfileService();
+  private final PlayerProfileService service = new PlayerProfileService(null);
 
   private static Ranking r(int dtbId, String ageGroup, LocalDate date, int pos, String score) {
     return new Ranking(0L, dtbId, "Test", "Player", "GER", ageGroup, date, pos, score, "TC Test", "HH",
