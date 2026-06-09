@@ -8,11 +8,9 @@ spring:
       maximum-pool-size: 5
       minimum-idle: 2
 
-server:
-  tomcat:
-    threads:
-      max: 25
-      min-spare: 5
+# Tomcat thread pool tuning removed: virtual threads (spring.threads.virtual.enabled)
+# handle concurrency without a fixed platform-thread pool.
+# HikariCP pool-size (maximum-pool-size: 5) remains the effective concurrency limiter.
 
 gg:
   jte:

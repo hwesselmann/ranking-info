@@ -188,6 +188,15 @@ class PlayersApiControllerTest {
   }
 
   @Test
+  @DisplayName("show serializes ranking quarter as ISO-8601 string")
+  void showSerializesRankingQuarterAsIso8601String() throws Exception {
+    mockMvc
+        .perform(get("/api/v1/players/10001001").header("Authorization", auth))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data.rankings[0].quarter").value("2026-04-01"));
+  }
+
+  @Test
   @DisplayName("show returns multiple ranking entries across quarters")
   void showReturnsMultipleRankingEntriesAcrossQuarters() throws Exception {
     mockMvc

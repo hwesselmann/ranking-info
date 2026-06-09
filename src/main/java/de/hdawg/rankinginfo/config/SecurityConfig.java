@@ -1,6 +1,5 @@
 package de.hdawg.rankinginfo.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import tools.jackson.databind.ObjectMapper;
 
 import de.hdawg.rankinginfo.api.security.BearerTokenFilter;
 import de.hdawg.rankinginfo.api.security.RateLimitFilter;
@@ -18,11 +18,6 @@ import de.hdawg.rankinginfo.api.security.RateLimitFilter;
 @EnableWebSecurity
 @EnableConfigurationProperties({ApiProperties.class, ImportProperties.class})
 public class SecurityConfig {
-
-  @Bean
-  public ObjectMapper objectMapper() {
-    return new ObjectMapper();
-  }
 
   @Bean
   @Order(1)
