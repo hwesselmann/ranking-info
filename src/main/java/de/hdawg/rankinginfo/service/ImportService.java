@@ -23,12 +23,12 @@ import com.opencsv.exceptions.CsvValidationException;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.hdawg.rankinginfo.domain.ImportHistory;
 import de.hdawg.rankinginfo.domain.Ranking;
+import de.hdawg.rankinginfo.domain.RankingCoding;
 import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
 import de.hdawg.rankinginfo.repository.RankingRepository;
 
@@ -43,7 +43,9 @@ public class ImportService {
 
   private static final Set<String> SPECIAL_SCORES = Set.of("0,0", "PR", "Einst.");
   private static final Map<String, Integer> GENDER_FACTORS =
-      Map.of(CATEGORY_JUNIOREN, 100, CATEGORY_JUNIORINNEN, 200);
+      Map.of(
+          CATEGORY_JUNIOREN, RankingCoding.GENDER_FACTOR_JUNIOREN,
+          CATEGORY_JUNIORINNEN, RankingCoding.GENDER_FACTOR_JUNIORINNEN);
   private static final Map<String, String> AGE_GROUP_MAP =
       Map.of("herren", "m00", "damen", "w00", CATEGORY_JUNIOREN, "overall", CATEGORY_JUNIORINNEN, "overall");
 
@@ -110,12 +112,7 @@ public class ImportService {
   }
 
   @Transactional
-  @CacheEvict(
-      cacheNames = {
-        "available_quarters", "available_dates", "federations", "player_counts",
-        "max_imported_at", "federation_stats"
-      },
-      allEntries = true)
+  @EvictImportCaches
   public void importRankings(Path file) throws DuplicateImportError, IOException {
     var fileNamePart = file.getFileName();
     if (fileNamePart == null) throw new IllegalArgumentException("Path has no filename: " + file);
@@ -146,22 +143,12 @@ public class ImportService {
     log.info("Import of '{}' completed", filename);
   }
 
-  @CacheEvict(
-      cacheNames = {
-        "available_quarters", "available_dates", "federations", "player_counts",
-        "max_imported_at", "federation_stats"
-      },
-      allEntries = true)
+  @EvictImportCaches
   public void scanAndImport(String folderPath) {
     doScanAndImport(folderPath, null);
   }
 
-  @CacheEvict(
-      cacheNames = {
-        "available_quarters", "available_dates", "federations", "player_counts",
-        "max_imported_at", "federation_stats"
-      },
-      allEntries = true)
+  @EvictImportCaches
   public void scanAndImport(String folderPath, @Nullable String errorLogPath) {
     doScanAndImport(folderPath, errorLogPath);
   }
@@ -275,8 +262,10 @@ public class ImportService {
       boolean ageGroupRanking,
       boolean yearEndRanking) {
 
-    int idStart = classesToRetrieve.get(0) * 100_000;
-    int idEnd = classesToRetrieve.get(classesToRetrieve.size() - 1) * 100_000 + 99_999;
+    int idStart = classesToRetrieve.get(0) * RankingCoding.YOB_MULTIPLIER;
+    int idEnd =
+        classesToRetrieve.get(classesToRetrieve.size() - 1) * RankingCoding.YOB_MULTIPLIER
+            + RankingCoding.YOB_MULTIPLIER - 1;
     var rankingsFromDb = rankingRepository.findForAgeRangeInPeriod(period, idStart, idEnd);
 
     int lastRank = 0;

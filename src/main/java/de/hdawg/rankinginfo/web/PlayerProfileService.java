@@ -3,19 +3,25 @@ package de.hdawg.rankinginfo.web;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import de.hdawg.rankinginfo.domain.Club;
+import de.hdawg.rankinginfo.domain.Player;
 import de.hdawg.rankinginfo.domain.Ranking;
+import de.hdawg.rankinginfo.repository.RankingRepository;
 import de.hdawg.rankinginfo.web.viewmodel.AgeGroupTimeSeries;
 import de.hdawg.rankinginfo.web.viewmodel.CompleteRankingRow;
 import de.hdawg.rankinginfo.web.viewmodel.CurrentRankingRow;
@@ -25,6 +31,27 @@ import de.hdawg.rankinginfo.web.viewmodel.ScoreTimeSeries;
 @SuppressWarnings({"PMD.LooseCoupling", "PMD.AvoidLiteralsInIfCondition"})
 @Service
 public class PlayerProfileService {
+
+  public record PlayerProfile(
+      Player player,
+      List<CurrentRankingRow> currentRankings,
+      List<CompleteRankingRow> completeRankings,
+      DiagramDataView allTimeDiagram,
+      DiagramDataView recent12mDiagram,
+      Map<Integer, Set<String>> availableData) {
+
+    public PlayerProfile {
+      currentRankings = List.copyOf(currentRankings);
+      completeRankings = List.copyOf(completeRankings);
+      availableData = Collections.unmodifiableMap(new LinkedHashMap<>(availableData));
+    }
+  }
+
+  @Nullable private final RankingRepository rankingRepository;
+
+  public PlayerProfileService(@Nullable RankingRepository rankingRepository) {
+    this.rankingRepository = rankingRepository;
+  }
 
   private static final Map<Integer, String> QUARTER_MAP =
       Map.of(1, "Q1", 4, "Q2", 7, "Q3", 10, "Q4");
@@ -36,6 +63,56 @@ public class PlayerProfileService {
   private static final String AKTIVE_LABEL = "Aktive";
   private static final int DATE_PARTS_SIZE = 2;
   private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+  @Transactional(readOnly = true)
+  public Optional<PlayerProfile> loadProfile(int dtbId) {
+    var repo = rankingRepository;
+    if (repo == null) throw new IllegalStateException("RankingRepository not injected");
+
+    var rawRankings =
+        repo.findByDtbIdAndYobRankingFalseAndAgeGroupRankingFalseAndYearEndRankingFalseOrderByDateDescAgeGroupAsc(
+            dtbId);
+    if (rawRankings.isEmpty()) return Optional.empty();
+
+    var current = rawRankings.get(0);
+    var clubs =
+        rawRankings.stream()
+            .map(r -> new Club(r.club(), r.federation()))
+            .collect(Collectors.toMap(Club::name, c -> c, (a, b) -> a))
+            .values()
+            .stream()
+            .sorted(Comparator.comparing(Club::name))
+            .toList();
+    var player =
+        new Player(
+            dtbId,
+            current.lastname(),
+            current.firstname(),
+            current.nationality(),
+            current.club(),
+            current.federation(),
+            clubs);
+
+    var fullRankings =
+        repo.findByDtbIdAndYearEndRankingFalseOrderByDateAscAgeGroupAsc(dtbId);
+    var allDates = repo.findDistinctDatesDesc();
+    var currentQuarter = allDates.isEmpty() ? null : allDates.get(0);
+    var previousQuarter = allDates.size() > 1 ? allDates.get(1) : null;
+    var recent4Dates = Set.copyOf(allDates.stream().limit(4).toList());
+
+    var currentRankings = buildCurrentRankings(rawRankings, currentQuarter, previousQuarter);
+    var allTimeDiagram = buildDiagramData(fullRankings);
+    var recent12mDiagram =
+        buildDiagramData(
+            fullRankings.stream().filter(r -> recent4Dates.contains(r.date())).toList());
+    var completeRankings = buildCompleteRankings(fullRankings);
+    var availableData = buildAvailableData(completeRankings);
+
+    return Optional.of(
+        new PlayerProfile(
+            player, currentRankings, completeRankings, allTimeDiagram, recent12mDiagram,
+            availableData));
+  }
 
   public List<CurrentRankingRow> buildCurrentRankings(
       List<Ranking> rawRankings,

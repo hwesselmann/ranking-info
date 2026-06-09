@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import de.hdawg.rankinginfo.domain.Club;
 import de.hdawg.rankinginfo.domain.Player;
 import de.hdawg.rankinginfo.domain.Ranking;
+import de.hdawg.rankinginfo.domain.RankingCoding;
 import de.hdawg.rankinginfo.repository.RankingRepository;
 
 @Service
@@ -70,18 +71,24 @@ public class PlayerService {
   public List<Ranking> findPlayersByLastnameAndYob(String lastname, int yobMale, int yobFemale) {
     return rankingRepository.findByLastnameAndYob(
         lastname,
-        yobMale * 100_000,
-        yobMale * 100_000 + 99_999,
-        yobFemale * 100_000,
-        yobFemale * 100_000 + 99_999);
+        yobMale * RankingCoding.YOB_MULTIPLIER,
+        yobMale * RankingCoding.YOB_MULTIPLIER + RankingCoding.YOB_MULTIPLIER - 1,
+        yobFemale * RankingCoding.YOB_MULTIPLIER,
+        yobFemale * RankingCoding.YOB_MULTIPLIER + RankingCoding.YOB_MULTIPLIER - 1);
   }
 
   public List<Ranking> findPlayersByYob(int yobMale, int yobFemale) {
     return rankingRepository.findByYob(
-        yobMale * 100_000,
-        yobMale * 100_000 + 99_999,
-        yobFemale * 100_000,
-        yobFemale * 100_000 + 99_999);
+        yobMale * RankingCoding.YOB_MULTIPLIER,
+        yobMale * RankingCoding.YOB_MULTIPLIER + RankingCoding.YOB_MULTIPLIER - 1,
+        yobFemale * RankingCoding.YOB_MULTIPLIER,
+        yobFemale * RankingCoding.YOB_MULTIPLIER + RankingCoding.YOB_MULTIPLIER - 1);
+  }
+
+  public List<Ranking> findNonAggregateRankings(int dtbId) {
+    return rankingRepository
+        .findByDtbIdAndYobRankingFalseAndAgeGroupRankingFalseAndYearEndRankingFalseOrderByDateDescAgeGroupAsc(
+            dtbId);
   }
 
   public List<Ranking> findPlayersByDtbIdRange(int dtbIdStart, int dtbIdEnd) {

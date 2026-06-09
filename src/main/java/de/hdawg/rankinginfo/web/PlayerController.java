@@ -1,7 +1,5 @@
 package de.hdawg.rankinginfo.web;
 
-import java.util.Set;
-
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
@@ -15,7 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
-import de.hdawg.rankinginfo.repository.RankingRepository;
 import de.hdawg.rankinginfo.service.PlayerService;
 
 @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
@@ -28,17 +25,14 @@ public class PlayerController {
 
   private final PlayerService playerService;
   private final PlayerProfileService playerProfileService;
-  private final RankingRepository rankingRepository;
   private final ObjectMapper objectMapper;
 
   public PlayerController(
       PlayerService playerService,
       PlayerProfileService playerProfileService,
-      RankingRepository rankingRepository,
       ObjectMapper objectMapper) {
     this.playerService = playerService;
     this.playerProfileService = playerProfileService;
-    this.rankingRepository = rankingRepository;
     this.objectMapper = objectMapper;
   }
 
@@ -109,42 +103,20 @@ public class PlayerController {
 
   @GetMapping("/{id}")
   public String show(@PathVariable int id, Model model, RedirectAttributes redirect) {
-    try {
-      var player = playerService.loadPlayerProfile(id);
-
-      var rawRankings =
-          rankingRepository
-              .findByDtbIdAndYobRankingFalseAndAgeGroupRankingFalseAndYearEndRankingFalseOrderByDateDescAgeGroupAsc(
-                  id);
-      var fullRankings =
-          rankingRepository.findByDtbIdAndYearEndRankingFalseOrderByDateAscAgeGroupAsc(id);
-
-      var allDates = rankingRepository.findDistinctDatesDesc();
-      var currentQuarter = allDates.isEmpty() ? null : allDates.get(0);
-      var previousQuarter = allDates.size() > 1 ? allDates.get(1) : null;
-      var recent4Dates = Set.copyOf(allDates.stream().limit(4).toList());
-
-      var currentRankings =
-          playerProfileService.buildCurrentRankings(rawRankings, currentQuarter, previousQuarter);
-      var allTimeDiagram = playerProfileService.buildDiagramData(fullRankings);
-      var recent12mDiagram =
-          playerProfileService.buildDiagramData(
-              fullRankings.stream().filter(r -> recent4Dates.contains(r.date())).toList());
-      var completeRankings = playerProfileService.buildCompleteRankings(fullRankings);
-      var availableData = playerProfileService.buildAvailableData(completeRankings);
-
-      model.addAttribute("player", player);
-      model.addAttribute("currentRankings", currentRankings);
-      model.addAttribute("completeRankings", completeRankings);
-      model.addAttribute("diagramDataJson", toJson(allTimeDiagram.positions()));
-      model.addAttribute("diagramScoreDataJson", toJson(allTimeDiagram.scores()));
-      model.addAttribute("recent12mDataJson", toJson(recent12mDiagram.positions()));
-      model.addAttribute("recent12mScoreDataJson", toJson(recent12mDiagram.scores()));
-      model.addAttribute("availableData", availableData);
-      return "players/show";
-    } catch (IndexOutOfBoundsException _) {
+    var profileOpt = playerProfileService.loadProfile(id);
+    if (profileOpt.isEmpty()) {
       redirect.addFlashAttribute("danger", "Spieler nicht gefunden");
       return "redirect:/players";
     }
+    var p = profileOpt.get();
+    model.addAttribute("player", p.player());
+    model.addAttribute("currentRankings", p.currentRankings());
+    model.addAttribute("completeRankings", p.completeRankings());
+    model.addAttribute("diagramDataJson", toJson(p.allTimeDiagram().positions()));
+    model.addAttribute("diagramScoreDataJson", toJson(p.allTimeDiagram().scores()));
+    model.addAttribute("recent12mDataJson", toJson(p.recent12mDiagram().positions()));
+    model.addAttribute("recent12mScoreDataJson", toJson(p.recent12mDiagram().scores()));
+    model.addAttribute("availableData", p.availableData());
+    return "players/show";
   }
 }
