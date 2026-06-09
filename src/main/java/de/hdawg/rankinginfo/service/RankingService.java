@@ -84,6 +84,7 @@ public class RankingService {
         .collect(Collectors.toMap(Ranking::dtbId, Ranking::rankingPosition));
   }
 
+  @Cacheable("max_imported_at")
   @Nullable
   public LocalDateTime maxImportedAt() {
     return importHistoryRepository.findMaxImportedAt();

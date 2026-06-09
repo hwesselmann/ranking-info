@@ -3,6 +3,7 @@ package de.hdawg.rankinginfo.web;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,7 @@ public class FederationService {
     this.rankingRepository = rankingRepository;
   }
 
+  @Cacheable("federation_stats")
   public Map<String, Map<String, Integer>> buildFederationData() {
     var quarter = rankingRepository.findDistinctDatesDesc().stream().findFirst().orElse(null);
     var federations = new LinkedHashMap<String, Map<String, Integer>>();

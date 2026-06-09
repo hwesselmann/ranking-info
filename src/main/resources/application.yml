@@ -12,6 +12,9 @@ spring:
   security:
     user:
       password: disabled
+  threads:
+    virtual:
+      enabled: true
 
 server:
   port: 8080
