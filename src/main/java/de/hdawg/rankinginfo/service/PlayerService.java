@@ -1,6 +1,7 @@
 package de.hdawg.rankinginfo.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -32,8 +33,10 @@ public class PlayerService {
       idNum = 0L;
     }
     int missing = DTB_ID_LENGTH - Long.toString(idNum).length();
-    int start = (int) (idNum * Math.pow(10.0, missing));
-    int end = start + (int) Math.pow(10.0, missing) - 1;
+    int factor = 1;
+    for (int i = 0; i < missing; i++) factor *= 10;
+    int start = (int) (idNum * factor);
+    int end = start + factor - 1;
     return new int[] {start, end};
   }
 
@@ -45,7 +48,10 @@ public class PlayerService {
     var allRankings =
         rankingRepository.findByDtbIdAndAgeGroupInOrderByDateDesc(
             dtbId, List.of("overall", "m00", "w00"));
-    var current = allRankings.get(0);
+    if (allRankings.isEmpty()) {
+      throw new NoSuchElementException("No rankings found for player " + dtbId);
+    }
+    var current = allRankings.getFirst();
     var clubs =
         allRankings.stream()
             .map(r -> new Club(r.club(), r.federation()))

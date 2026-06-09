@@ -51,7 +51,7 @@ public class PlayerController {
       var range = playerService.dtbIdRange(dtbId);
       var players = playerService.findPlayersByDtbIdRange(range[0], range[1]);
       if (players.size() == 1) {
-        return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+        return redirectToPlayer(players.getFirst().dtbId(), htmxRequest, response);
       }
       model.addAttribute(MODEL_PLAYERS, players);
     } else if (lastname != null && !lastname.isBlank() && yob != null && !yob.isBlank()) {
@@ -59,20 +59,20 @@ public class PlayerController {
       var players = playerService.findPlayersByLastnameAndYob(lastname.trim(), yobMale,
           yobMale + 100);
       if (players.size() == 1) {
-        return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+        return redirectToPlayer(players.getFirst().dtbId(), htmxRequest, response);
       }
       model.addAttribute(MODEL_PLAYERS, players);
     } else if (lastname != null && !lastname.isBlank()) {
       var players = playerService.findPlayersByLastname(lastname.trim());
       if (players.size() == 1) {
-        return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+        return redirectToPlayer(players.getFirst().dtbId(), htmxRequest, response);
       }
       model.addAttribute(MODEL_PLAYERS, players);
     } else if (yob != null && !yob.isBlank()) {
       int yobMale = playerService.yobToMaleMarker(yob);
       var players = playerService.findPlayersByYob(yobMale, yobMale + 100);
       if (players.size() == 1) {
-        return redirectToPlayer(players.get(0).dtbId(), htmxRequest, response);
+        return redirectToPlayer(players.getFirst().dtbId(), htmxRequest, response);
       }
       model.addAttribute(MODEL_PLAYERS, players);
     }

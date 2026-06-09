@@ -25,7 +25,7 @@ class GlobalApiExceptionHandlerTest {
     mockMvc
         .perform(get("/api/v1/listings/not-a-date/m00").header("Authorization", AUTH))
         .andExpect(status().isInternalServerError())
-        .andExpect(jsonPath("$.error").value("Internal Server Error"));
+        .andExpect(jsonPath("$.detail").value("Internal Server Error"));
   }
 
   @Test

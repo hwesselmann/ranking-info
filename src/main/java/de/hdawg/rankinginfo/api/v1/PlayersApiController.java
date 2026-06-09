@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,17 +34,20 @@ public class PlayersApiController {
       content = @Content(schema = @Schema(implementation = PlayerSearchResponse.class)))
   @ApiResponse(
       responseCode = "400",
-      content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @ApiResponse(
       responseCode = "404",
-      content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @GetMapping
   public ResponseEntity<Object> search(
       @RequestParam(required = false) String lastname,
       @RequestParam(required = false) String yob) {
 
     if (lastname == null || lastname.isBlank()) {
-      return ResponseEntity.badRequest().body(new ErrorResponse("lastname parameter required"));
+      return ResponseEntity.badRequest()
+          .body(
+              ProblemDetail.forStatusAndDetail(
+                  HttpStatus.BAD_REQUEST, "lastname parameter required"));
     }
 
     var players =
@@ -54,7 +59,8 @@ public class PlayersApiController {
             : playerService.findPlayersByLastname(lastname);
 
     if (players.isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorResponse("Not Found"));
+      return ResponseEntity.status(404)
+          .body(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Not Found"));
     }
 
     var data =
@@ -80,14 +86,15 @@ public class PlayersApiController {
       content = @Content(schema = @Schema(implementation = PlayerDetailResponse.class)))
   @ApiResponse(
       responseCode = "404",
-      content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @GetMapping("/{id}")
   public ResponseEntity<Object> show(@PathVariable int id) {
     var rankings = playerService.findNonAggregateRankings(id);
     if (rankings.isEmpty()) {
-      return ResponseEntity.status(404).body(new ErrorResponse("Not Found"));
+      return ResponseEntity.status(404)
+          .body(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Not Found"));
     }
-    var current = rankings.get(0);
+    var current = rankings.getFirst();
     var rankingEntries =
         rankings.stream()
             .map(
