@@ -32,6 +32,11 @@ imprint:
   phone: ${IMPRINT_PHONE:}
   mail: ${IMPRINT_MAIL:}
 
+gg:
+  jte:
+    developmentMode: true
+    usePrecompiledTemplates: false
+
 logging:
   level:
     "[org.apache.catalina.webresources.AbstractFileResourceSet]": ERROR

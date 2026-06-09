@@ -15,7 +15,7 @@ Java/Spring Boot reimplementation of [ranking-info](https://github.com/hwesselma
 | Language / Framework | Java 25 / Spring Boot 4 |
 | Database | H2 file-mode (dev), PostgreSQL (prod) |
 | ORM | Spring Data JDBC |
-| Frontend | Thymeleaf + Tailwind CSS (local build) |
+| Frontend | jte (Java Template Engine) + Tailwind CSS |
 | API docs | springdoc-openapi (Swagger UI at `/api-docs`) |
 | Scheduling | `@Scheduled` (in-process) |
 | Caching | Caffeine (in-memory) |

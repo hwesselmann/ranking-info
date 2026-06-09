@@ -29,12 +29,12 @@ public class ClubController {
 
     var params = new HashMap<String, Object>();
     params.put("club", club);
-    model.addAttribute("params", params);
+    model.addAttribute("searchParams", params);
 
     if (commit != null && club != null && !club.isBlank()) {
       model.addAttribute("clubs", clubService.searchClubs(club));
     }
-    return htmxRequest != null ? "clubs/index :: results" : "clubs/index";
+    return htmxRequest != null ? "clubs/results" : "clubs/index";
   }
 
   @GetMapping("/{id}")

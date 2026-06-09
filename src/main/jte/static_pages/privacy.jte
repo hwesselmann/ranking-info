@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="de"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
-<head>
-    <title>Datenschutz | Ranking-Info</title>
-</head>
-<body>
-<th:block layout:fragment="content">
+@param String danger = null
+@template.layout(title = "Datenschutz | Ranking-Info", danger = danger, content = @`
     <h1 class="text-2xl font-bold text-left mb-3 mt-3 tracking-normal">Datenschutz</h1>
     <div class="prose max-w-none">
         <h2 class="text-xl font-semibold mt-4 mb-2">Datenschutzerklärung</h2>
@@ -88,6 +80,4 @@
             <a href="https://www.e-recht24.de/muster-datenschutzerklaerung.html" target="_blank" class="text-brand">https://www.e-recht24.de/muster-datenschutzerklaerung.html</a>
         </p>
     </div>
-</th:block>
-</body>
-</html>
+`)

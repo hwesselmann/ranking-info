@@ -52,7 +52,7 @@ public class ListingController {
     params.put("federation", federation);
     params.put("club", club);
     params.put("year_end", yearEnd);
-    model.addAttribute("params", params);
+    model.addAttribute("searchParams", params);
 
     if (commit != null && quarter != null && !quarter.isBlank()
         && gender != null && !gender.isBlank()) {
@@ -69,7 +69,7 @@ public class ListingController {
       var prevPositions = rankingService.findPreviousPositions(filter, dtbIds);
       model.addAttribute("rankings", toRows(rankings.getContent(), prevPositions));
     }
-    return htmxRequest != null ? "listing/index :: results" : "listing/index";
+    return htmxRequest != null ? "listing/results" : "listing/index";
   }
 
   private static List<RankingRow> toRows(

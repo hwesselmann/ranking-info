@@ -53,6 +53,6 @@ class ClubControllerTest extends WebControllerTestBase {
                 .param("commit", "1")
                 .header("HX-Request", "true"))
         .andExpect(status().isOk())
-        .andExpect(view().name("clubs/index :: results"));
+        .andExpect(view().name("clubs/results"));
   }
 }

@@ -1,10 +1,13 @@
+@import gg.jte.Content
+@param Content content
+@param Content extraHead = null
+@param String title = "Ranking-Info"
+@param String danger = null
 <!DOCTYPE html>
-<html lang="de"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="de">
 <head>
     <meta charset="utf-8">
-    <title>Ranking-Info</title>
+    <title>${title}</title>
     <meta name="description" content="Ranglisteninformationen">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -26,20 +29,21 @@
     <meta name="msapplication-config" content="/browserconfig.xml">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#3e8ed0">
-    <link rel="stylesheet" th:href="@{/css/application.css}">
+    <link rel="stylesheet" href="/css/application.css">
     <script defer src="https://unpkg.com/htmx.org@2.0.9/dist/htmx.min.js"
             integrity="sha384-ESlCao+z/oasnu2Uc/5K1LQTI7YCF2KKO4xakCPQCFuiHhCh8Oa/R5NwHY6guZ3m"
             crossorigin="anonymous"></script>
-    <th:block layout:fragment="extra-head"></th:block>
+    @if(extraHead != null)
+    ${extraHead}
+    @endif
 </head>
 <body>
-<th:block th:replace="~{fragments/nav :: nav}"></th:block>
+@template.fragments.nav()
 <div class="w-full px-4 mx-auto">
-    <div th:if="${danger}" class="bg-red-100 border border-red-400 text-red-800 px-4 py-2 rounded mt-2"
-         th:text="${danger}"></div>
-    <th:block layout:fragment="content">
-        <p>Kein Inhalt.</p>
-    </th:block>
+    @if(danger != null)
+    <div class="bg-red-100 border border-red-400 text-red-800 px-4 py-2 rounded mt-2">${danger}</div>
+    @endif
+    ${content}
 </div>
 </body>
 </html>
