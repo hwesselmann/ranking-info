@@ -3,6 +3,7 @@ package de.hdawg.rankinginfo.web;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -37,7 +38,16 @@ public class PlayerProfileService {
       List<CompleteRankingRow> completeRankings,
       DiagramDataView allTimeDiagram,
       DiagramDataView recent12mDiagram,
-      Map<Integer, Set<String>> availableData) {}
+      Map<Integer, Set<String>> availableData) {
+
+    public PlayerProfile {
+      currentRankings = List.copyOf(currentRankings);
+      completeRankings = List.copyOf(completeRankings);
+      var copiedMap = new TreeMap<Integer, Set<String>>(Comparator.reverseOrder());
+      availableData.forEach((k, v) -> copiedMap.put(k, Set.copyOf(v)));
+      availableData = Collections.unmodifiableMap(copiedMap);
+    }
+  }
 
   @Nullable private final RankingRepository rankingRepository;
 
