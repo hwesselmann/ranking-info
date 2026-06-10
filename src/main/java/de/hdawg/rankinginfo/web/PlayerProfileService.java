@@ -76,7 +76,7 @@ public class PlayerProfileService {
             dtbId);
     if (rawRankings.isEmpty()) return Optional.empty();
 
-    var current = rawRankings.get(0);
+    var current = rawRankings.getFirst();
     var clubs =
         rawRankings.stream()
             .map(r -> new Club(r.club(), r.federation()))
@@ -98,7 +98,7 @@ public class PlayerProfileService {
     var fullRankings =
         repo.findByDtbIdAndYearEndRankingFalseOrderByDateAscAgeGroupAsc(dtbId);
     var allDates = repo.findDistinctDatesDesc();
-    var currentQuarter = allDates.isEmpty() ? null : allDates.get(0);
+    var currentQuarter = allDates.isEmpty() ? null : allDates.getFirst();
     var previousQuarter = allDates.size() > 1 ? allDates.get(1) : null;
     var recent4Dates = Set.copyOf(allDates.stream().limit(4).toList());
 
@@ -172,7 +172,7 @@ public class PlayerProfileService {
       result.add(
           new CompleteRankingRow(
               date.getYear() + "/" + quarter,
-              rows.isEmpty() ? "" : rows.get(0).score(),
+              rows.isEmpty() ? "" : rows.getFirst().score(),
               ageGroupPositions));
     }
     return result;

@@ -72,7 +72,7 @@ class PlayersApiControllerTest {
     mockMvc
         .perform(get("/api/v1/players").header("Authorization", auth))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.error").value("lastname parameter required"));
+        .andExpect(jsonPath("$.detail").value("lastname parameter required"));
   }
 
   @Test

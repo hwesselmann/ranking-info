@@ -262,10 +262,10 @@ public class ImportService {
       boolean ageGroupRanking,
       boolean yearEndRanking) {
 
-    int idStart = classesToRetrieve.get(0) * RankingCoding.YOB_MULTIPLIER;
+    int idStart = classesToRetrieve.getFirst() * RankingCoding.YOB_MULTIPLIER;
     int idEnd =
-        classesToRetrieve.get(classesToRetrieve.size() - 1) * RankingCoding.YOB_MULTIPLIER
-            + RankingCoding.YOB_MULTIPLIER - 1;
+        classesToRetrieve.getLast() * RankingCoding.YOB_MULTIPLIER + RankingCoding.YOB_MULTIPLIER
+            - 1;
     var rankingsFromDb = rankingRepository.findForAgeRangeInPeriod(period, idStart, idEnd);
 
     int lastRank = 0;

@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 public class JteWarmup implements ApplicationListener<ApplicationReadyEvent> {
@@ -24,12 +24,12 @@ public class JteWarmup implements ApplicationListener<ApplicationReadyEvent> {
       return;
     }
     log.info("Pre-warming jte templates");
-    var restTemplate = new RestTemplate();
+    var client = RestClient.create();
     var baseUrl = "http://localhost:" + port;
     int warmed = 0;
     for (var path : WARMUP_PATHS) {
       try {
-        restTemplate.getForObject(baseUrl + path, String.class);
+        client.get().uri(baseUrl + path).retrieve().toBodilessEntity();
         warmed++;
       } catch (RestClientException e) {
         if (log.isWarnEnabled()) {
