@@ -7,69 +7,68 @@
 @param Map<Integer, Set<Integer>> quartersByYear = null
 @param String danger = null
 @template.layout(title = "Status | Ranking-Info", danger = danger, content = @`
-    <h1 class="text-2xl font-bold text-left mb-3 mt-3 tracking-normal">Status &amp; Datenbestand</h1>
+    <h1 class="text-2xl font-semibold mt-5 mb-3">Status &amp; Datenbestand</h1>
 
-    <div class="inline-flex rounded overflow-hidden text-sm mb-3">
-        <span class="bg-gray-800 text-white px-2 py-1">letztes Update</span>
-        <span class="bg-green-500 text-white px-2 py-1">${dateLastUpdated}</span>
-    </div>
-
-    <h2 class="text-lg font-semibold text-left mt-3 text-gray-800">Anzahl Datensätze im System</h2>
-    <div class="grid grid-cols-3 bg-gray-800 text-white font-bold">
-        <div class="text-center py-2 px-1">Spielerinnen</div>
-        <div class="text-center py-2 px-1">Spieler</div>
-        <div class="text-center py-2 px-1">Einzelrankings</div>
-    </div>
-    <div class="grid grid-cols-3">
-        <div class="text-center py-2 px-1">${playerFemaleCount}</div>
-        <div class="text-center py-2 px-1">${playerMaleCount}</div>
-        <div class="text-center py-2 px-1">${rankingCount}</div>
+    <div class="ri-status-badge mb-6">
+        <span class="k">letztes Update</span>
+        <span class="v">${dateLastUpdated}</span>
     </div>
 
-    <h2 class="text-lg font-semibold text-left mt-3 text-gray-800">Verfügbare Quartale</h2>
-    <div class="text-sm italic text-gray-600 mb-3">
-        * Stichtag 31.12.
-        ** Stichtag 31.03.
-        *** Stichtag 30.06.
-        **** Stichtag 30.09.
-    </div>
-    <div class="grid grid-cols-12 bg-gray-800 text-white font-bold mt-3">
-        <div class="col-span-4 text-center py-2 px-1">Jahr</div>
-        <div class="col-span-2 text-center py-2 px-1">Q1*</div>
-        <div class="col-span-2 text-center py-2 px-1">Q2**</div>
-        <div class="col-span-2 text-center py-2 px-1">Q3***</div>
-        <div class="col-span-2 text-center py-2 px-1">Q4****</div>
-    </div>
-    @if(quartersByYear != null)
-    !{int rowIdx = 0;}
-    @for(var entry : quartersByYear.entrySet())
-    <div class="grid grid-cols-12${rowIdx % 2 == 0 ? " striped" : ""}">
-        <div class="col-span-4 text-center py-2 px-1">${entry.getKey()}</div>
-        <div class="col-span-2 text-center py-2 px-1">
-            @if(entry.getValue().contains(1))
-            <span class="ri-icon-green">@template.fragments.icons.check_circle()</span>
-            @endif
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-7">
+        <div class="ri-metric">
+            <p class="label">Spielerinnen</p>
+            <p class="value">${playerFemaleCount}</p>
         </div>
-        <div class="col-span-2 text-center py-2 px-1">
-            @if(entry.getValue().contains(4))
-            <span class="ri-icon-green">@template.fragments.icons.check_circle()</span>
-            @endif
+        <div class="ri-metric">
+            <p class="label">Spieler</p>
+            <p class="value">${playerMaleCount}</p>
         </div>
-        <div class="col-span-2 text-center py-2 px-1">
-            @if(entry.getValue().contains(7))
-            <span class="ri-icon-green">@template.fragments.icons.check_circle()</span>
-            @endif
-        </div>
-        <div class="col-span-2 text-center py-2 px-1">
-            @if(entry.getValue().contains(10))
-            <span class="ri-icon-green">@template.fragments.icons.check_circle()</span>
-            @endif
+        <div class="ri-metric">
+            <p class="label">Einzelrankings</p>
+            <p class="value">${rankingCount}</p>
         </div>
     </div>
-    !{rowIdx++;}
-    @endfor
-    @endif
-    <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 px-3 py-2 text-sm mt-3">
-        In Quartal 3/2020 wurde wegen der COVID-19-Pandemie keine neue Rangliste veröffentlicht
+
+    <h2 class="text-base font-semibold mb-1">Verfügbare Quartale</h2>
+    <p class="text-xs text-faint italic mb-3">
+        * Stichtag 31.12. &nbsp; ** Stichtag 31.03. &nbsp; *** Stichtag 30.06. &nbsp; **** Stichtag 30.09.
+    </p>
+    <div class="ri-table-wrap mb-4">
+        <table class="ri-table" role="table" aria-label="Verfügbare Quartale">
+            <thead>
+            <tr>
+                <th scope="col">Jahr</th>
+                <th scope="col" class="center">Q1*</th>
+                <th scope="col" class="center">Q2**</th>
+                <th scope="col" class="center">Q3***</th>
+                <th scope="col" class="center">Q4****</th>
+            </tr>
+            </thead>
+            <tbody>
+            @if(quartersByYear != null)
+            @for(var entry : quartersByYear.entrySet())
+            <tr>
+                <td class="font-medium">${entry.getKey()}</td>
+                <td class="center">
+                    @if(entry.getValue().contains(1))<span class="ri-icon-teal">@template.fragments.icons.check_circle()</span>@else<span class="text-faint">–</span>@endif
+                </td>
+                <td class="center">
+                    @if(entry.getValue().contains(4))<span class="ri-icon-teal">@template.fragments.icons.check_circle()</span>@else<span class="text-faint">–</span>@endif
+                </td>
+                <td class="center">
+                    @if(entry.getValue().contains(7))<span class="ri-icon-teal">@template.fragments.icons.check_circle()</span>@else<span class="text-faint">–</span>@endif
+                </td>
+                <td class="center">
+                    @if(entry.getValue().contains(10))<span class="ri-icon-teal">@template.fragments.icons.check_circle()</span>@else<span class="text-faint">–</span>@endif
+                </td>
+            </tr>
+            @endfor
+            @endif
+            </tbody>
+        </table>
+    </div>
+
+    <div class="ri-note">
+        In Quartal 3/2020 wurde wegen der COVID-19-Pandemie keine neue Rangliste veröffentlicht.
     </div>
 `)
