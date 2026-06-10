@@ -48,6 +48,8 @@ public class RankingRepository {
          :createdAt, :updatedAt)
       """;
 
+  private static final String PARAM_FEDERATION = "federation";
+
   private static final RankingRowMapper ROW_MAPPER = new RankingRowMapper();
 
   private final RankingEntityRepository jdbc;
@@ -89,7 +91,7 @@ public class RankingRepository {
             .addValue("rankingPosition", r.rankingPosition())
             .addValue("score", r.score())
             .addValue("club", r.club())
-            .addValue("federation", r.federation())
+            .addValue(PARAM_FEDERATION, r.federation())
             .addValue("ageGroupRanking", r.ageGroupRanking())
             .addValue("yobRanking", r.yobRanking())
             .addValue("yearEndRanking", r.yearEndRanking())
@@ -116,7 +118,7 @@ public class RankingRepository {
 
   @Cacheable("available_dates")
   public List<LocalDate> findDistinctDatesDesc() {
-    return jdbc.queryDistinctDatesDesc(LocalDate.now());
+    return jdbc.queryDistinctDatesDesc(LocalDate.now(ZoneOffset.UTC));
   }
 
   @Cacheable("player_counts")
@@ -240,8 +242,8 @@ public class RankingRepository {
       MapSqlParameterSource params, RankingQueryFilter filter) {
     var sql = new StringBuilder();
     if (filter.federation() != null) {
-      sql.append(" AND federation = :federation");
-      params.addValue("federation", filter.federation());
+      sql.append(" AND " + PARAM_FEDERATION + " = :" + PARAM_FEDERATION);
+      params.addValue(PARAM_FEDERATION, filter.federation());
     }
     if (filter.club() != null) {
       sql.append(" AND LOWER(club) LIKE :club");

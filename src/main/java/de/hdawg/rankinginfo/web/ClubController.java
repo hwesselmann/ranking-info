@@ -2,6 +2,7 @@ package de.hdawg.rankinginfo.web;
 
 import java.util.HashMap;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +23,9 @@ public class ClubController {
 
   @GetMapping
   public String index(
-      @RequestParam(required = false) String commit,
-      @RequestParam(required = false) String club,
-      @RequestHeader(value = "HX-Request", required = false) String htmxRequest,
+      @RequestParam(required = false) @Nullable String commit,
+      @RequestParam(required = false) @Nullable String club,
+      @RequestHeader(value = "HX-Request", defaultValue = "false") boolean htmxRequest,
       Model model) {
 
     var params = new HashMap<String, Object>();
@@ -34,7 +35,7 @@ public class ClubController {
     if (commit != null && club != null && !club.isBlank()) {
       model.addAttribute("clubs", clubService.searchClubs(club));
     }
-    return htmxRequest != null ? "clubs/results" : "clubs/index";
+    return htmxRequest ? "clubs/results" : "clubs/index";
   }
 
   @GetMapping("/{id}")

@@ -28,34 +28,35 @@ public class StaticPageController {
   private final RankingRepository rankingRepository;
   private final ImportHistoryRepository importHistoryRepository;
 
-  @Value("${imprint.domain:localhost}")
-  private String domain;
-
-  @Value("${imprint.name:}")
-  private String imprintName;
-
-  @Value("${imprint.street:}")
-  private String imprintStreet;
-
-  @Value("${imprint.zipcode:}")
-  private String imprintZipcode;
-
-  @Value("${imprint.city:}")
-  private String imprintCity;
-
-  @Value("${imprint.phone:}")
-  private String imprintPhone;
-
-  @Value("${imprint.mail:}")
-  private String imprintMail;
+  private final String domain;
+  private final String imprintName;
+  private final String imprintStreet;
+  private final String imprintZipcode;
+  private final String imprintCity;
+  private final String imprintPhone;
+  private final String imprintMail;
 
   private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
   public StaticPageController(
       RankingRepository rankingRepository,
-      ImportHistoryRepository importHistoryRepository) {
+      ImportHistoryRepository importHistoryRepository,
+      @Value("${imprint.domain:localhost}") String domain,
+      @Value("${imprint.name:}") String imprintName,
+      @Value("${imprint.street:}") String imprintStreet,
+      @Value("${imprint.zipcode:}") String imprintZipcode,
+      @Value("${imprint.city:}") String imprintCity,
+      @Value("${imprint.phone:}") String imprintPhone,
+      @Value("${imprint.mail:}") String imprintMail) {
     this.rankingRepository = rankingRepository;
     this.importHistoryRepository = importHistoryRepository;
+    this.domain = domain;
+    this.imprintName = imprintName;
+    this.imprintStreet = imprintStreet;
+    this.imprintZipcode = imprintZipcode;
+    this.imprintCity = imprintCity;
+    this.imprintPhone = imprintPhone;
+    this.imprintMail = imprintMail;
   }
 
   @GetMapping("/")

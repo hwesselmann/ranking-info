@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,15 +31,15 @@ public class ListingController {
 
   @GetMapping
   public String index(
-      @RequestParam(required = false) String quarter,
-      @RequestParam(required = false) String gender,
-      @RequestParam(name = "age_group", required = false) String ageGroup,
-      @RequestParam(name = "age_group_options", required = false) String ageGroupOptions,
-      @RequestParam(required = false) String federation,
-      @RequestParam(required = false) String club,
+      @RequestParam(required = false) @Nullable String quarter,
+      @RequestParam(required = false) @Nullable String gender,
+      @RequestParam(name = "age_group", required = false) @Nullable String ageGroup,
+      @RequestParam(name = "age_group_options", required = false) @Nullable String ageGroupOptions,
+      @RequestParam(required = false) @Nullable String federation,
+      @RequestParam(required = false) @Nullable String club,
       @RequestParam(name = "year_end", defaultValue = "0") String yearEnd,
-      @RequestParam(required = false) String commit,
-      @RequestHeader(value = "HX-Request", required = false) String htmxRequest,
+      @RequestParam(required = false) @Nullable String commit,
+      @RequestHeader(value = "HX-Request", defaultValue = "false") boolean htmxRequest,
       Model model) {
 
     model.addAttribute("quarters", rankingService.fetchAvailableQuarters());
@@ -69,7 +70,7 @@ public class ListingController {
       var prevPositions = rankingService.findPreviousPositions(filter, dtbIds);
       model.addAttribute("rankings", toRows(rankings.getContent(), prevPositions));
     }
-    return htmxRequest != null ? "listing/results" : "listing/index";
+    return htmxRequest ? "listing/results" : "listing/index";
   }
 
   private static List<RankingRow> toRows(

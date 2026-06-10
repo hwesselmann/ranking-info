@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -14,77 +16,109 @@ import de.hdawg.rankinginfo.domain.Ranking;
 public class RankingEntity {
 
   @Id
-  private Long id;
+  @Nullable
+  private final Long id;
 
   @Column("dtb_id")
-  private Integer dtbId;
+  private final Integer dtbId;
 
   @Column("lastname")
-  private String lastname;
+  private final String lastname;
 
   @Column("firstname")
-  private String firstname;
+  private final String firstname;
 
   @Column("nationality")
-  private String nationality;
+  private final String nationality;
 
   @Column("age_group")
-  private String ageGroup;
+  private final String ageGroup;
 
   @Column("date")
-  private LocalDate date;
+  private final LocalDate date;
 
   @Column("ranking_position")
-  private Integer rankingPosition;
+  private final Integer rankingPosition;
 
   @Column("score")
-  private String score;
+  private final String score;
 
   @Column("club")
-  private String club;
+  private final String club;
 
   @Column("federation")
-  private String federation;
+  private final String federation;
 
   @Column("age_group_ranking")
-  private Boolean ageGroupRanking;
+  private final Boolean ageGroupRanking;
 
   @Column("yob_ranking")
-  private Boolean yobRanking;
+  private final Boolean yobRanking;
 
   @Column("year_end_ranking")
-  private Boolean yearEndRanking;
+  private final Boolean yearEndRanking;
 
   @Column("created_at")
-  private LocalDateTime createdAt;
+  private final LocalDateTime createdAt;
 
   @Column("updated_at")
-  private LocalDateTime updatedAt;
+  private final LocalDateTime updatedAt;
 
-  RankingEntity() {}
+  @PersistenceCreator
+  RankingEntity(
+      @Nullable Long id,
+      Integer dtbId,
+      String lastname,
+      String firstname,
+      String nationality,
+      String ageGroup,
+      LocalDate date,
+      Integer rankingPosition,
+      String score,
+      String club,
+      String federation,
+      Boolean ageGroupRanking,
+      Boolean yobRanking,
+      Boolean yearEndRanking,
+      LocalDateTime createdAt,
+      LocalDateTime updatedAt) {
+    this.id = id;
+    this.dtbId = dtbId;
+    this.lastname = lastname;
+    this.firstname = firstname;
+    this.nationality = nationality;
+    this.ageGroup = ageGroup;
+    this.date = date;
+    this.rankingPosition = rankingPosition;
+    this.score = score;
+    this.club = club;
+    this.federation = federation;
+    this.ageGroupRanking = ageGroupRanking;
+    this.yobRanking = yobRanking;
+    this.yearEndRanking = yearEndRanking;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
 
   public static RankingEntity fromDomain(Ranking r) {
     var now = LocalDateTime.now(ZoneOffset.UTC);
-    var e = new RankingEntity();
-    if (r.id() != 0) {
-      e.id = r.id();
-    }
-    e.dtbId = r.dtbId();
-    e.lastname = r.lastname();
-    e.firstname = r.firstname();
-    e.nationality = r.nationality();
-    e.ageGroup = r.ageGroup();
-    e.date = r.date();
-    e.rankingPosition = r.rankingPosition();
-    e.score = r.score();
-    e.club = r.club();
-    e.federation = r.federation();
-    e.ageGroupRanking = r.ageGroupRanking();
-    e.yobRanking = r.yobRanking();
-    e.yearEndRanking = r.yearEndRanking();
-    e.createdAt = now;
-    e.updatedAt = now;
-    return e;
+    return new RankingEntity(
+        r.id() != 0 ? r.id() : null,
+        r.dtbId(),
+        r.lastname(),
+        r.firstname(),
+        r.nationality(),
+        r.ageGroup(),
+        r.date(),
+        r.rankingPosition(),
+        r.score(),
+        r.club(),
+        r.federation(),
+        r.ageGroupRanking(),
+        r.yobRanking(),
+        r.yearEndRanking(),
+        now,
+        now);
   }
 
   public Ranking toDomain() {
