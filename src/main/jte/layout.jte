@@ -24,11 +24,14 @@
     <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
     <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png">
-    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#0B3A75">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="msapplication-config" content="/browserconfig.xml">
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#3e8ed0">
+    <meta name="theme-color" content="#0B3A75">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="/css/application.css">
     <script defer src="https://unpkg.com/htmx.org@2.0.9/dist/htmx.min.js"
             integrity="sha384-ESlCao+z/oasnu2Uc/5K1LQTI7YCF2KKO4xakCPQCFuiHhCh8Oa/R5NwHY6guZ3m"
@@ -39,7 +42,7 @@
 </head>
 <body>
 @template.fragments.nav()
-<div class="w-full px-4 mx-auto">
+<div class="w-full max-w-screen-xl px-4 mx-auto">
     @if(danger != null)
     <div class="bg-red-100 border border-red-400 text-red-800 px-4 py-2 rounded mt-2">${danger}</div>
     @endif

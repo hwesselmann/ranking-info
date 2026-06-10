@@ -1,83 +1,96 @@
 @param String danger = null
 @template.layout(title = "Datenschutz | Ranking-Info", danger = danger, content = @`
-    <h1 class="text-2xl font-bold text-left mb-3 mt-3 tracking-normal">Datenschutz</h1>
-    <div class="prose max-w-none">
-        <h2 class="text-xl font-semibold mt-4 mb-2">Datenschutzerklärung</h2>
+    <h1 class="text-2xl font-semibold mt-5 mb-1">Datenschutz</h1>
+    <p class="text-sm text-muted leading-relaxed mb-6 max-w-2xl">Datenschutzerklärung gemäß DSGVO.</p>
 
-        <h3 class="text-lg font-semibold mt-4 mb-1">1. Datenschutz auf einen Blick</h3>
+    <div class="grid grid-cols-1 md:grid-cols-[170px_minmax(0,1fr)] gap-6 md:gap-8 pb-8">
+        <nav class="ri-toc self-start md:sticky md:top-4" aria-label="Abschnitte">
+            <p class="ri-toc-title">Abschnitte</p>
+            <a href="#ds-1">1 · Auf einen Blick</a>
+            <a href="#ds-2">2 · Hosting &amp; CDN</a>
+            <a href="#ds-3">3 · Plugins &amp; Tools</a>
+        </nav>
 
-        <p class="font-semibold mt-3 mb-1">Allgemeine Hinweise</p>
-        <p class="mb-3">Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen
-            Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie
-            persönlich identifiziert werden können. Ausführliche Informationen zum Thema Datenschutz entnehmen Sie
-            unserer unter diesem Text aufgeführten Datenschutzerklärung.</p>
+        <div class="flex flex-col gap-4">
+            <section id="ds-1" class="ri-card ri-card-pad scroll-mt-4">
+                <h2 class="flex items-center gap-2.5 text-base font-semibold mb-3">
+                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-surface text-brand text-sm font-semibold">1</span>
+                    Datenschutz auf einen Blick
+                </h2>
+                <p class="text-sm text-muted leading-relaxed mb-3">
+                    <span class="font-medium text-ink">Allgemeine Hinweise.</span> Die folgenden Hinweise geben einen
+                    einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website
+                    besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.
+                </p>
+                <p class="text-sm text-muted leading-relaxed mb-3">
+                    <span class="font-medium text-ink">Wer ist verantwortlich?</span> Die Datenverarbeitung erfolgt durch
+                    den Websitebetreiber, dessen Kontaktdaten Sie dem Impressum entnehmen können.
+                </p>
+                <p class="text-sm text-muted leading-relaxed mb-3">
+                    <span class="font-medium text-ink">Wie erfassen wir Ihre Daten?</span> Zum einen dadurch, dass Sie uns
+                    diese mitteilen (z. B. über ein Kontaktformular). Andere Daten werden automatisch beim Besuch der
+                    Website durch unsere IT-Systeme erfasst (vor allem technische Daten wie Browser, Betriebssystem oder
+                    Uhrzeit des Seitenaufrufs).
+                </p>
+                <p class="text-sm text-muted leading-relaxed">
+                    <span class="font-medium text-ink">Welche Rechte haben Sie?</span> Sie haben jederzeit das Recht auf
+                    unentgeltliche Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten
+                    sowie ein Recht auf Berichtigung oder Löschung. Eine erteilte Einwilligung können Sie jederzeit
+                    widerrufen. Außerdem steht Ihnen ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu.
+                </p>
+            </section>
 
-        <p class="font-semibold mt-3 mb-1">Datenerfassung auf dieser Website</p>
-        <p class="font-semibold mt-2 mb-1">Wer ist verantwortlich für die Datenerfassung auf dieser Website?</p>
-        <p class="mb-3">Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen
-            Kontaktdaten können Sie dem Impressum dieser Website entnehmen.</p>
+            <section id="ds-2" class="ri-card ri-card-pad scroll-mt-4">
+                <h2 class="flex items-center gap-2.5 text-base font-semibold mb-3">
+                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-surface text-brand text-sm font-semibold">2</span>
+                    Hosting und Content Delivery Networks (CDN)
+                </h2>
+                <p class="text-sm text-muted leading-relaxed mb-3">
+                    <span class="font-medium text-ink">Externes Hosting.</span> Diese Website wird bei einem externen
+                    Dienstleister gehostet. Die personenbezogenen Daten werden auf dessen Servern gespeichert — dabei kann
+                    es sich u. a. um IP-Adressen, Kontaktanfragen, Meta- und Kommunikationsdaten, Namen und Websitezugriffe
+                    handeln.
+                </p>
+                <p class="text-sm text-muted leading-relaxed mb-3">
+                    Der Einsatz des Hosters erfolgt zur Vertragserfüllung gegenüber unseren Kunden (Art. 6 Abs. 1 lit. b
+                    DSGVO) und im Interesse einer sicheren, schnellen Bereitstellung unseres Online-Angebots (Art. 6 Abs. 1
+                    lit. f DSGVO). Unser Hoster verarbeitet Ihre Daten nur, soweit dies zur Erfüllung seiner
+                    Leistungspflichten erforderlich ist.
+                </p>
+                <div class="ri-note">
+                    <span class="font-medium">Eingesetzter Hoster:</span><br>
+                    Strato AG · Pascalstraße 10 · 10587 Berlin
+                </div>
+            </section>
 
-        <p class="font-semibold mt-2 mb-1">Wie erfassen wir Ihre Daten?</p>
-        <p class="mb-2">Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen. Hierbei kann es sich
-            z. B. um Daten handeln, die Sie in ein Kontaktformular eingeben.</p>
-        <p class="mb-3">Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch
-            unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z. B. Internetbrowser, Betriebssystem oder
-            Uhrzeit des Seitenaufrufs). Die Erfassung dieser Daten erfolgt automatisch, sobald Sie diese Website
-            betreten.</p>
-
-        <p class="font-semibold mt-2 mb-1">Wofür nutzen wir Ihre Daten?</p>
-        <p class="mb-3">Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu
-            gewährleisten. Andere Daten können zur Analyse Ihres Nutzerverhaltens verwendet werden.</p>
-
-        <p class="font-semibold mt-2 mb-1">Welche Rechte haben Sie bezüglich Ihrer Daten?</p>
-        <p class="mb-3">Sie haben jederzeit das Recht, unentgeltlich Auskunft über Herkunft, Empfänger und Zweck Ihrer
-            gespeicherten personenbezogenen Daten zu erhalten. Sie haben außerdem ein Recht, die Berichtigung oder
-            Löschung dieser Daten zu verlangen. Wenn Sie eine Einwilligung zur Datenverarbeitung erteilt haben, können
-            Sie diese Einwilligung jederzeit für die Zukunft widerrufen. Außerdem haben Sie das Recht, unter bestimmten
-            Umständen die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Des Weiteren steht
-            Ihnen ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu.</p>
-        <p class="mb-3">Hierzu sowie zu weiteren Fragen zum Thema Datenschutz können Sie sich jederzeit unter der im
-            Impressum angegebenen Adresse an uns wenden.</p>
-
-        <h3 class="text-lg font-semibold mt-4 mb-1">2. Hosting und Content Delivery Networks (CDN)</h3>
-
-        <p class="font-semibold mt-3 mb-1">Externes Hosting</p>
-        <p class="mb-2">Diese Website wird bei einem externen Dienstleister gehostet (Hoster). Die personenbezogenen
-            Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters gespeichert. Hierbei kann
-            es sich v. a. um IP-Adressen, Kontaktanfragen, Meta- und Kommunikationsdaten, Vertragsdaten,
-            Kontaktdaten, Namen, Websitezugriffe und sonstige Daten, die über eine Website generiert werden,
-            handeln.</p>
-        <p class="mb-2">Der Einsatz des Hosters erfolgt zum Zwecke der Vertragserfüllung gegenüber unseren
-            potenziellen und bestehenden Kunden (Art. 6 Abs. 1 lit. b DSGVO) und im Interesse einer sicheren,
-            schnellen und effizienten Bereitstellung unseres Online-Angebots durch einen professionellen Anbieter
-            (Art. 6 Abs. 1 lit. f DSGVO).</p>
-        <p class="mb-2">Unser Hoster wird Ihre Daten nur insoweit verarbeiten, wie dies zur Erfüllung seiner
-            Leistungspflichten erforderlich ist und unsere Weisungen in Bezug auf diese Daten befolgen.</p>
-        <p class="mb-1">Wir setzen folgenden Hoster ein:</p>
-        <p class="mb-3">Strato AG<br>Pascalstraße 10<br>10587 Berlin</p>
-
-        <h3 class="text-lg font-semibold mt-4 mb-1">3. Plugins und Tools</h3>
-
-        <p class="font-semibold mt-3 mb-1">Google Web Fonts</p>
-        <p class="mb-2">Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten so genannte Web Fonts, die von
-            Google bereitgestellt werden. Beim Aufruf einer Seite lädt Ihr Browser die benötigten Web Fonts in ihren
-            Browsercache, um Texte und Schriftarten korrekt anzuzeigen.</p>
-        <p class="mb-2">Zu diesem Zweck muss der von Ihnen verwendete Browser Verbindung zu den Servern von Google
-            aufnehmen. Hierdurch erlangt Google Kenntnis darüber, dass über Ihre IP-Adresse diese Website aufgerufen
-            wurde. Die Nutzung von Google WebFonts erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Der
-            Websitebetreiber hat ein berechtigtes Interesse an der einheitlichen Darstellung des Schriftbildes auf
-            seiner Website. Sofern eine entsprechende Einwilligung abgefragt wurde (z. B. eine Einwilligung zur
-            Speicherung von Cookies), erfolgt die Verarbeitung ausschließlich auf Grundlage von Art. 6 Abs. 1 lit. a
-            DSGVO; die Einwilligung ist jederzeit widerrufbar.</p>
-        <p class="mb-2">Wenn Ihr Browser Web Fonts nicht unterstützt, wird eine Standardschrift von Ihrem Computer
-            genutzt.</p>
-        <p class="mb-2">Weitere Informationen zu Google Web Fonts finden Sie unter
-            <a href="https://developers.google.com/fonts/faq" target="_blank" class="text-brand">https://developers.google.com/fonts/faq</a>
-            und in der Datenschutzerklärung von Google:
-            <a href="https://policies.google.com/privacy?hl=de" target="_blank" class="text-brand">https://policies.google.com/privacy?hl=de</a>.
-        </p>
-        <p class="mb-3 text-sm text-gray-500">Quelle:
-            <a href="https://www.e-recht24.de/muster-datenschutzerklaerung.html" target="_blank" class="text-brand">https://www.e-recht24.de/muster-datenschutzerklaerung.html</a>
-        </p>
+            <section id="ds-3" class="ri-card ri-card-pad scroll-mt-4">
+                <h2 class="flex items-center gap-2.5 text-base font-semibold mb-3">
+                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-surface text-brand text-sm font-semibold">3</span>
+                    Plugins und Tools
+                </h2>
+                <p class="text-sm text-muted leading-relaxed mb-3">
+                    <span class="font-medium text-ink">Google Web Fonts.</span> Diese Seite nutzt zur einheitlichen
+                    Darstellung von Schriftarten sogenannte Web Fonts von Google. Beim Aufruf lädt Ihr Browser die
+                    benötigten Schriften in den Cache. Dazu nimmt Ihr Browser Verbindung zu den Servern von Google auf,
+                    wodurch Google erfährt, dass über Ihre IP-Adresse diese Website aufgerufen wurde.
+                </p>
+                <p class="text-sm text-muted leading-relaxed mb-3">
+                    Die Nutzung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an
+                    einheitlicher Darstellung). Sofern eine Einwilligung abgefragt wurde, erfolgt die Verarbeitung auf
+                    Grundlage von Art. 6 Abs. 1 lit. a DSGVO; sie ist jederzeit widerrufbar. Unterstützt Ihr Browser keine
+                    Web Fonts, wird eine Standardschrift Ihres Computers genutzt.
+                </p>
+                <p class="text-sm text-muted leading-relaxed">
+                    Weitere Informationen:
+                    <a href="https://developers.google.com/fonts/faq" target="_blank" class="text-brand-light">Google Fonts FAQ</a>
+                    und die
+                    <a href="https://policies.google.com/privacy?hl=de" target="_blank" class="text-brand-light">Datenschutzerklärung von Google</a>.
+                </p>
+                <p class="text-xs text-faint mt-3">
+                    Quelle:
+                    <a href="https://www.e-recht24.de/muster-datenschutzerklaerung.html" target="_blank" class="text-brand-light">e-recht24.de</a>
+                </p>
+            </section>
+        </div>
     </div>
 `)

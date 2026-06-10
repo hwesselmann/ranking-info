@@ -97,8 +97,8 @@
     }
   ],
   "start_url": "/",
-  "background_color": "#3e8ed0",
+  "background_color": "#0B3A75",
   "display": "standalone",
   "scope": "/",
-  "theme_color": "#3e8ed0"
+  "theme_color": "#0B3A75"
 }
