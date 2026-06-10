@@ -114,4 +114,46 @@ class BearerTokenFilterTest {
     var body = objectMapper.readTree(response.getContentAsString());
     assertEquals("Unauthorized", body.get("error").asText());
   }
+
+  @Test
+  @DisplayName("accepts any token from a multi-token configuration")
+  void acceptsAnyTokenFromMultiTokenConfig() throws Exception {
+    var multiFilter = filter(List.of("token-a", "token-b", "token-c"));
+
+    for (var t : List.of("token-a", "token-b", "token-c")) {
+      var request = new MockHttpServletRequest();
+      request.addHeader("Authorization", "Bearer " + t);
+      var response = new MockHttpServletResponse();
+      var chainCalled = new AtomicBoolean(false);
+
+      multiFilter.doFilter(request, response, (req, res) -> chainCalled.set(true));
+
+      assertTrue(chainCalled.get(), "Expected chain to be called for token: " + t);
+    }
+  }
+
+  @Test
+  @DisplayName("rejects token differing by one character from a valid token")
+  void rejectsTokenDifferingByOneCharacter() throws Exception {
+    var request = new MockHttpServletRequest();
+    request.addHeader("Authorization", "Bearer valid-toke");
+    var response = new MockHttpServletResponse();
+
+    filter().doFilter(request, response, noOpChain);
+
+    assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
+  }
+
+  @Test
+  @DisplayName("blank tokens in configuration are ignored")
+  void blankTokensInConfigAreIgnored() throws Exception {
+    var filterWithBlanks = filter(List.of("  ", "", "valid-token"));
+    var request = new MockHttpServletRequest();
+    request.addHeader("Authorization", "Bearer   ");
+    var response = new MockHttpServletResponse();
+
+    filterWithBlanks.doFilter(request, response, noOpChain);
+
+    assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
+  }
 }

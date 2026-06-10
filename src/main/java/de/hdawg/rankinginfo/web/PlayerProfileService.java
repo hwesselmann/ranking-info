@@ -43,7 +43,9 @@ public class PlayerProfileService {
     public PlayerProfile {
       currentRankings = List.copyOf(currentRankings);
       completeRankings = List.copyOf(completeRankings);
-      availableData = Collections.unmodifiableMap(new LinkedHashMap<>(availableData));
+      var copiedMap = new TreeMap<Integer, Set<String>>(Comparator.reverseOrder());
+      availableData.forEach((k, v) -> copiedMap.put(k, Set.copyOf(v)));
+      availableData = Collections.unmodifiableMap(copiedMap);
     }
   }
 
