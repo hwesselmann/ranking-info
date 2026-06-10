@@ -54,7 +54,7 @@ public class RankingService {
   public Map<String, List<QuarterEntry>> fetchAvailableQuarters() {
     var years = new TreeMap<String, List<QuarterEntry>>(Comparator.reverseOrder());
     for (var date : rankingRepository.findDistinctDatesDesc()) {
-      if (Month.DECEMBER.equals(date.getMonth()) && date.getDayOfMonth() == 31) continue;
+      if (date.getMonthValue() == Month.DECEMBER.getValue() && date.getDayOfMonth() == 31) continue;
       var adjusted = date.minusDays(1);
       years
           .computeIfAbsent(String.valueOf(adjusted.getYear()), k -> new ArrayList<>())
@@ -132,7 +132,7 @@ public class RankingService {
         dtbIdEnd,
         yobRanking,
         ageGroupRanking,
-        filter.yearEnd() && Month.JANUARY.equals(quarter.getMonth()),
+        filter.yearEnd() && quarter.getMonthValue() == Month.JANUARY.getValue(),
         fed,
         club,
         null);
