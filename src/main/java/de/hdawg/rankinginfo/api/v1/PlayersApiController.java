@@ -40,10 +40,10 @@ public class PlayersApiController {
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @GetMapping
   public ResponseEntity<Object> search(
-      @RequestParam(required = false) String lastname,
-      @RequestParam(required = false) String yob) {
+      @RequestParam(required = false, defaultValue = "") String lastname,
+      @RequestParam(required = false, defaultValue = "") String yob) {
 
-    if (lastname == null || lastname.isBlank()) {
+    if (lastname.isBlank()) {
       return ResponseEntity.badRequest()
           .body(
               ProblemDetail.forStatusAndDetail(
@@ -51,7 +51,7 @@ public class PlayersApiController {
     }
 
     var players =
-        (yob != null && !yob.isBlank())
+        (!yob.isBlank())
             ? playerService.findPlayersByLastnameAndYob(
                 lastname,
                 Integer.parseInt(yob.substring(2, 4)) + RankingCoding.GENDER_FACTOR_JUNIOREN,

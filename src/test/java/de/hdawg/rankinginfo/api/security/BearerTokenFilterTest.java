@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +14,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import tools.jackson.databind.ObjectMapper;
@@ -54,34 +58,21 @@ class BearerTokenFilterTest {
     assertEquals(200, response.getStatus());
   }
 
-  @Test
-  @DisplayName("returns 401 without authorization header")
-  void returns401WithoutAuthorizationHeader() throws Exception {
-    var request = new MockHttpServletRequest();
-    var response = new MockHttpServletResponse();
-
-    filter().doFilter(request, response, noOpChain);
-
-    assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
+  static Stream<Arguments> unauthorizedRequests() {
+    return Stream.of(
+        Arguments.of("no authorization header", null),
+        Arguments.of("wrong token", "Bearer wrong-token"),
+        Arguments.of("non-bearer scheme", "Token valid-token"),
+        Arguments.of("token off by one character", "Bearer valid-toke"));
   }
 
-  @Test
-  @DisplayName("returns 401 with wrong token")
-  void returns401WithWrongToken() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("unauthorizedRequests")
+  void returns401ForUnauthorizedRequest(String description, String headerValue) throws Exception {
     var request = new MockHttpServletRequest();
-    request.addHeader("Authorization", "Bearer wrong-token");
-    var response = new MockHttpServletResponse();
-
-    filter().doFilter(request, response, noOpChain);
-
-    assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
-  }
-
-  @Test
-  @DisplayName("returns 401 when header is not Bearer scheme")
-  void returns401WhenHeaderIsNotBearerScheme() throws Exception {
-    var request = new MockHttpServletRequest();
-    request.addHeader("Authorization", "Token valid-token");
+    if (headerValue != null) {
+      request.addHeader("Authorization", headerValue);
+    }
     var response = new MockHttpServletResponse();
 
     filter().doFilter(request, response, noOpChain);
@@ -112,7 +103,7 @@ class BearerTokenFilterTest {
     filter().doFilter(request, response, noOpChain);
 
     var body = objectMapper.readTree(response.getContentAsString());
-    assertEquals("Unauthorized", body.get("error").asText());
+    assertEquals("Unauthorized", body.get("error").textValue());
   }
 
   @Test
@@ -130,18 +121,6 @@ class BearerTokenFilterTest {
 
       assertTrue(chainCalled.get(), "Expected chain to be called for token: " + t);
     }
-  }
-
-  @Test
-  @DisplayName("rejects token differing by one character from a valid token")
-  void rejectsTokenDifferingByOneCharacter() throws Exception {
-    var request = new MockHttpServletRequest();
-    request.addHeader("Authorization", "Bearer valid-toke");
-    var response = new MockHttpServletResponse();
-
-    filter().doFilter(request, response, noOpChain);
-
-    assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
   }
 
   @Test

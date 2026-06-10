@@ -60,9 +60,9 @@ public class PlayerProfileService {
   private static final List<String> ADULT_AGE_GROUPS = List.of("m00", "w00");
   private static final List<String> DIAGRAM_AGE_GROUPS =
       List.of("U12", "U14", "U16", "U18", "m00", "w00");
-  private static final List<String> DIAGRAM_ORDER = List.of("U12", "U14", "U16", "U18", "Aktive");
   private static final String AGE_GROUP_OVERALL = "overall";
   private static final String AKTIVE_LABEL = "Aktive";
+  private static final List<String> DIAGRAM_ORDER = List.of("U12", "U14", "U16", "U18", AKTIVE_LABEL);
   private static final int DATE_PARTS_SIZE = 2;
   private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -207,7 +207,7 @@ public class PlayerProfileService {
       try {
         var year = Integer.parseInt(parts[0]);
         result.computeIfAbsent(year, k -> new LinkedHashSet<>()).add(parts[1]);
-      } catch (NumberFormatException e) {
+      } catch (NumberFormatException _) {
         // skip rows with unparseable year
       }
     }
@@ -221,21 +221,24 @@ public class PlayerProfileService {
     return diff > 0 ? "+" + diff : String.valueOf(diff);
   }
 
+  private static double parseScoreOrZero(Ranking ranking) {
+    try {
+      return Double.parseDouble(ranking.score().replace(',', '.'));
+    } catch (NumberFormatException _) {
+      return 0.0;
+    }
+  }
+
   @Nullable
   private static String computeScoreChange(@Nullable Ranking prev, Ranking curr) {
     if (prev == null) return null;
     try {
       double currScore = Double.parseDouble(curr.score().replace(',', '.'));
-      double prevScore;
-      try {
-        prevScore = Double.parseDouble(prev.score().replace(',', '.'));
-      } catch (NumberFormatException e) {
-        prevScore = 0.0;
-      }
+      double prevScore = parseScoreOrZero(prev);
       double diff = currScore - prevScore;
       if (diff == 0.0) return null;
       return diff > 0 ? "+" + diff : String.valueOf(diff);
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException _) {
       return null;
     }
   }

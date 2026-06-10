@@ -23,6 +23,7 @@ import com.opencsv.exceptions.CsvValidationException;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,11 +65,15 @@ public class ImportService {
 
   private final RankingRepository rankingRepository;
   private final ImportHistoryRepository importHistoryRepository;
+  private final ImportService self;
 
   public ImportService(
-      RankingRepository rankingRepository, ImportHistoryRepository importHistoryRepository) {
+      RankingRepository rankingRepository,
+      ImportHistoryRepository importHistoryRepository,
+      @Lazy ImportService self) {
     this.rankingRepository = rankingRepository;
     this.importHistoryRepository = importHistoryRepository;
+    this.self = self;
   }
 
   public static LocalDate extractPeriodFromFilename(String filename) {
@@ -164,9 +169,9 @@ public class ImportService {
     if (csvFiles == null) return;
     for (var csvFile : csvFiles) {
       try {
-        importRankings(csvFile.toPath());
+        self.importRankings(csvFile.toPath());
         log.info("Imported '{}'", csvFile.getName());
-      } catch (DuplicateImportError e) {
+      } catch (DuplicateImportError _) {
         log.info("Skipping '{}' (already imported)", csvFile.getName());
       } catch (Exception e) {
         var logFile = errorLogPath != null ? errorLogPath : folderPath + "/error.log";
@@ -322,7 +327,7 @@ public class ImportService {
   private static Integer parseIntOrNull(String s) {
     try {
       return Integer.parseInt(s.trim());
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException _) {
       return null;
     }
   }
@@ -330,7 +335,7 @@ public class ImportService {
   private static int parseIntOrZero(String s) {
     try {
       return Integer.parseInt(s);
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException _) {
       return 0;
     }
   }

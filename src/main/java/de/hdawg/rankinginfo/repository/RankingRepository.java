@@ -270,7 +270,7 @@ public class RankingRepository {
           rs.getInt("ranking_position"),
           rs.getString("score"),
           rs.getString("club"),
-          rs.getString("federation"),
+          rs.getString(PARAM_FEDERATION),
           rs.getBoolean("age_group_ranking"),
           rs.getBoolean("yob_ranking"),
           rs.getBoolean("year_end_ranking"));

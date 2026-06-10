@@ -2,6 +2,7 @@ package de.hdawg.rankinginfo.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,6 +30,7 @@ public class RankingService {
 
   private static final String AGE_GROUP_M00 = "m00";
   private static final String AGE_GROUP_W00 = "w00";
+  private static final String AGE_GROUP_OVERALL = "overall";
 
   private record YobAgeFlags(boolean yobRanking, boolean ageGroupRanking) {}
 
@@ -52,7 +54,7 @@ public class RankingService {
   public Map<String, List<QuarterEntry>> fetchAvailableQuarters() {
     var years = new TreeMap<String, List<QuarterEntry>>(Comparator.reverseOrder());
     for (var date : rankingRepository.findDistinctDatesDesc()) {
-      if (date.getMonthValue() == 12 && date.getDayOfMonth() == 31) continue;
+      if (date.getMonth() == Month.DECEMBER && date.getDayOfMonth() == 31) continue;
       var adjusted = date.minusDays(1);
       years
           .computeIfAbsent(String.valueOf(adjusted.getYear()), k -> new ArrayList<>())
@@ -130,7 +132,7 @@ public class RankingService {
         dtbIdEnd,
         yobRanking,
         ageGroupRanking,
-        filter.yearEnd() && quarter.getMonthValue() == 1,
+        filter.yearEnd() && quarter.getMonth() == Month.JANUARY,
         fed,
         club,
         null);
@@ -142,13 +144,13 @@ public class RankingService {
       case "Damen" -> "w00";
       case "Junioren" ->
           (ageGroup == null || ageGroup.isBlank())
-              ? "overall"
+              ? AGE_GROUP_OVERALL
               : "m" + ageGroup.toLowerCase(Locale.ROOT);
       case "Juniorinnen" ->
           (ageGroup == null || ageGroup.isBlank())
-              ? "overall"
+              ? AGE_GROUP_OVERALL
               : "w" + ageGroup.toLowerCase(Locale.ROOT);
-      default -> "overall";
+      default -> AGE_GROUP_OVERALL;
     };
   }
 
@@ -162,7 +164,7 @@ public class RankingService {
     if (!ageGroup.startsWith("U")) return 0;
     try {
       return Integer.parseInt(ageGroup.substring(1));
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException _) {
       return 0;
     }
   }

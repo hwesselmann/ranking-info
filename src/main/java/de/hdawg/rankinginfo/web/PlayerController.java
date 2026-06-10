@@ -38,23 +38,23 @@ public class PlayerController {
 
   @GetMapping
   public String index(
-      @RequestParam(required = false) String lastname,
-      @RequestParam(required = false) String yob,
-      @RequestParam(name = "dtb_id", required = false) String dtbId,
-      @RequestParam(required = false) String commit,
+      @RequestParam(required = false, defaultValue = "") String lastname,
+      @RequestParam(required = false, defaultValue = "") String yob,
+      @RequestParam(name = "dtb_id", required = false, defaultValue = "") String dtbId,
+      @RequestParam(required = false, defaultValue = "") String commit,
       @RequestHeader(value = "HX-Request", required = false, defaultValue = "false") boolean isHtmxRequest,
       Model model,
       RedirectAttributes redirect,
       HttpServletResponse response) {
 
-    if (dtbId != null && !dtbId.isBlank()) {
+    if (!dtbId.isBlank()) {
       var range = playerService.dtbIdRange(dtbId);
       var players = playerService.findPlayersByDtbIdRange(range[0], range[1]);
       if (players.size() == 1) {
         return redirectToPlayer(players.getFirst().dtbId(), isHtmxRequest, response);
       }
       model.addAttribute(MODEL_PLAYERS, players);
-    } else if (lastname != null && !lastname.isBlank() && yob != null && !yob.isBlank()) {
+    } else if (!lastname.isBlank() && !yob.isBlank()) {
       int yobMale = playerService.yobToMaleMarker(yob);
       var players = playerService.findPlayersByLastnameAndYob(lastname.trim(), yobMale,
           yobMale + 100);
@@ -62,13 +62,13 @@ public class PlayerController {
         return redirectToPlayer(players.getFirst().dtbId(), isHtmxRequest, response);
       }
       model.addAttribute(MODEL_PLAYERS, players);
-    } else if (lastname != null && !lastname.isBlank()) {
+    } else if (!lastname.isBlank()) {
       var players = playerService.findPlayersByLastname(lastname.trim());
       if (players.size() == 1) {
         return redirectToPlayer(players.getFirst().dtbId(), isHtmxRequest, response);
       }
       model.addAttribute(MODEL_PLAYERS, players);
-    } else if (yob != null && !yob.isBlank()) {
+    } else if (!yob.isBlank()) {
       int yobMale = playerService.yobToMaleMarker(yob);
       var players = playerService.findPlayersByYob(yobMale, yobMale + 100);
       if (players.size() == 1) {
