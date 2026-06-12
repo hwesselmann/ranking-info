@@ -20,7 +20,7 @@ WORKDIR /app
 RUN adduser -D -s /bin/false appuser
 COPY --from=builder /app/target/*.jar app.jar
 COPY --from=builder /app/newrelic/newrelic.jar newrelic/newrelic.jar
-COPY newrelic.yml newrelic/newrelic.yml
+COPY newrelic/newrelic.yml newrelic/newrelic.yml
 RUN chown -R appuser:appuser app.jar newrelic/
 USER appuser
 EXPOSE 8080

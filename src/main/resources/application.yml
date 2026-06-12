@@ -40,6 +40,15 @@ gg:
     developmentMode: true
     usePrecompiledTemplates: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
 logging:
   level:
     "[org.apache.catalina.webresources.AbstractFileResourceSet]": ERROR

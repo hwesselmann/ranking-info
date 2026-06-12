@@ -20,7 +20,7 @@ import de.hdawg.rankinginfo.repository.RankingRepository;
 @SpringBootTest
 class ImportIntegrationTest {
 
-  @Autowired ImportService importService;
+  @Autowired RankingImportService rankingImportService;
 
   @Autowired RankingRepository rankingRepository;
 
@@ -35,7 +35,7 @@ class ImportIntegrationTest {
   @Test
   @DisplayName("Herren import stores 10 records with age_group m00 and no U-group rankings")
   void herrenImportStores10RecordsWithAgeGroupM00AndNoUGroupRankings() throws Exception {
-    importService.importRankings(fixture("Herren_20180401.csv"));
+    rankingImportService.importRankings(fixture("Herren_20180401.csv"));
 
     var herren =
         rankingRepository.findAll().stream()
@@ -53,7 +53,7 @@ class ImportIntegrationTest {
   @Test
   @DisplayName("Herren import stores correct positions from CSV")
   void herrenImportStoresCorrectPositionsFromCsv() throws Exception {
-    importService.importRankings(fixture("Herren_20180401.csv"));
+    rankingImportService.importRankings(fixture("Herren_20180401.csv"));
 
     var rankings =
         rankingRepository.findAll().stream()
@@ -68,7 +68,7 @@ class ImportIntegrationTest {
   @Test
   @DisplayName("Damen import stores 10 records with age_group w00 and no U-group rankings")
   void damenImportStores10RecordsWithAgeGroupW00AndNoUGroupRankings() throws Exception {
-    importService.importRankings(fixture("Damen_20180401.csv"));
+    rankingImportService.importRankings(fixture("Damen_20180401.csv"));
 
     assertEquals(10, rankingRepository.count());
     assertEquals(
@@ -86,7 +86,7 @@ class ImportIntegrationTest {
   @Test
   @DisplayName("import creates ImportHistory entry")
   void importCreatesImportHistoryEntry() throws Exception {
-    importService.importRankings(fixture("Herren_20180401.csv"));
+    rankingImportService.importRankings(fixture("Herren_20180401.csv"));
 
     var histories = importHistoryRepository.findAll();
     assertEquals(1, histories.size());
@@ -98,17 +98,17 @@ class ImportIntegrationTest {
   @Test
   @DisplayName("duplicate import throws DuplicateImportError")
   void duplicateImportThrowsDuplicateImportError() throws Exception {
-    importService.importRankings(fixture("Herren_20180401.csv"));
+    rankingImportService.importRankings(fixture("Herren_20180401.csv"));
 
     assertThrows(
         DuplicateImportError.class,
-        () -> importService.importRankings(fixture("Herren_20180401.csv")));
+        () -> rankingImportService.importRankings(fixture("Herren_20180401.csv")));
   }
 
   @Test
   @DisplayName("Junioren import stores overall records and triggers U-group calculation")
   void juniorenImportStoresOverallRecordsAndTriggersUGroupCalculation() throws Exception {
-    importService.importRankings(fixture("Junioren_20180401.csv"));
+    rankingImportService.importRankings(fixture("Junioren_20180401.csv"));
 
     var overall =
         rankingRepository.findAll().stream()
@@ -126,7 +126,7 @@ class ImportIntegrationTest {
   @Test
   @DisplayName("Junioren import uses GER-only position counter - foreign players do not advance rank")
   void juniorenImportUsesGerOnlyPositionCounter() throws Exception {
-    importService.importRankings(fixture("Junioren_20180401.csv"));
+    rankingImportService.importRankings(fixture("Junioren_20180401.csv"));
 
     var u18general =
         rankingRepository.findAll().stream()
@@ -141,8 +141,8 @@ class ImportIntegrationTest {
   @Test
   @DisplayName("combined Junioren and Juniorinnen import matches Ruby reference count of 288")
   void combinedJuniorenAndJuniorinnenImportMatchesRubyReferenceCountOf288() throws Exception {
-    importService.importRankings(fixture("Junioren_20180401.csv"));
-    importService.importRankings(fixture("Juniorinnen_20180401.csv"));
+    rankingImportService.importRankings(fixture("Junioren_20180401.csv"));
+    rankingImportService.importRankings(fixture("Juniorinnen_20180401.csv"));
 
     assertEquals(288, rankingRepository.count());
   }
