@@ -245,13 +245,15 @@ public class RankingRepository {
       sql.append(" AND " + PARAM_FEDERATION + " = :" + PARAM_FEDERATION);
       params.addValue(PARAM_FEDERATION, filter.federation());
     }
-    if (filter.club() != null) {
+    var club = filter.club();
+    if (club != null) {
       sql.append(" AND LOWER(club) LIKE :club");
-      params.addValue("club", "%" + filter.club().toLowerCase(Locale.ROOT) + "%");
+      params.addValue("club", "%" + club.toLowerCase(Locale.ROOT) + "%");
     }
-    if (filter.dtbIds() != null && !filter.dtbIds().isEmpty()) {
+    var dtbIds = filter.dtbIds();
+    if (dtbIds != null && !dtbIds.isEmpty()) {
       sql.append(" AND dtb_id IN (:dtbIds)");
-      params.addValue("dtbIds", filter.dtbIds());
+      params.addValue("dtbIds", dtbIds);
     }
     return sql.toString();
   }

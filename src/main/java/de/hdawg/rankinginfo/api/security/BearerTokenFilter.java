@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 import tools.jackson.databind.ObjectMapper;
 
-public class BearerTokenFilter extends OncePerRequestFilter {
+public final class BearerTokenFilter extends OncePerRequestFilter {
 
   private final Set<String> validTokens;
   private final ObjectMapper objectMapper;
