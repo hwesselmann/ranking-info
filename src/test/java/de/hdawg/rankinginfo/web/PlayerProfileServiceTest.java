@@ -11,6 +11,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import de.hdawg.rankinginfo.domain.Club;
 import de.hdawg.rankinginfo.domain.Ranking;
 import de.hdawg.rankinginfo.service.PlayerService;
 import de.hdawg.rankinginfo.web.viewmodel.CompleteRankingRow;
@@ -22,6 +23,39 @@ class PlayerProfileServiceTest {
   private static Ranking r(int dtbId, String ageGroup, LocalDate date, int pos, String score) {
     return new Ranking(0L, dtbId, "Test", "Player", "GER", ageGroup, date, pos, score, "TC Test", "HH",
         false, false, false);
+  }
+
+  private static Ranking rClub(String club, String federation, LocalDate date) {
+    return new Ranking(0L, 1, "Test", "Player", "GER", "m00", date, 5, "800", club, federation,
+        false, false, false);
+  }
+
+  // --- buildClubs ---
+
+  @Test
+  @DisplayName("buildClubs orders clubs chronologically oldest to newest")
+  void buildClubsChronologicalOrder() {
+    var q1 = LocalDate.of(2022, 1, 1);
+    var q2 = LocalDate.of(2023, 1, 1);
+    var q3 = LocalDate.of(2024, 1, 1);
+    // rawRankings is DateDesc
+    var rankings = List.of(rClub("Club C", "HH", q3), rClub("Club B", "BY", q2), rClub("Club A", "NI", q1));
+    var clubs = PlayerProfileService.buildClubs(rankings);
+    assertEquals(List.of("Club A", "Club B", "Club C"), clubs.stream().map(Club::name).toList());
+  }
+
+  @Test
+  @DisplayName("buildClubs deduplicates clubs, keeping oldest occurrence")
+  void buildClubsDeduplication() {
+    var q1 = LocalDate.of(2022, 1, 1);
+    var q2 = LocalDate.of(2023, 1, 1);
+    var q3 = LocalDate.of(2024, 1, 1);
+    // Player was at TC Hamburg in 2022, moved to TC Berlin in 2023, returned to TC Hamburg in 2024
+    var rankings = List.of(rClub("TC Hamburg", "HH", q3), rClub("TC Berlin", "BY", q2), rClub("TC Hamburg", "HH", q1));
+    var clubs = PlayerProfileService.buildClubs(rankings);
+    assertEquals(2, clubs.size());
+    assertEquals("TC Hamburg", clubs.get(0).name());
+    assertEquals("TC Berlin", clubs.get(1).name());
   }
 
   // --- buildCurrentRankings ---
