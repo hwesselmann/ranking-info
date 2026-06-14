@@ -56,6 +56,35 @@
                         Jahrgangsrangliste.</p>
                 </div>
                 <div class="ri-faq">
+                    <p class="ri-faq-q">@template.fragments.icons.help_circle() Was bedeutet „AK"
+                        in der Tabelle „Aktuelle Position"?</p>
+                    <p class="ri-faq-a">AK steht für <strong>Altersklassenranking</strong>. Neben
+                        der allgemeinen Rangliste — die alle jüngeren Jahrgänge einschließt —
+                        veröffentlicht der DTB eine offizielle Altersklassenrangliste für genau
+                        zwei Geburtsjahrgänge gleichzeitig (den sogenannten Doppeljahrgang,
+                        z.&nbsp;B. U14 = Jahrgänge 2010 und 2011). Die AK-Zahl zeigt, auf welchem
+                        Platz Du in genau dieser offiziellen Doppeljahrgangsrangliste stehst. Sie
+                        erscheint nur in der Zeile des entsprechenden Doppeljahrgangs.</p>
+                </div>
+                <div class="ri-faq">
+                    <p class="ri-faq-q">@template.fragments.icons.help_circle() Wie lese ich die
+                        Diagramme auf dem Spielerprofil?</p>
+                    <p class="ri-faq-a">Auf dem Spielerprofil gibt es vier Diagramme, jeweils als
+                        Kurz- (12 Monate) und Langfassung (gesamter Zeitraum):
+                        <br><br>
+                        <strong>Verlauf Altersklasse</strong> (Liniendiagramm): Zeigt den
+                        Ranglistenplatz über die Zeit. Die Y-Achse ist umgekehrt — weiter oben im
+                        Diagramm bedeutet ein besserer Rang. Wechselt ein Spieler die Altersklasse,
+                        ändert sich auch das Linienlabel (z.&nbsp;B. von U14 auf U16). Im
+                        Gesamtverlauf entsteht so eine typische Treppe, die das Aufsteigen durch
+                        die Altersklassen zeigt.
+                        <br><br>
+                        <strong>Verlauf Punkte</strong> (Balkendiagramm): Zeigt die erreichten
+                        Punkte pro Quartal. Höhere Balken stehen für mehr Punkte. Sonderwerte
+                        wie „PR" (Platzierungsranking), „Einst." (Einsteiger) oder „0,0" werden
+                        nicht dargestellt.</p>
+                </div>
+                <div class="ri-faq">
                     <p class="ri-faq-q">@template.fragments.icons.help_circle() Was bedeuten die
                         Aufstiegs-/Abstiegssymbole?</p>
                     <p class="ri-faq-a">Die Symbole zeigen, wie sich Deine Position in der
