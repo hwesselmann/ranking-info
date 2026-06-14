@@ -95,6 +95,18 @@ class PlayerProfileServiceTest {
   }
 
   @Test
+  @DisplayName("buildCompleteRankings excludes ageGroupRanking and yobRanking rows")
+  void buildCompleteRankingsFiltersFlags() {
+    var date = LocalDate.of(2024, 4, 1);
+    var general = new Ranking(0L, 1, "Test", "Player", "GER", "U14", date, 5, "800", "TC Test", "HH", false, false, false);
+    var ageGroup = new Ranking(0L, 1, "Test", "Player", "GER", "U14", date, 3, "800", "TC Test", "HH", true, false, false);
+    var yob = new Ranking(0L, 1, "Test", "Player", "GER", "U14", date, 2, "800", "TC Test", "HH", false, true, false);
+    var result = service.buildCompleteRankings(List.of(general, ageGroup, yob));
+    assertEquals(1, result.size());
+    assertEquals(5, result.get(0).ageGroupPositions().get("U14"));
+  }
+
+  @Test
   @DisplayName("buildCompleteRankings skips rows with no QUARTER_MAP entry (e.g. month 2)")
   void buildCompleteRankingsSkipsUnknownMonth() {
     var rankings = List.of(r(1, "m00", LocalDate.of(2024, 2, 1), 5, "800"));

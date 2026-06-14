@@ -152,7 +152,7 @@ public class PlayerProfileService {
   public List<CompleteRankingRow> buildCompleteRankings(List<Ranking> rankings) {
     var byDate =
         rankings.stream()
-            .filter(r -> !AGE_GROUP_OVERALL.equals(r.ageGroup()))
+            .filter(r -> !AGE_GROUP_OVERALL.equals(r.ageGroup()) && !r.ageGroupRanking() && !r.yobRanking())
             .collect(
                 Collectors.groupingBy(
                     Ranking::date,
