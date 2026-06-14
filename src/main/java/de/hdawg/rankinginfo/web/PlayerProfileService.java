@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -96,7 +97,10 @@ public class PlayerProfileService {
     var previousQuarter = allDates.size() > 1 ? allDates.get(1) : null;
     var recent4Dates = Set.copyOf(allDates.stream().limit(4).toList());
 
-    var currentRankings = buildCurrentRankings(rawRankings, currentQuarter, previousQuarter);
+    var ageGroupRankings = currentQuarter != null
+        ? repo.findAgeGroupRankingsByDateAndDtbIds(currentQuarter, List.of(dtbId))
+        : List.<Ranking>of();
+    var currentRankings = buildCurrentRankings(dtbId, rawRankings, currentQuarter, previousQuarter, ageGroupRankings);
     var allTimeDiagram = buildDiagramData(fullRankings);
     var recent12mDiagram =
         buildDiagramData(
@@ -117,36 +121,60 @@ public class PlayerProfileService {
   }
 
   public List<CurrentRankingRow> buildCurrentRankings(
+      int dtbId,
       List<Ranking> rawRankings,
       @Nullable LocalDate currentQuarter,
-      @Nullable LocalDate previousQuarter) {
+      @Nullable LocalDate previousQuarter,
+      List<Ranking> ageGroupRankings) {
     if (currentQuarter == null) return List.of();
+
+    boolean junior = AgeGroupResolver.isJunior(dtbId, currentQuarter);
+    String singleAgeGroup = junior ? AgeGroupResolver.currentSingleAgeGroup(dtbId, currentQuarter) : null;
+    OptionalInt doubleOpt = junior ? AgeGroupResolver.currentDoubleAgeGroup(dtbId, currentQuarter) : OptionalInt.empty();
+    String doubleAgeGroup = doubleOpt.isPresent() ? "U" + doubleOpt.getAsInt() : null;
+
+    Integer agRankingPos = null;
+    if (doubleAgeGroup != null) {
+      String dag = doubleAgeGroup;
+      agRankingPos = ageGroupRankings.stream()
+          .filter(r -> dag.equals(r.ageGroup()))
+          .map(Ranking::rankingPosition)
+          .findFirst()
+          .orElse(null);
+    }
+    Integer finalAgRankingPos = agRankingPos;
+    String finalSingle = singleAgeGroup;
+    String finalDouble = doubleAgeGroup;
+
     return rawRankings.stream()
         .filter(r -> r.date().equals(currentQuarter) && !AGE_GROUP_OVERALL.equals(r.ageGroup()))
-        .map(
-            r -> {
-              var prev =
-                  previousQuarter == null
-                      ? null
-                      : rawRankings.stream()
-                          .filter(
-                              p ->
-                                  p.date().equals(previousQuarter)
-                                      && p.ageGroup().equals(r.ageGroup()))
-                          .findFirst()
-                          .orElse(null);
-              return new CurrentRankingRow(
-                  r.ageGroup(),
-                  r.rankingPosition(),
-                  r.score(),
-                  computePositionChange(prev, r),
-                  computeScoreChange(prev, r));
-            })
-        .sorted(
-            Comparator.<CurrentRankingRow, Integer>comparing(
-                    row -> ADULT_AGE_GROUPS.contains(row.ageGroup()) ? 0 : 1)
-                .thenComparing(CurrentRankingRow::ageGroup))
+        .map(r -> {
+          var prev = previousQuarter == null ? null : rawRankings.stream()
+              .filter(p -> p.date().equals(previousQuarter) && p.ageGroup().equals(r.ageGroup()))
+              .findFirst()
+              .orElse(null);
+          boolean isAdult = ADULT_AGE_GROUPS.contains(r.ageGroup());
+          boolean isCurrent = !isAdult && r.ageGroup().equals(finalSingle);
+          boolean showScore = isAdult || isCurrent;
+          Integer agPos = r.ageGroup().equals(finalDouble) ? finalAgRankingPos : null;
+          return new CurrentRankingRow(
+              r.ageGroup(),
+              r.rankingPosition(),
+              r.score(),
+              computePositionChange(prev, r),
+              showScore ? computeScoreChange(prev, r) : null,
+              isCurrent,
+              showScore,
+              agPos);
+        })
+        .sorted(Comparator.comparingInt(row -> currentRankingsSortKey(row, finalSingle)))
         .toList();
+  }
+
+  private static int currentRankingsSortKey(CurrentRankingRow row, @Nullable String currentSingle) {
+    if (ADULT_AGE_GROUPS.contains(row.ageGroup())) return 0;
+    if (row.ageGroup().equals(currentSingle)) return 1;
+    return Integer.parseInt(row.ageGroup().substring(1)) + 1;
   }
 
   public List<CompleteRankingRow> buildCompleteRankings(List<Ranking> rankings) {

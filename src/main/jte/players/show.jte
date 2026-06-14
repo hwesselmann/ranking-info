@@ -60,10 +60,15 @@
                         <tbody>
                         @if(currentRankings != null)
                         @for(var r : currentRankings)
-                        !{var positionChange = r.positionChange(); var scoreChange = r.scoreChange();}
-                        <tr style="${"m00".equals(r.ageGroup()) || "w00".equals(r.ageGroup()) ? "background:#EAF1FA" : ""}">
+                        !{var positionChange = r.positionChange(); var scoreChange = r.scoreChange(); var agPos = r.ageGroupRankingPosition();}
+                        <tr style="${r.isCurrentAgeGroup() ? "background:#EAF1FA" : ""}">
                             <td class="center">${"m00".equals(r.ageGroup()) || "w00".equals(r.ageGroup()) ? "Aktive" : r.ageGroup()}</td>
-                            <td class="font-medium">${r.position()}</td>
+                            <td class="font-medium">
+                                ${r.position()}
+                                @if(agPos != null)
+                                <span class="text-muted text-xs ml-1">AK ${agPos}</span>
+                                @endif
+                            </td>
                             <td>
                                 @if(positionChange == null || "0".equals(positionChange))
                                 <span>@template.fragments.icons.neutral()</span>
@@ -73,14 +78,16 @@
                                 <span class="ri-icon-red">@template.fragments.icons.arrow_down()</span>
                                 @endif
                             </td>
-                            <td class="font-medium">${r.score()}</td>
+                            <td class="font-medium">
+                                @if(r.showScore())${r.score()}@endif
+                            </td>
                             <td>
-                                @if(scoreChange != null && scoreChange.startsWith("+"))
+                                @if(r.showScore() && scoreChange != null && scoreChange.startsWith("+"))
                                 <span class="ri-icon-green">@template.fragments.icons.arrow_up()</span>
-                                @elseif(scoreChange != null && scoreChange.startsWith("-"))
+                                @elseif(r.showScore() && scoreChange != null && scoreChange.startsWith("-"))
                                 <span class="ri-icon-red">@template.fragments.icons.arrow_down()</span>
                                 @endif
-                                @if(scoreChange != null)
+                                @if(r.showScore() && scoreChange != null)
                                 <span class="text-muted">${scoreChange.replace("+", "")}</span>
                                 @endif
                             </td>

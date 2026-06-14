@@ -7,4 +7,7 @@ public record CurrentRankingRow(
     int position,
     String score,
     @Nullable String positionChange,
-    @Nullable String scoreChange) {}
+    @Nullable String scoreChange,
+    boolean isCurrentAgeGroup,
+    boolean showScore,
+    @Nullable Integer ageGroupRankingPosition) {}

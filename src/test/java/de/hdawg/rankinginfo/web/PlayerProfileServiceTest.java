@@ -1,6 +1,7 @@
 package de.hdawg.rankinginfo.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -60,10 +61,15 @@ class PlayerProfileServiceTest {
 
   // --- buildCurrentRankings ---
 
+  // dtbId=1 is treated as adult (isJunior=false) because birthYear decodes to age >> 18
+  private static final int ADULT_DTB_ID = 1;
+  // Boy born 2010: marker=110, dtbId=11_000_001 → age 14 in Q2/2024, double cohort U14
+  private static final int JUNIOR_DTB_ID_2010 = 11_000_001;
+
   @Test
   @DisplayName("buildCurrentRankings returns empty list when currentQuarter is null")
   void buildCurrentRankingsNullQuarter() {
-    var result = service.buildCurrentRankings(List.of(r(1, "m00", LocalDate.of(2024, 4, 1), 5, "800")), null, null);
+    var result = service.buildCurrentRankings(ADULT_DTB_ID, List.of(r(ADULT_DTB_ID, "m00", LocalDate.of(2024, 4, 1), 5, "800")), null, null, List.of());
     assertTrue(result.isEmpty());
   }
 
@@ -71,8 +77,8 @@ class PlayerProfileServiceTest {
   @DisplayName("buildCurrentRankings with single quarter has null position/score change")
   void buildCurrentRankingsSingleQuarter() {
     var quarter = LocalDate.of(2024, 4, 1);
-    var rankings = List.of(r(1, "m00", quarter, 5, "800"));
-    var result = service.buildCurrentRankings(rankings, quarter, null);
+    var rankings = List.of(r(ADULT_DTB_ID, "m00", quarter, 5, "800"));
+    var result = service.buildCurrentRankings(ADULT_DTB_ID, rankings, quarter, null, List.of());
     assertEquals(1, result.size());
     assertEquals("m00", result.get(0).ageGroup());
     assertEquals(5, result.get(0).position());
@@ -86,9 +92,9 @@ class PlayerProfileServiceTest {
     var prev = LocalDate.of(2024, 1, 1);
     var curr = LocalDate.of(2024, 4, 1);
     var rankings = List.of(
-        r(1, "m00", curr, 3, "820"),
-        r(1, "m00", prev, 5, "800"));
-    var result = service.buildCurrentRankings(rankings, curr, prev);
+        r(ADULT_DTB_ID, "m00", curr, 3, "820"),
+        r(ADULT_DTB_ID, "m00", prev, 5, "800"));
+    var result = service.buildCurrentRankings(ADULT_DTB_ID, rankings, curr, prev, List.of());
     assertEquals(1, result.size());
     assertEquals("+2", result.get(0).positionChange());
   }
@@ -98,11 +104,69 @@ class PlayerProfileServiceTest {
   void buildCurrentRankingsExcludesOverall() {
     var quarter = LocalDate.of(2024, 4, 1);
     var rankings = List.of(
-        r(1, "overall", quarter, 1, "850"),
-        r(1, "m00", quarter, 5, "800"));
-    var result = service.buildCurrentRankings(rankings, quarter, null);
+        r(ADULT_DTB_ID, "overall", quarter, 1, "850"),
+        r(ADULT_DTB_ID, "m00", quarter, 5, "800"));
+    var result = service.buildCurrentRankings(ADULT_DTB_ID, rankings, quarter, null, List.of());
     assertEquals(1, result.size());
     assertEquals("m00", result.get(0).ageGroup());
+  }
+
+  @Test
+  @DisplayName("buildCurrentRankings: adult rows have showScore=true, isCurrentAgeGroup=false")
+  void buildCurrentRankingsAdultFlags() {
+    var quarter = LocalDate.of(2024, 4, 1);
+    var rankings = List.of(r(ADULT_DTB_ID, "m00", quarter, 5, "800"));
+    var result = service.buildCurrentRankings(ADULT_DTB_ID, rankings, quarter, null, List.of());
+    assertEquals(1, result.size());
+    assertTrue(result.get(0).showScore());
+    assertFalse(result.get(0).isCurrentAgeGroup());
+    assertNull(result.get(0).ageGroupRankingPosition());
+  }
+
+  @Test
+  @DisplayName("buildCurrentRankings: current single age group is highlighted, others show no score")
+  void buildCurrentRankingsJuniorFlags() {
+    // Boy born 2010 → U14 single, U14 double in Q2/2024
+    var quarter = LocalDate.of(2024, 4, 1);
+    var rankings = List.of(
+        r(JUNIOR_DTB_ID_2010, "U14", quarter, 8, "750"),
+        r(JUNIOR_DTB_ID_2010, "U16", quarter, 20, "750"),
+        r(JUNIOR_DTB_ID_2010, "U18", quarter, 35, "750"));
+    var result = service.buildCurrentRankings(JUNIOR_DTB_ID_2010, rankings, quarter, null, List.of());
+    // First row should be U14 (current single), highlighted with showScore=true
+    assertEquals("U14", result.get(0).ageGroup());
+    assertTrue(result.get(0).isCurrentAgeGroup());
+    assertTrue(result.get(0).showScore());
+    // Other rows: showScore=false
+    assertFalse(result.get(1).showScore());
+    assertFalse(result.get(2).showScore());
+  }
+
+  @Test
+  @DisplayName("buildCurrentRankings: ageGroupRankingPosition attached to double cohort row")
+  void buildCurrentRankingsAgeGroupRankingPosition() {
+    // Boy born 2010 → U14 double cohort in Q2/2024
+    var quarter = LocalDate.of(2024, 4, 1);
+    var rankings = List.of(r(JUNIOR_DTB_ID_2010, "U14", quarter, 8, "750"));
+    var ageGroupEntry = new Ranking(0L, JUNIOR_DTB_ID_2010, "Test", "Player", "GER", "U14", quarter, 3, "750", "TC Test", "HH", true, false, false);
+    var result = service.buildCurrentRankings(JUNIOR_DTB_ID_2010, rankings, quarter, null, List.of(ageGroupEntry));
+    assertEquals(1, result.size());
+    assertEquals(3, result.get(0).ageGroupRankingPosition());
+  }
+
+  @Test
+  @DisplayName("buildCurrentRankings: junior rows sorted with current single first, then ascending U-number")
+  void buildCurrentRankingsJuniorSortOrder() {
+    // Boy born 2010 → U14 single in Q2/2024; also has U16, U18
+    var quarter = LocalDate.of(2024, 4, 1);
+    var rankings = List.of(
+        r(JUNIOR_DTB_ID_2010, "U18", quarter, 35, "750"),
+        r(JUNIOR_DTB_ID_2010, "U14", quarter, 8, "750"),
+        r(JUNIOR_DTB_ID_2010, "U16", quarter, 20, "750"));
+    var result = service.buildCurrentRankings(JUNIOR_DTB_ID_2010, rankings, quarter, null, List.of());
+    assertEquals("U14", result.get(0).ageGroup());
+    assertEquals("U16", result.get(1).ageGroup());
+    assertEquals("U18", result.get(2).ageGroup());
   }
 
   // --- buildCompleteRankings ---
@@ -184,9 +248,9 @@ class PlayerProfileServiceTest {
     var prev = LocalDate.of(2024, 1, 1);
     var curr = LocalDate.of(2024, 4, 1);
     var rankings = List.of(
-        r(1, "m00", curr, 5, "800"),
-        r(1, "m00", prev, 5, "800"));
-    var result = service.buildCurrentRankings(rankings, curr, prev);
+        r(ADULT_DTB_ID, "m00", curr, 5, "800"),
+        r(ADULT_DTB_ID, "m00", prev, 5, "800"));
+    var result = service.buildCurrentRankings(ADULT_DTB_ID, rankings, curr, prev, List.of());
     assertNull(result.get(0).scoreChange());
   }
 
@@ -196,9 +260,9 @@ class PlayerProfileServiceTest {
     var prev = LocalDate.of(2024, 1, 1);
     var curr = LocalDate.of(2024, 4, 1);
     var rankings = List.of(
-        r(1, "m00", curr, 5, "812"),
-        r(1, "m00", prev, 5, "800"));
-    var result = service.buildCurrentRankings(rankings, curr, prev);
+        r(ADULT_DTB_ID, "m00", curr, 5, "812"),
+        r(ADULT_DTB_ID, "m00", prev, 5, "800"));
+    var result = service.buildCurrentRankings(ADULT_DTB_ID, rankings, curr, prev, List.of());
     assertEquals("+12", result.get(0).scoreChange());
   }
 
@@ -208,9 +272,9 @@ class PlayerProfileServiceTest {
     var prev = LocalDate.of(2024, 1, 1);
     var curr = LocalDate.of(2024, 4, 1);
     var rankings = List.of(
-        r(1, "m00", curr, 5, "66,9"),
-        r(1, "m00", prev, 5, "64,0"));
-    var result = service.buildCurrentRankings(rankings, curr, prev);
+        r(ADULT_DTB_ID, "m00", curr, 5, "66,9"),
+        r(ADULT_DTB_ID, "m00", prev, 5, "64,0"));
+    var result = service.buildCurrentRankings(ADULT_DTB_ID, rankings, curr, prev, List.of());
     assertEquals("+2,9", result.get(0).scoreChange());
   }
 
@@ -220,8 +284,8 @@ class PlayerProfileServiceTest {
     var prev = LocalDate.of(2024, 1, 1);
     var curr = LocalDate.of(2024, 4, 1);
     for (var special : List.of("PR", "Einst.", "0,0")) {
-      var rankings = List.of(r(1, "m00", curr, 5, special), r(1, "m00", prev, 5, "800"));
-      var result = service.buildCurrentRankings(rankings, curr, prev);
+      var rankings = List.of(r(ADULT_DTB_ID, "m00", curr, 5, special), r(ADULT_DTB_ID, "m00", prev, 5, "800"));
+      var result = service.buildCurrentRankings(ADULT_DTB_ID, rankings, curr, prev, List.of());
       assertNull(result.get(0).scoreChange(), "expected null for special score: " + special);
     }
   }
