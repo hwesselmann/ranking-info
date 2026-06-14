@@ -209,26 +209,16 @@ public class PlayerProfileService {
   public DiagramDataView buildDiagramData(List<Ranking> rankings) {
     var general =
         rankings.stream()
-            .filter(r -> !r.ageGroupRanking() && !r.yobRanking())
+            .filter(r -> !r.yobRanking() && (ADULT_AGE_GROUPS.contains(r.ageGroup()) || r.ageGroupRanking()))
             .sorted(Comparator.comparing(Ranking::date))
             .toList();
     if (general.isEmpty()) {
       return new DiagramDataView(List.of(), List.of());
     }
-    int dtbId = general.getFirst().dtbId();
     var positions = new LinkedHashMap<String, LinkedHashMap<String, Integer>>();
     var scores = new LinkedHashMap<String, String>();
     for (var r : general) {
-      String groupKey;
-      if (ADULT_AGE_GROUPS.contains(r.ageGroup())) {
-        groupKey = AKTIVE_LABEL;
-      } else if (AGE_GROUP_OVERALL.equals(r.ageGroup())) {
-        continue;
-      } else {
-        var cohort = AgeGroupResolver.currentDoubleAgeGroup(dtbId, r.date());
-        if (cohort.isEmpty() || !("U" + cohort.getAsInt()).equals(r.ageGroup())) continue;
-        groupKey = "U" + cohort.getAsInt();
-      }
+      String groupKey = ADULT_AGE_GROUPS.contains(r.ageGroup()) ? AKTIVE_LABEL : r.ageGroup();
       var period = r.date().minusDays(1).format(DTF);
       positions.computeIfAbsent(groupKey, k -> new LinkedHashMap<>()).put(period, r.rankingPosition());
       scores.putIfAbsent(period, r.score());
