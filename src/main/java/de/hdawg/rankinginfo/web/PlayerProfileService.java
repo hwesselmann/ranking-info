@@ -111,7 +111,7 @@ public class PlayerProfileService {
 
   static List<Club> buildClubs(List<Ranking> rankingsDateDesc) {
     var map = new LinkedHashMap<String, Club>();
-    rankingsDateDesc.reversed().forEach(r -> map.putIfAbsent(r.club(), new Club(r.club(), r.federation())));
+    rankingsDateDesc.forEach(r -> map.putIfAbsent(r.club(), new Club(r.club(), r.federation())));
     return List.copyOf(map.values());
   }
 

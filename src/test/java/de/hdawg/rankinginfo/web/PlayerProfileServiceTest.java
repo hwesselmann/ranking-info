@@ -33,7 +33,7 @@ class PlayerProfileServiceTest {
   // --- buildClubs ---
 
   @Test
-  @DisplayName("buildClubs orders clubs chronologically oldest to newest")
+  @DisplayName("buildClubs orders clubs newest to oldest")
   void buildClubsChronologicalOrder() {
     var q1 = LocalDate.of(2022, 1, 1);
     var q2 = LocalDate.of(2023, 1, 1);
@@ -41,11 +41,11 @@ class PlayerProfileServiceTest {
     // rawRankings is DateDesc
     var rankings = List.of(rClub("Club C", "HH", q3), rClub("Club B", "BY", q2), rClub("Club A", "NI", q1));
     var clubs = PlayerProfileService.buildClubs(rankings);
-    assertEquals(List.of("Club A", "Club B", "Club C"), clubs.stream().map(Club::name).toList());
+    assertEquals(List.of("Club C", "Club B", "Club A"), clubs.stream().map(Club::name).toList());
   }
 
   @Test
-  @DisplayName("buildClubs deduplicates clubs, keeping oldest occurrence")
+  @DisplayName("buildClubs deduplicates clubs, keeping most recent occurrence first")
   void buildClubsDeduplication() {
     var q1 = LocalDate.of(2022, 1, 1);
     var q2 = LocalDate.of(2023, 1, 1);
