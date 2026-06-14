@@ -57,6 +57,6 @@
     </div>
 
     <div class="pb-8">
-        @template.fragments.kofi()
+        @template.fragments.supportProject()
     </div>
 `)
