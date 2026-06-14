@@ -191,7 +191,19 @@ class PlayerProfileServiceTest {
   }
 
   @Test
-  @DisplayName("score change handles comma-decimal format")
+  @DisplayName("score change formats integer diff without decimal places")
+  void scoreChangeInteger() {
+    var prev = LocalDate.of(2024, 1, 1);
+    var curr = LocalDate.of(2024, 4, 1);
+    var rankings = List.of(
+        r(1, "m00", curr, 5, "812"),
+        r(1, "m00", prev, 5, "800"));
+    var result = service.buildCurrentRankings(rankings, curr, prev);
+    assertEquals("+12", result.get(0).scoreChange());
+  }
+
+  @Test
+  @DisplayName("score change uses German comma for decimal values")
   void scoreChangeCommaDecimal() {
     var prev = LocalDate.of(2024, 1, 1);
     var curr = LocalDate.of(2024, 4, 1);
@@ -199,7 +211,19 @@ class PlayerProfileServiceTest {
         r(1, "m00", curr, 5, "66,9"),
         r(1, "m00", prev, 5, "64,0"));
     var result = service.buildCurrentRankings(rankings, curr, prev);
-    assertTrue(result.get(0).scoreChange().startsWith("+"));
+    assertEquals("+2,9", result.get(0).scoreChange());
+  }
+
+  @Test
+  @DisplayName("score change is null when current score is a special value")
+  void scoreChangeNullForSpecialScore() {
+    var prev = LocalDate.of(2024, 1, 1);
+    var curr = LocalDate.of(2024, 4, 1);
+    for (var special : List.of("PR", "Einst.", "0,0")) {
+      var rankings = List.of(r(1, "m00", curr, 5, special), r(1, "m00", prev, 5, "800"));
+      var result = service.buildCurrentRankings(rankings, curr, prev);
+      assertNull(result.get(0).scoreChange(), "expected null for special score: " + special);
+    }
   }
 
   // --- PlayerService helpers ---
