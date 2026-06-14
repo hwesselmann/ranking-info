@@ -226,6 +226,80 @@ class PlayerProfileServiceTest {
     }
   }
 
+  // --- buildDiagramData ---
+
+  // Boy born 2010: marker=110, dtbId=11_000_001 → U14 in 2024 (double cohort U14)
+  private static final int DTB_BOY_2010 = 11_000_001;
+
+  private static Ranking rFlagged(int dtbId, String ageGroup, LocalDate date, int pos,
+      boolean ageGroupRanking, boolean yobRanking) {
+    return new Ranking(0L, dtbId, "Test", "Player", "GER", ageGroup, date, pos, "800", "TC Test", "HH",
+        ageGroupRanking, yobRanking, false);
+  }
+
+  @Test
+  @DisplayName("buildDiagramData returns only age-correct double cohort for youth player")
+  void buildDiagramDataSelectsCorrectCohort() {
+    var date = LocalDate.of(2024, 4, 1);
+    // General rankings for multiple cohorts in same quarter — only U14 is age-correct
+    var u12 = r(DTB_BOY_2010, "U12", date, 10, "800");
+    var u14 = r(DTB_BOY_2010, "U14", date, 8, "800");
+    var u16 = r(DTB_BOY_2010, "U16", date, 15, "800");
+    var u18 = r(DTB_BOY_2010, "U18", date, 25, "800");
+    var result = service.buildDiagramData(List.of(u12, u14, u16, u18));
+    assertEquals(1, result.positions().size());
+    assertEquals("U14", result.positions().get(0).name());
+    assertEquals(8, result.positions().get(0).data().values().iterator().next());
+  }
+
+  @Test
+  @DisplayName("buildDiagramData excludes ageGroupRanking and yobRanking entries")
+  void buildDiagramDataExcludesFlaggedEntries() {
+    var date = LocalDate.of(2024, 4, 1);
+    var general = r(DTB_BOY_2010, "U14", date, 8, "800");
+    var ageGroup = rFlagged(DTB_BOY_2010, "U14", date, 3, true, false);
+    var yob = rFlagged(DTB_BOY_2010, "U14", date, 2, false, true);
+    var result = service.buildDiagramData(List.of(general, ageGroup, yob));
+    assertEquals(1, result.positions().size());
+    assertEquals(8, result.positions().get(0).data().values().iterator().next());
+  }
+
+  @Test
+  @DisplayName("buildDiagramData creates staircase across quarters as player ages")
+  void buildDiagramDataStaircase() {
+    // Boy born 2010: U14 in Q2/2023 (age 13 → double cohort U14), U14 in Q2/2024 (age 14 → U14)
+    var q1 = LocalDate.of(2023, 4, 1); // age 13 → U14
+    var q2 = LocalDate.of(2024, 4, 1); // age 14 → U14
+    var rankings = List.of(
+        r(DTB_BOY_2010, "U14", q1, 12, "750"),
+        r(DTB_BOY_2010, "U14", q2, 8, "800"),
+        // U16 present in both quarters — should be excluded
+        r(DTB_BOY_2010, "U16", q1, 30, "750"),
+        r(DTB_BOY_2010, "U16", q2, 25, "800"));
+    var result = service.buildDiagramData(rankings);
+    assertEquals(1, result.positions().size());
+    assertEquals("U14", result.positions().get(0).name());
+    assertEquals(2, result.positions().get(0).data().size());
+  }
+
+  @Test
+  @DisplayName("buildDiagramData maps adult age groups to Aktive")
+  void buildDiagramDataAdult() {
+    // Adult male player: dtbId in range 10_000_000-19_999_999 but ageGroup m00
+    var date = LocalDate.of(2024, 4, 1);
+    var adult = r(10_000_001, "m00", date, 5, "820");
+    var result = service.buildDiagramData(List.of(adult));
+    assertEquals(1, result.positions().size());
+    assertEquals("Aktive", result.positions().get(0).name());
+  }
+
+  @Test
+  @DisplayName("buildDiagramData returns empty diagram for empty input")
+  void buildDiagramDataEmpty() {
+    var result = service.buildDiagramData(List.of());
+    assertTrue(result.positions().isEmpty());
+  }
+
   // --- PlayerService helpers ---
 
   @Test
