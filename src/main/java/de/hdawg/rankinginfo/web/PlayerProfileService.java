@@ -77,14 +77,7 @@ public class PlayerProfileService {
     if (rawRankings.isEmpty()) return Optional.empty();
 
     var current = rawRankings.getFirst();
-    var clubs =
-        rawRankings.stream()
-            .map(r -> new Club(r.club(), r.federation()))
-            .collect(Collectors.toMap(Club::name, c -> c, (a, b) -> a))
-            .values()
-            .stream()
-            .sorted(Comparator.comparing(Club::name))
-            .toList();
+    var clubs = buildClubs(rawRankings);
     var player =
         new Player(
             dtbId,
@@ -114,6 +107,12 @@ public class PlayerProfileService {
         new PlayerProfile(
             player, currentRankings, completeRankings, allTimeDiagram, recent12mDiagram,
             availableData));
+  }
+
+  static List<Club> buildClubs(List<Ranking> rankingsDateDesc) {
+    var map = new LinkedHashMap<String, Club>();
+    rankingsDateDesc.reversed().forEach(r -> map.putIfAbsent(r.club(), new Club(r.club(), r.federation())));
+    return List.copyOf(map.values());
   }
 
   public List<CurrentRankingRow> buildCurrentRankings(
