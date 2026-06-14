@@ -55,6 +55,8 @@ public class PlayerProfileService {
     this.rankingRepository = rankingRepository;
   }
 
+  private static final Set<String> SPECIAL_SCORES = Set.of("0,0", "PR", "Einst.");
+
   private static final Map<Integer, String> QUARTER_MAP =
       Map.of(1, "Q1", 4, "Q2", 7, "Q3", 10, "Q4");
   private static final List<String> ADULT_AGE_GROUPS = List.of("m00", "w00");
@@ -231,14 +233,24 @@ public class PlayerProfileService {
   @Nullable
   private static String computeScoreChange(@Nullable Ranking prev, Ranking curr) {
     if (prev == null) return null;
+    if (SPECIAL_SCORES.contains(curr.score())) return null;
     try {
       double currScore = Double.parseDouble(curr.score().replace(',', '.'));
       double prevScore = parseScoreOrZero(prev);
       double diff = currScore - prevScore;
       if (diff == 0.0) return null;
-      return diff > 0 ? "+" + diff : String.valueOf(diff);
+      return formatScoreDiff(diff);
     } catch (NumberFormatException _) {
       return null;
     }
+  }
+
+  private static String formatScoreDiff(double diff) {
+    long rounded10 = Math.round(diff * 10);
+    String sign = rounded10 > 0 ? "+" : "";
+    if (rounded10 % 10 == 0) {
+      return sign + (rounded10 / 10);
+    }
+    return sign + String.format("%.1f", diff).replace('.', ',');
   }
 }
