@@ -242,6 +242,9 @@
   .mb-7 {
     margin-bottom: calc(var(--spacing) * 7);
   }
+  .ml-1 {
+    margin-left: calc(var(--spacing) * 1);
+  }
   .block {
     display: block;
   }
@@ -687,17 +690,6 @@
   .ri-btn-ghost:hover {
     background-color: rgba(255, 255, 255, 0.12);
   }
-  .ri-nav a {
-    border-bottom: 2px solid transparent;
-    transition: color 120ms, border-color 120ms;
-  }
-  .ri-nav a:hover {
-    border-bottom-color: rgba(46, 208, 183, 0.45);
-  }
-  .ri-nav a.is-active {
-    color: #fff;
-    border-bottom-color: #2ED0B7;
-  }
   .ri-table-wrap {
     border: 1px solid rgba(11, 58, 117, 0.12);
     border-radius: 0.75rem;
@@ -963,6 +955,17 @@
   textarea {
     resize: vertical;
   }
+}
+.ri-nav a {
+  border-bottom: 2px solid transparent;
+  transition: color 120ms, border-color 120ms;
+}
+.ri-nav a:hover {
+  border-bottom-color: rgba(46, 208, 183, 0.5);
+}
+.ri-nav a.is-active {
+  color: #fff !important;
+  border-bottom-color: #2ED0B7;
 }
 @property --tw-space-y-reverse {
   syntax: "*";
