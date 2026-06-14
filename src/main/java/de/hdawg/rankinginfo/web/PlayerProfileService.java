@@ -22,6 +22,7 @@ import de.hdawg.rankinginfo.domain.Club;
 import de.hdawg.rankinginfo.domain.Player;
 import de.hdawg.rankinginfo.domain.Ranking;
 import de.hdawg.rankinginfo.repository.RankingRepository;
+import de.hdawg.rankinginfo.service.AgeGroupResolver;
 import de.hdawg.rankinginfo.web.viewmodel.AgeGroupTimeSeries;
 import de.hdawg.rankinginfo.web.viewmodel.CompleteRankingRow;
 import de.hdawg.rankinginfo.web.viewmodel.CurrentRankingRow;
@@ -60,8 +61,6 @@ public class PlayerProfileService {
   private static final Map<Integer, String> QUARTER_MAP =
       Map.of(1, "Q1", 4, "Q2", 7, "Q3", 10, "Q4");
   private static final List<String> ADULT_AGE_GROUPS = List.of("m00", "w00");
-  private static final List<String> DIAGRAM_AGE_GROUPS =
-      List.of("U12", "U14", "U16", "U18", "m00", "w00");
   private static final String AGE_GROUP_OVERALL = "overall";
   private static final String AKTIVE_LABEL = "Aktive";
   private static final List<String> DIAGRAM_ORDER = List.of("U12", "U14", "U16", "U18", AKTIVE_LABEL);
@@ -180,15 +179,30 @@ public class PlayerProfileService {
   }
 
   public DiagramDataView buildDiagramData(List<Ranking> rankings) {
+    var general =
+        rankings.stream()
+            .filter(r -> !r.ageGroupRanking() && !r.yobRanking())
+            .sorted(Comparator.comparing(Ranking::date))
+            .toList();
+    if (general.isEmpty()) {
+      return new DiagramDataView(List.of(), List.of());
+    }
+    int dtbId = general.getFirst().dtbId();
     var positions = new LinkedHashMap<String, LinkedHashMap<String, Integer>>();
     var scores = new LinkedHashMap<String, String>();
-    for (var r : rankings.stream().sorted(Comparator.comparing(Ranking::date)).toList()) {
-      if (!DIAGRAM_AGE_GROUPS.contains(r.ageGroup())) continue;
-      var groupKey = ADULT_AGE_GROUPS.contains(r.ageGroup()) ? AKTIVE_LABEL : r.ageGroup();
+    for (var r : general) {
+      String groupKey;
+      if (ADULT_AGE_GROUPS.contains(r.ageGroup())) {
+        groupKey = AKTIVE_LABEL;
+      } else if (AGE_GROUP_OVERALL.equals(r.ageGroup())) {
+        continue;
+      } else {
+        var cohort = AgeGroupResolver.currentDoubleAgeGroup(dtbId, r.date());
+        if (cohort.isEmpty() || !("U" + cohort.getAsInt()).equals(r.ageGroup())) continue;
+        groupKey = "U" + cohort.getAsInt();
+      }
       var period = r.date().minusDays(1).format(DTF);
-      positions
-          .computeIfAbsent(groupKey, k -> new LinkedHashMap<>())
-          .put(period, r.rankingPosition());
+      positions.computeIfAbsent(groupKey, k -> new LinkedHashMap<>()).put(period, r.rankingPosition());
       scores.putIfAbsent(period, r.score());
     }
     var positionsList =
