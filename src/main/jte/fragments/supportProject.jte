@@ -9,13 +9,24 @@
         Ranking-Info ist ein kostenloses Hobbyprojekt. Wer mag, kann mich mit einem Kaffee unterstützen —
         das hilft, Server- und Betriebskosten zu decken.
     </p>
-    <a href="https://ko-fi.com/hwesselmann"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="ri-btn ri-btn-accent">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:1em;height:1em" aria-hidden="true">
-            <path d="M2 3h18.5a1.5 1.5 0 0 1 0 3H18v.5A6.5 6.5 0 0 1 11.5 13H8v5h4a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2h2V7H2V3zm4 4v4h5.5A4.5 4.5 0 0 0 16 6.5V6H6zm12 0v4a4.5 4.5 0 0 0 0-4z"/>
-        </svg>
-        Auf Ko-fi unterstützen
-    </a>
+    <div class="flex flex-wrap gap-3">
+        <a href="https://ko-fi.com/hwesselmann"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="ri-btn ri-btn-accent">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:1em;height:1em" aria-hidden="true">
+                <path d="M2 3h18.5a1.5 1.5 0 0 1 0 3H18v.5A6.5 6.5 0 0 1 11.5 13H8v5h4a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2h2V7H2V3zm4 4v4h5.5A4.5 4.5 0 0 0 16 6.5V6H6zm12 0v4a4.5 4.5 0 0 0 0-4z"/>
+            </svg>
+            Auf Ko-fi unterstützen
+        </a>
+        <a href="https://www.buymeacoffee.com/hwesselmann"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="ri-btn ri-btn-accent">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:1em;height:1em" aria-hidden="true">
+                <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+            </svg>
+            Buy me a Coffee
+        </a>
+    </div>
 </div>
