@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+/// Sends warmup HTTP requests to a handful of pages right after startup, so the first real user
+/// request doesn't pay for jte's template compilation/class-loading cost.
+///
+/// Triggered by [ApplicationReadyEvent]; a no-op if the embedded server's port cannot be
+/// determined (e.g. in a context without a web server).
 @Component
 public class JteWarmup implements ApplicationListener<ApplicationReadyEvent> {
 
@@ -17,6 +22,11 @@ public class JteWarmup implements ApplicationListener<ApplicationReadyEvent> {
     "/", "/listings", "/players", "/clubs", "/federations", "/status", "/help", "/about", "/privacy"
   };
 
+  /// Issues one GET request per entry in [#WARMUP_PATHS] against the freshly started server,
+  /// logging how many succeeded. Individual request failures are logged and otherwise ignored.
+  ///
+  /// @param event published once the application context is fully started and the embedded
+  ///     server is listening
   @Override
   public void onApplicationEvent(ApplicationReadyEvent event) {
     var port = event.getApplicationContext().getEnvironment().getProperty("local.server.port");

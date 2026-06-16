@@ -16,6 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/// Scans a folder for ranking CSV files and hands each one to [RankingImportService] for
+/// parsing and persistence, logging successes and failures along the way.
+///
+/// Filenames are expected to follow the `{Category}_{yyyyMMdd}.csv` convention (e.g.
+/// `Herren_20240101.csv`); [#extractPeriodFromFilename(String)] and
+/// [#fileCategoryFromFilename(String)] decode that convention, and are also used by
+/// [RankingImportService] itself.
 @SuppressWarnings("PMD.GuardLogStatement")
 @Service
 public class ImportService {
@@ -30,6 +37,11 @@ public class ImportService {
     this.rankingImportService = rankingImportService;
   }
 
+  /// Extracts the ranking period (quarter date) from a `{Category}_{yyyyMMdd}.csv` filename.
+  ///
+  /// @param filename the CSV filename (path is ignored, only the base name is used)
+  /// @return the date encoded in the filename's trailing `yyyyMMdd` segment
+  /// @throws IllegalArgumentException if the filename has no `_`-separated date segment
   public static LocalDate extractPeriodFromFilename(String filename) {
     var name = new File(filename).getName();
     int dotIdx = name.lastIndexOf('.');
@@ -42,6 +54,13 @@ public class ImportService {
     return LocalDate.parse(parts[parts.length - 1], DateTimeFormatter.ofPattern("yyyyMMdd"));
   }
 
+  /// Extracts the lowercase file category (`herren`/`damen`/`junioren`/`juniorinnen`) from a
+  /// `{Category}_{yyyyMMdd}.csv` filename.
+  ///
+  /// @param filename the CSV filename (path is ignored, only the base name is used)
+  /// @return the lowercased category
+  /// @throws IllegalArgumentException if the filename's category prefix is not one of the four
+  ///     known categories
   public static String fileCategoryFromFilename(String filename) {
     var name = new File(filename).getName();
     int dotIdx = name.lastIndexOf('.');
@@ -58,6 +77,20 @@ public class ImportService {
     };
   }
 
+  /// Computes the YOB+gender marker values (matching the leading digits of
+  /// [RankingCoding#YOB_MULTIPLIER]-encoded DTB IDs) for every birth year whose age in `period`
+  /// is at most `ageGroup`, starting from the birth year encoded by `yob`.
+  ///
+  /// Used to gather the cumulative (`age <= ageGroup`) set of birth-year cohorts for a junior
+  /// age bracket, as opposed to a single exact-age cohort.
+  ///
+  /// @param yob the birth year of the youngest cohort to include, as a 4-digit string (e.g.
+  ///     `"2013"`)
+  /// @param ageGroup the upper age bound (inclusive) of the bracket being resolved
+  /// @param period the ranking quarter date ages are computed against
+  /// @param genderFactor [RankingCoding#GENDER_FACTOR_JUNIOREN] or
+  ///     [RankingCoding#GENDER_FACTOR_JUNIORINNEN]
+  /// @return YOB+gender markers for each included birth year, unsorted
   public static List<Integer> yobRangeToFetch(
       String yob, int ageGroup, LocalDate period, int genderFactor) {
     var classes = new ArrayList<Integer>();
@@ -70,10 +103,22 @@ public class ImportService {
     return classes;
   }
 
+  /// Scans `folderPath` for CSV files and imports each one, logging failures to
+  /// `folderPath + "/error.log"`.
+  ///
+  /// @param folderPath directory to scan for `.csv` files; a no-op if it doesn't exist or isn't
+  ///     a directory
   public void scanAndImport(String folderPath) {
     doScanAndImport(folderPath, null);
   }
 
+  /// Scans `folderPath` for CSV files and imports each one, logging failures to
+  /// `errorLogPath` (or `folderPath + "/error.log"` if `null`).
+  ///
+  /// @param folderPath directory to scan for `.csv` files; a no-op if it doesn't exist or isn't
+  ///     a directory
+  /// @param errorLogPath file to append import failures to, or `null` to use the default
+  ///     location inside `folderPath`
   public void scanAndImport(String folderPath, @Nullable String errorLogPath) {
     doScanAndImport(folderPath, errorLogPath);
   }

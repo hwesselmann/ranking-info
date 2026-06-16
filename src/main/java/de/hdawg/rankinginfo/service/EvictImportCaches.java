@@ -7,6 +7,12 @@ import java.lang.annotation.Target;
 
 import org.springframework.cache.annotation.CacheEvict;
 
+/// Marks a method whose successful execution invalidates every cache populated from ranking
+/// data.
+///
+/// Applied to [RankingImportService#importRankings(java.nio.file.Path)]; evicts the
+/// `available_quarters`, `available_dates`, `federations`, `player_counts`, `max_imported_at`,
+/// and `federation_stats` caches in one step, since an import can affect any of them.
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @CacheEvict(

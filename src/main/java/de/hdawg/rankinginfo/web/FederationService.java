@@ -10,6 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 import de.hdawg.rankinginfo.domain.RankingCoding;
 import de.hdawg.rankinginfo.repository.RankingRepository;
 
+/// Builds per-federation player count statistics for the most recent quarter.
+///
+/// [#buildFederationData()] is the sole entry point. It returns a map keyed by federation display
+/// name (e.g. `Bayern`), with each value a map keyed by age-group/gender label (e.g. `U16m`,
+/// `m00`) to player count. Federation abbreviations from the data (e.g. `BTV`) are translated to
+/// display names via [#FEDERATION_NAMES]; unknown abbreviations pass through unchanged.
+///
+/// The result is cached under `federation_stats` and is scoped to the latest available ranking
+/// date, as returned by [RankingRepository#findDistinctDatesDesc()].
 @Service
 @Transactional(readOnly = true)
 public class FederationService {
@@ -45,6 +54,15 @@ public class FederationService {
     this.rankingRepository = rankingRepository;
   }
 
+  /// Aggregates player counts by federation for the latest ranking quarter.
+  ///
+  /// For each gender, youth players are counted per age group (via
+  /// [RankingRepository#countYouthByFederationAndAgeGroup(java.time.LocalDate, int, int)],
+  /// keyed by DTB ID range) and adult players are counted per adult category (`m00`/`w00`, via
+  /// [RankingRepository#countAdultByFederation(java.time.LocalDate, String)]).
+  ///
+  /// @return a map from federation display name to a map of age-group/gender label to player
+  ///     count; empty if no ranking data is available yet
   @Cacheable("federation_stats")
   public Map<String, Map<String, Integer>> buildFederationData() {
     var quarter = rankingRepository.findDistinctDatesDesc().stream().findFirst().orElse(null);

@@ -28,6 +28,14 @@ import de.hdawg.rankinginfo.domain.RankingCoding;
 import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
 import de.hdawg.rankinginfo.repository.RankingRepository;
 
+/// Parses a single ranking CSV file and persists both the raw rows and every derived ranking
+/// (per age group, year-of-birth, and age-group bracket) for that quarter.
+///
+/// [#importRankings(Path)] is the sole entry point, invoked once per file by [ImportService]. It
+/// rejects re-imports of a file already recorded in [ImportHistoryRepository], parses the CSV
+/// into raw [Ranking] rows tagged `age_group = "overall"` (youth) or `"m00"`/`"w00"` (adults),
+/// and — for youth categories — derives the full set of age-group rankings via
+/// [#calculateRankings(LocalDate, int)].
 @SuppressWarnings("PMD.GuardLogStatement")
 @Service
 public class RankingImportService {
@@ -70,6 +78,19 @@ public class RankingImportService {
     this.importHistoryRepository = importHistoryRepository;
   }
 
+  /// Imports a single ranking CSV file: parses and stores its raw rows, then derives and stores
+  /// every age-group ranking for youth categories.
+  ///
+  /// The file's category and period are decoded from its filename (see
+  /// [ImportService#fileCategoryFromFilename(String)] and
+  /// [ImportService#extractPeriodFromFilename(String)]). Evicts all caches on success, via
+  /// [EvictImportCaches].
+  ///
+  /// @param file path to the CSV file to import; its filename must follow the
+  ///     `{Category}_{yyyyMMdd}.csv` convention
+  /// @throws DuplicateImportError if a file for the same category and period was already
+  ///     imported
+  /// @throws IOException if the file cannot be read or its CSV content cannot be parsed
   @Transactional
   @EvictImportCaches
   public void importRankings(Path file) throws DuplicateImportError, IOException {
