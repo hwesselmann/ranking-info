@@ -17,6 +17,16 @@ import de.hdawg.rankinginfo.repository.RankingRepository;
 import de.hdawg.rankinginfo.web.viewmodel.ClubSummary;
 import de.hdawg.rankinginfo.web.viewmodel.PlayerSummaryRow;
 
+/// Builds club-centric view models by aggregating [Ranking] rows for the most recent quarter.
+///
+/// Two entry points are exposed:
+/// - [#searchClubs(String)] returns lightweight summaries (youth/adult player counts) for clubs
+///   whose name matches a search term.
+/// - [#getClubDetail(String)] returns the full roster for a single club, grouped by adult
+///   category (`Herren`/`Damen`) and youth age group (`U12`-`U18`).
+///
+/// All queries are scoped to the latest available ranking date, as returned by
+/// [RankingRepository#findDistinctDatesDesc()].
 @Service
 @Transactional(readOnly = true)
 public class ClubService {
@@ -32,6 +42,16 @@ public class ClubService {
     this.rankingRepository = rankingRepository;
   }
 
+  /// Searches clubs whose name contains `searchTerm` (case-insensitive) and returns one
+  /// [ClubSummary] per matching club, sorted alphabetically.
+  ///
+  /// Each summary reports:
+  /// - the number of youth players (`age_group = "overall"`)
+  /// - the number of adult players (`age_group = "m00"` or `"w00"`)
+  ///
+  /// @param searchTerm substring to match against club names
+  /// @return matching clubs sorted by name, with youth/adult player counts; empty if no ranking
+  ///     data is available yet
   public List<ClubSummary> searchClubs(String searchTerm) {
     var quarter = rankingRepository.findDistinctDatesDesc().stream().findFirst().orElse(null);
     if (quarter == null) return List.of();
@@ -61,6 +81,19 @@ public class ClubService {
         .toList();
   }
 
+  /// Builds the full player roster for a single club, identified by an exact (case-insensitive)
+  /// name match.
+  ///
+  /// The result is a [LinkedHashMap] preserving insertion order, with keys in the order:
+  /// - `Herren` / `Damen` (whichever adult categories the club has players in)
+  /// - `U12`, `U14`, `U16`, `U18` (whichever youth age groups the club has players in)
+  ///
+  /// Youth players are resolved from their `overall` ranking to a specific age-group ranking via
+  /// [RankingRepository#findAgeGroupRankingsByDateAndDtbIds(java.time.LocalDate, List)], then
+  /// sorted by [Ranking#rankingPosition()].
+  ///
+  /// @param clubId club name to match exactly (case-insensitive)
+  /// @return rows grouped by category/age-group label; empty if no ranking data is available
   public Map<String, List<PlayerSummaryRow>> getClubDetail(String clubId) {
     var quarter = rankingRepository.findDistinctDatesDesc().stream().findFirst().orElse(null);
     var players = new LinkedHashMap<String, List<PlayerSummaryRow>>();

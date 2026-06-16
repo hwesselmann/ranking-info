@@ -30,10 +30,23 @@ import de.hdawg.rankinginfo.web.viewmodel.CurrentRankingRow;
 import de.hdawg.rankinginfo.web.viewmodel.DiagramDataView;
 import de.hdawg.rankinginfo.web.viewmodel.ScoreTimeSeries;
 
+/// Builds the [PlayerProfile] view model for a single player, assembling current rankings, the
+/// full ranking history, and diagram data from raw [Ranking] rows.
+///
+/// [#loadProfile(int)] is the orchestrating entry point; the other public methods are the
+/// individual build steps it composes, exposed so they can be tested in isolation.
 @SuppressWarnings({"PMD.LooseCoupling", "PMD.AvoidLiteralsInIfCondition"})
 @Service
 public class PlayerProfileService {
 
+  /// View model for a player's profile page.
+  ///
+  /// @param player player display data, including known club history
+  /// @param currentRankings ranking rows for the most recent quarter
+  /// @param completeRankings the full per-quarter ranking history
+  /// @param allTimeDiagram diagram series covering the player's entire history
+  /// @param recent12mDiagram diagram series covering roughly the last 12 months (last 4 quarters)
+  /// @param availableData quarters with ranking data, grouped by year, most recent year first
   public record PlayerProfile(
       Player player,
       List<CurrentRankingRow> currentRankings,
@@ -68,6 +81,12 @@ public class PlayerProfileService {
   private static final int DATE_PARTS_SIZE = 2;
   private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
+  /// Loads the full profile for a player, or [Optional#empty()] if no ranking data exists for
+  /// them.
+  ///
+  /// @param dtbId the player's DTB ID
+  /// @return the assembled profile, or empty if the player has no ranking rows
+  /// @throws IllegalStateException if no [RankingRepository] was injected
   @Transactional(readOnly = true)
   public Optional<PlayerProfile> loadProfile(int dtbId) {
     var repo = rankingRepository;
@@ -114,12 +133,28 @@ public class PlayerProfileService {
             availableData));
   }
 
+  /// Derives the distinct clubs a player has played for from their date-descending ranking
+  /// rows, in order of most recent appearance.
+  ///
+  /// @param rankingsDateDesc the player's raw ranking rows, ordered newest first
+  /// @return distinct clubs, most recently played for first
   static List<Club> buildClubs(List<Ranking> rankingsDateDesc) {
     var map = new LinkedHashMap<String, Club>();
     rankingsDateDesc.forEach(r -> map.putIfAbsent(r.club(), new Club(r.club(), r.federation())));
     return List.copyOf(map.values());
   }
 
+  /// Builds the player's per-age-group ranking rows for `currentQuarter`, computing
+  /// position/score deltas against `previousQuarter` and marking which age group is the
+  /// player's "current" (single) youth age group.
+  ///
+  /// @param dtbId player's DTB ID, used to resolve youth age-group membership
+  /// @param rawRankings all raw ranking rows for the player, across any quarter
+  /// @param currentQuarter the quarter to build rows for; returns an empty list if `null`
+  /// @param previousQuarter the prior quarter to diff against, or `null` if unavailable
+  /// @param ageGroupRankings the player's age-group-bracket rankings for `currentQuarter`
+  /// @return current-quarter ranking rows, adult categories sorted first, then youth age groups
+  ///     ascending
   public List<CurrentRankingRow> buildCurrentRankings(
       int dtbId,
       List<Ranking> rawRankings,
@@ -177,6 +212,12 @@ public class PlayerProfileService {
     return Integer.parseInt(row.ageGroup().substring(1)) + 1;
   }
 
+  /// Builds one row per quarter the player has full (non age-group-bracket, non
+  /// year-of-birth) rankings for, mapping each row's age groups to ranking positions.
+  ///
+  /// @param rankings the player's ranking rows, across any quarter
+  /// @return rows ordered by quarter, most recent first; quarters that don't map to `Q1`-`Q4`
+  ///     are skipped
   public List<CompleteRankingRow> buildCompleteRankings(List<Ranking> rankings) {
     var byDate =
         rankings.stream()
@@ -206,6 +247,12 @@ public class PlayerProfileService {
     return result;
   }
 
+  /// Builds diagram time series (ranking position per age group, plus score) from rankings,
+  /// considering only adult or age-group-bracket rows; year-of-birth rows are excluded.
+  ///
+  /// @param rankings ranking rows to chart, across any quarter
+  /// @return diagram data with one position series per age group present (ordered per
+  ///     [#DIAGRAM_ORDER]) and a single score series; both are empty if no row qualifies
   public DiagramDataView buildDiagramData(List<Ranking> rankings) {
     var general =
         rankings.stream()
@@ -231,6 +278,12 @@ public class PlayerProfileService {
     return new DiagramDataView(positionsList, List.of(new ScoreTimeSeries("Punkte", scores)));
   }
 
+  /// Derives which years and quarters have ranking data, from already-built
+  /// [CompleteRankingRow]s.
+  ///
+  /// @param completeRankings rows produced by [#buildCompleteRankings(List)]
+  /// @return quarters present per year, most recent year first; rows with an unparseable year
+  ///     are skipped
   @SuppressWarnings("PMD.EmptyCatchBlock")
   public Map<Integer, Set<String>> buildAvailableData(List<CompleteRankingRow> completeRankings) {
     var result = new TreeMap<Integer, Set<String>>(Comparator.reverseOrder());
