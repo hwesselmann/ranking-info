@@ -1,3 +1,3 @@
-package de.hdawg.rankinginfo.api.v1;
+package de.hdawg.rankinginfo.api.v1.dto;
 
 public record ClubSearchItem(String name, int youth_count, int adult_count) {}

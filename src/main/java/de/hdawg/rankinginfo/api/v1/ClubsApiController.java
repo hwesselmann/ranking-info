@@ -14,6 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.hdawg.rankinginfo.api.v1.dto.ClubDetailData;
+import de.hdawg.rankinginfo.api.v1.dto.ClubDetailResponse;
+import de.hdawg.rankinginfo.api.v1.dto.ClubGroup;
+import de.hdawg.rankinginfo.api.v1.dto.ClubPlayerItem;
+import de.hdawg.rankinginfo.api.v1.dto.ClubSearchItem;
+import de.hdawg.rankinginfo.api.v1.dto.ClubSearchRequest;
+import de.hdawg.rankinginfo.api.v1.dto.ClubSearchResponse;
+import de.hdawg.rankinginfo.api.v1.dto.PlayerLink;
 import de.hdawg.rankinginfo.web.ClubService;
 
 @RestController
