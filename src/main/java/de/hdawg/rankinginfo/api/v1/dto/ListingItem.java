@@ -1,4 +1,4 @@
-package de.hdawg.rankinginfo.api.v1;
+package de.hdawg.rankinginfo.api.v1.dto;
 
 public record ListingItem(
     int dtb_id,
