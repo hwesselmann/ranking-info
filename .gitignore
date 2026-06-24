@@ -39,6 +39,7 @@ out/
 .mcp.json
 .claude/
 CLAUDE.md
+.remember
 
 ### node modules ###
 node_modules
