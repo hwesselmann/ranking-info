@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.web.servlet.MockMvc;
 
 import de.hdawg.rankinginfo.domain.Ranking;
@@ -31,6 +32,8 @@ class ListingsApiControllerTest {
   @Autowired RankingRepository rankingRepository;
 
   @Autowired ImportHistoryRepository importHistoryRepository;
+
+  @Autowired CacheManager cacheManager;
 
   private final String quarter = "2026-04-01";
   private final String prevQuarter = "2026-01-01";
@@ -48,6 +51,13 @@ class ListingsApiControllerTest {
             ranking(10_003_003, "Wagner", "Karl", "m00", q, 3, "480", false, false),
             ranking(10_001_001, "Mueller", "Hans", "m00", pq, 3, "460", false, false),
             ranking(20_001_001, "Meyer", "Anna", "w00", q, 1, "500", false, false)));
+
+    // RankingRepository#findDistinctDatesDesc is cached and only evicted on a real import;
+    // tests seed rankings directly, so the cache must be cleared to see this test's dates.
+    var cache = cacheManager.getCache("available_dates");
+    if (cache != null) {
+      cache.clear();
+    }
   }
 
   @AfterEach
