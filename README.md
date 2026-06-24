@@ -107,6 +107,8 @@ Requests without a valid token receive `401 Unauthorized`. Exceeding 1000 reques
 | `GET /api/v1/listings/{quarter}/{age_group_slug}` | Paginated ranking list. Slug: `m00` Herren, `w00` Damen, `mu18` Junioren U18, `wu12` Juniorinnen U12, etc. |
 | `GET /api/v1/players?lastname=&yob=` | Player search by lastname (partial, case-insensitive) + optional year of birth |
 | `GET /api/v1/players/{dtb_id}` | Player profile with full ranking history |
+| `GET /api/v1/clubs?name=` | Club search by name (partial, case-insensitive) |
+| `GET /api/v1/clubs/{id}` | Club roster grouped by category/age group |
 
 Swagger UI: [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
 
