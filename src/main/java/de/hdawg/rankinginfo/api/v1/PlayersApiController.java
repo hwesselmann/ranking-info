@@ -14,6 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.hdawg.rankinginfo.api.v1.dto.PlayerDetailData;
+import de.hdawg.rankinginfo.api.v1.dto.PlayerDetailResponse;
+import de.hdawg.rankinginfo.api.v1.dto.PlayerLink;
+import de.hdawg.rankinginfo.api.v1.dto.PlayerSearchItem;
+import de.hdawg.rankinginfo.api.v1.dto.PlayerSearchRequest;
+import de.hdawg.rankinginfo.api.v1.dto.PlayerSearchResponse;
+import de.hdawg.rankinginfo.api.v1.dto.RankingEntry;
 import de.hdawg.rankinginfo.domain.RankingCoding;
 import de.hdawg.rankinginfo.service.PlayerService;
 
