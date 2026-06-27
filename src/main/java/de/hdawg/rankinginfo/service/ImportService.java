@@ -103,20 +103,20 @@ public class ImportService {
     return classes;
   }
 
-  /// Scans `folderPath` for CSV files and imports each one, logging failures to
+  /// Scans `folderPath` for CSV and PDF ranking files and imports each one, logging failures to
   /// `folderPath + "/error.log"`.
   ///
-  /// @param folderPath directory to scan for `.csv` files; a no-op if it doesn't exist or isn't
-  ///     a directory
+  /// @param folderPath directory to scan for `.csv` and `.pdf` files; a no-op if it doesn't
+  ///     exist or isn't a directory
   public void scanAndImport(String folderPath) {
     doScanAndImport(folderPath, null);
   }
 
-  /// Scans `folderPath` for CSV files and imports each one, logging failures to
+  /// Scans `folderPath` for CSV and PDF ranking files and imports each one, logging failures to
   /// `errorLogPath` (or `folderPath + "/error.log"` if `null`).
   ///
-  /// @param folderPath directory to scan for `.csv` files; a no-op if it doesn't exist or isn't
-  ///     a directory
+  /// @param folderPath directory to scan for `.csv` and `.pdf` files; a no-op if it doesn't
+  ///     exist or isn't a directory
   /// @param errorLogPath file to append import failures to, or `null` to use the default
   ///     location inside `folderPath`
   public void scanAndImport(String folderPath, @Nullable String errorLogPath) {
@@ -130,18 +130,23 @@ public class ImportService {
       log.warn("Import folder '{}' does not exist or is not a directory", folderPath);
       return;
     }
-    var csvFiles = folder.listFiles((dir, name) -> name.toLowerCase(Locale.ROOT).endsWith(".csv"));
-    if (csvFiles == null) return;
-    for (var csvFile : csvFiles) {
+    var rankingFiles =
+        folder.listFiles(
+            (dir, name) -> {
+              var lower = name.toLowerCase(Locale.ROOT);
+              return lower.endsWith(".csv") || lower.endsWith(".pdf");
+            });
+    if (rankingFiles == null) return;
+    for (var rankingFile : rankingFiles) {
       try {
-        rankingImportService.importRankings(csvFile.toPath());
-        log.info("Imported '{}'", csvFile.getName());
+        rankingImportService.importRankings(rankingFile.toPath());
+        log.info("Imported '{}'", rankingFile.getName());
       } catch (DuplicateImportError _) {
-        log.info("Skipping '{}' (already imported)", csvFile.getName());
+        log.info("Skipping '{}' (already imported)", rankingFile.getName());
       } catch (Exception e) {
         var logFile = errorLogPath != null ? errorLogPath : folderPath + "/error.log";
-        writeErrorLog(logFile, csvFile.getName() + ": " + e.getMessage());
-        log.error("Error importing '{}': {}", csvFile.getName(), e.getMessage());
+        writeErrorLog(logFile, rankingFile.getName() + ": " + e.getMessage());
+        log.error("Error importing '{}': {}", rankingFile.getName(), e.getMessage());
       }
     }
   }

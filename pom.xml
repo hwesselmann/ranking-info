@@ -21,6 +21,7 @@
 
     <!-- Dependency versions not managed by Spring Boot BOM -->
     <jte.version>3.2.4</jte.version>
+    <slice.version>1.0.0</slice.version>
     <opencsv.version>5.12.0</opencsv.version>
     <springdoc-openapi.version>3.0.3</springdoc-openapi.version>
     <bucket4j.version>8.19.0</bucket4j.version>
@@ -101,6 +102,13 @@
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
       <version>${opencsv.version}</version>
+    </dependency>
+
+    <!-- PDF parsing -->
+    <dependency>
+      <groupId>de.hdawg.tennis</groupId>
+      <artifactId>slice</artifactId>
+      <version>${slice.version}</version>
     </dependency>
 
     <!-- API docs -->

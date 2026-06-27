@@ -7,4 +7,4 @@ spring:
 
 import:
   folder: ${IMPORT_FOLDER:${user.home}/ranking-import}
-  schedule: "${IMPORT_SCHEDULE:0 */30 * * * ?}"
+  schedule: "${IMPORT_SCHEDULE:0 */10 * * * ?}"
