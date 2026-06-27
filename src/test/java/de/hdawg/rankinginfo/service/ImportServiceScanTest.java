@@ -4,17 +4,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
-import de.hdawg.rankinginfo.repository.RankingRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
+import de.hdawg.rankinginfo.repository.RankingRepository;
 
 @SpringBootTest
 class ImportServiceScanTest {
