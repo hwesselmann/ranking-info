@@ -64,9 +64,9 @@ public class PlayerProfileService {
     }
   }
 
-  @Nullable private final RankingRepository rankingRepository;
+  private final RankingRepository rankingRepository;
 
-  public PlayerProfileService(@Nullable RankingRepository rankingRepository) {
+  public PlayerProfileService(RankingRepository rankingRepository) {
     this.rankingRepository = rankingRepository;
   }
 
@@ -89,11 +89,8 @@ public class PlayerProfileService {
   /// @throws IllegalStateException if no [RankingRepository] was injected
   @Transactional(readOnly = true)
   public Optional<PlayerProfile> loadProfile(int dtbId) {
-    var repo = rankingRepository;
-    if (repo == null) throw new IllegalStateException("RankingRepository not injected");
-
     var rawRankings =
-        repo.findByDtbIdAndYobRankingFalseAndAgeGroupRankingFalseAndYearEndRankingFalseOrderByDateDescAgeGroupAsc(
+        rankingRepository.findByDtbIdAndYobRankingFalseAndAgeGroupRankingFalseAndYearEndRankingFalseOrderByDateDescAgeGroupAsc(
             dtbId);
     if (rawRankings.isEmpty()) return Optional.empty();
 
@@ -110,14 +107,14 @@ public class PlayerProfileService {
             clubs);
 
     var fullRankings =
-        repo.findByDtbIdAndYearEndRankingFalseOrderByDateAscAgeGroupAsc(dtbId);
-    var allDates = repo.findDistinctDatesDesc();
+        rankingRepository.findByDtbIdAndYearEndRankingFalseOrderByDateAscAgeGroupAsc(dtbId);
+    var allDates = rankingRepository.findDistinctDatesDesc();
     var currentQuarter = allDates.isEmpty() ? null : allDates.getFirst();
     var previousQuarter = allDates.size() > 1 ? allDates.get(1) : null;
     var recent4Dates = Set.copyOf(allDates.stream().limit(4).toList());
 
     var ageGroupRankings = currentQuarter != null
-        ? repo.findAgeGroupRankingsByDateAndDtbIds(currentQuarter, List.of(dtbId))
+        ? rankingRepository.findAgeGroupRankingsByDateAndDtbIds(currentQuarter, List.of(dtbId))
         : List.<Ranking>of();
     var currentRankings = buildCurrentRankings(dtbId, rawRankings, currentQuarter, previousQuarter, ageGroupRankings);
     var allTimeDiagram = buildDiagramData(fullRankings);
@@ -181,13 +178,16 @@ public class PlayerProfileService {
     String finalSingle = singleAgeGroup;
     String finalDouble = doubleAgeGroup;
 
+    var prevByAgeGroup = previousQuarter == null
+        ? Map.<String, Ranking>of()
+        : rawRankings.stream()
+            .filter(p -> p.date().equals(previousQuarter))
+            .collect(Collectors.toMap(Ranking::ageGroup, p -> p, (a, b) -> a));
+
     return rawRankings.stream()
         .filter(r -> r.date().equals(currentQuarter) && !AGE_GROUP_OVERALL.equals(r.ageGroup()))
         .map(r -> {
-          var prev = previousQuarter == null ? null : rawRankings.stream()
-              .filter(p -> p.date().equals(previousQuarter) && p.ageGroup().equals(r.ageGroup()))
-              .findFirst()
-              .orElse(null);
+          var prev = prevByAgeGroup.get(r.ageGroup());
           boolean isAdult = ADULT_AGE_GROUPS.contains(r.ageGroup());
           boolean isCurrent = !isAdult && r.ageGroup().equals(finalSingle);
           boolean showScore = isAdult || isCurrent;

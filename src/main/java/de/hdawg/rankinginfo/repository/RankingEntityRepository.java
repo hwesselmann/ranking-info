@@ -113,6 +113,14 @@ interface RankingEntityRepository extends ListCrudRepository<RankingEntity, Long
       @Param("clubPattern") String clubPattern);
 
   @Query(
+      "SELECT * FROM rankings WHERE date = :date AND age_group IN (:ageGroups)"
+          + " AND LOWER(club) LIKE :clubPattern ORDER BY ranking_position ASC")
+  List<RankingEntity> findByDateAgeGroupsAndClub(
+      @Param("date") LocalDate date,
+      @Param("ageGroups") List<String> ageGroups,
+      @Param("clubPattern") String clubPattern);
+
+  @Query(
       "SELECT * FROM rankings"
           + " WHERE date = :date AND yob_ranking = false AND age_group_ranking = true"
           + " AND year_end_ranking = false AND dtb_id IN (:dtbIds)")
