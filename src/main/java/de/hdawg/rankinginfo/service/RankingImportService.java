@@ -2,6 +2,7 @@ package de.hdawg.rankinginfo.service;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,6 +29,9 @@ import de.hdawg.rankinginfo.domain.Ranking;
 import de.hdawg.rankinginfo.domain.RankingCoding;
 import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
 import de.hdawg.rankinginfo.repository.RankingRepository;
+import de.hdawg.tennis.slice.Slice;
+import de.hdawg.tennis.slice.api.Score;
+import de.hdawg.tennis.slice.validate.ParseMode;
 
 /// Parses a single ranking CSV file and persists both the raw rows and every derived ranking
 /// (per age group, year-of-birth, and age-group bracket) for that quarter.
@@ -110,7 +115,11 @@ public class RankingImportService {
     if (ageGroup == null) {
       throw new IllegalStateException("No age group mapping for category '" + category + "'");
     }
-    storeFromCsv(file, period, ageGroup);
+    if (filename.toLowerCase(Locale.ROOT).endsWith(".pdf")) {
+      storeFromPdf(file, period, ageGroup);
+    } else {
+      storeFromCsv(file, period, ageGroup);
+    }
 
     var genderFactor = GENDER_FACTORS.get(category);
     if (genderFactor != null) {
@@ -168,6 +177,46 @@ public class RankingImportService {
     }
     rankingRepository.saveAll(records);
     log.debug("Stored {} records from CSV", records.size());
+  }
+
+  private void storeFromPdf(Path file, LocalDate period, String ageGroup) throws IOException {
+    var result = Slice.builder().mode(ParseMode.STRICT).build().parse(file);
+    result.issues().forEach(issue ->
+        log.warn("PDF parse warning [{}] page {}: {}", file.getFileName(), issue.page(), issue.message()));
+
+    var records =
+        result.list().entries().stream()
+            .map(
+                entry ->
+                    new Ranking(
+                        0L,
+                        Integer.parseInt(entry.dtbId()),
+                        entry.lastName(),
+                        entry.firstName(),
+                        entry.nationality() != null ? entry.nationality() : "nil",
+                        ageGroup,
+                        period,
+                        entry.rank(),
+                        scoreToString(entry.score()),
+                        entry.club(),
+                        entry.association(),
+                        false,
+                        false,
+                        false))
+            .toList();
+
+    rankingRepository.saveAll(records);
+    log.debug("Stored {} records from PDF", records.size());
+  }
+
+  private static String scoreToString(Score score) {
+    return switch (score) {
+      case Score.Points p ->
+          p.value().setScale(1, RoundingMode.HALF_UP).toPlainString().replace('.', ',');
+      case Score.ProtectedRanking _ -> "PR";
+      case Score.Projected _ -> "Einst.";
+      case Score.International i -> i.name();
+    };
   }
 
   private void calculateRankings(LocalDate period, int genderFactor) {

@@ -1,12 +1,14 @@
 package de.hdawg.rankinginfo.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
+import de.hdawg.rankinginfo.repository.RankingRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,17 +16,17 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import de.hdawg.rankinginfo.repository.ImportHistoryRepository;
-import de.hdawg.rankinginfo.repository.RankingRepository;
-
 @SpringBootTest
 class ImportServiceScanTest {
 
-  @Autowired ImportService importService;
+  @Autowired
+  ImportService importService;
 
-  @Autowired RankingRepository rankingRepository;
+  @Autowired
+  RankingRepository rankingRepository;
 
-  @Autowired ImportHistoryRepository importHistoryRepository;
+  @Autowired
+  ImportHistoryRepository importHistoryRepository;
 
   @AfterEach
   void cleanup() {
@@ -93,9 +95,85 @@ class ImportServiceScanTest {
     assertTrue(yearEnd.isEmpty() == false, "January import should produce year-end rankings");
   }
 
+  // ── PDF import ──────────────────────────────────────────────────────────
+
+  @Test
+  @DisplayName("scanAndImport imports Herren PDF and stores all entries")
+  void scanAndImportImportsHerrenPdfAndStoresAllEntries(@TempDir Path dir) throws IOException {
+    copyPdfFixture("herren.pdf", "Herren_20180401.pdf", dir);
+    importService.scanAndImport(dir.toString());
+    assertEquals(700, rankingRepository.count());
+  }
+
+  @Test
+  @DisplayName("scanAndImport imports Damen PDF and stores all entries")
+  void scanAndImportImportsDamenPdfAndStoresAllEntries(@TempDir Path dir) throws IOException {
+    copyPdfFixture("damen.pdf", "Damen_20180401.pdf", dir);
+    importService.scanAndImport(dir.toString());
+    assertEquals(500, rankingRepository.count());
+  }
+
+  @Test
+  @DisplayName("scanAndImport imports Junioren PDF and calculates derived rankings")
+  void scanAndImportImportsJuniorenPdfAndCalculatesDerivedRankings(@TempDir Path dir)
+      throws IOException {
+    // Use a date matching the PDF's actual player cohorts (born 2008–2014),
+    // so calculateRankings can resolve age-group brackets from the DTB IDs.
+    copyPdfFixture("junioren.pdf", "Junioren_20260101.pdf", dir);
+    importService.scanAndImport(dir.toString());
+    long total = rankingRepository.count();
+    assertTrue(total > 1659, "derived rankings must be added on top of 1659 raw entries");
+    var derived =
+        rankingRepository.findAll().stream()
+            .filter(r -> r.yobRanking() || r.ageGroupRanking())
+            .toList();
+    assertFalse(derived.isEmpty(), "derived age-group and yob rankings must exist");
+  }
+
+  @Test
+  @DisplayName("scanAndImport skips PDF when same quarter already imported as CSV")
+  void scanAndImportSkipsPdfWhenCsvForSameQuarterAlreadyImported(@TempDir Path dir)
+      throws IOException {
+    copyFixture("Herren_20180401.csv", dir);
+    importService.scanAndImport(dir.toString());
+    long countAfterCsv = rankingRepository.count();
+
+    copyPdfFixture("herren.pdf", "Herren_20180401.pdf", dir);
+    importService.scanAndImport(dir.toString());
+    assertEquals(countAfterCsv, rankingRepository.count());
+    assertFalse(
+        dir.resolve("error.log").toFile().exists(),
+        "duplicate PDF import must not produce an error log entry");
+  }
+
+  @Test
+  @DisplayName("scanAndImport skips CSV when same quarter already imported as PDF")
+  void scanAndImportSkipsCsvWhenPdfForSameQuarterAlreadyImported(@TempDir Path dir)
+      throws IOException {
+    copyPdfFixture("herren.pdf", "Herren_20180401.pdf", dir);
+    importService.scanAndImport(dir.toString());
+    long countAfterPdf = rankingRepository.count();
+
+    copyFixture("Herren_20180401.csv", dir);
+    importService.scanAndImport(dir.toString());
+    assertEquals(countAfterPdf, rankingRepository.count());
+    assertFalse(
+        dir.resolve("error.log").toFile().exists(),
+        "duplicate CSV import must not produce an error log entry");
+  }
+
   private void copyFixture(String name, Path dir) throws IOException {
     var bytes =
         getClass().getClassLoader().getResourceAsStream("fixtures/" + name).readAllBytes();
     Files.write(dir.resolve(name), bytes);
+  }
+
+  private void copyPdfFixture(String fixtureName, String targetName, Path dir) throws IOException {
+    var bytes =
+        getClass()
+            .getClassLoader()
+            .getResourceAsStream("fixtures/pdf/" + fixtureName)
+            .readAllBytes();
+    Files.write(dir.resolve(targetName), bytes);
   }
 }
