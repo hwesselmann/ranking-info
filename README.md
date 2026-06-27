@@ -125,9 +125,13 @@ All listing responses include an `ETag` header. Send `If-None-Match` with the ET
 
 ## Ranking import
 
-Place CSV files in the import folder. Files are named `{Category}_{YYYYMMDD}.csv` where category is one of `Herren`, `Damen`, `Junioren`, or `Juniorinnen`.
+Place CSV or PDF files in the import folder. Files are named `{Category}_{YYYYMMDD}.{ext}` where category is one of `Herren`, `Damen`, `Junioren`, or `Juniorinnen` and `ext` is `csv` or `pdf`.
 
-### CSV format
+### PDF import
+
+Drop the original DTB ranking PDF directly — no conversion needed. The file is parsed by the [slice](https://github.com/hwesselmann/slice) library in `STRICT` mode.
+
+### CSV import
 
 ```
 ranking_position,lastname,firstname,nationality,dtb_id federation,club,score
