@@ -1,6 +1,5 @@
 package de.hdawg.rankinginfo.web;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,21 +52,17 @@ public class ClubService {
   /// @return matching clubs sorted by name, with youth/adult player counts; empty if no ranking
   ///     data is available yet
   public List<ClubSummary> searchClubs(String searchTerm) {
-    var quarter = rankingRepository.findDistinctDatesDesc().stream().findFirst().orElse(null);
+    var quarter = rankingRepository.findLatestDate();
     if (quarter == null) return List.of();
 
-    var youthByClub =
-        rankingRepository
-            .findByDateAndAgeGroupAndClubContaining(quarter, AGE_GROUP_OVERALL, searchTerm)
-            .stream()
-            .collect(Collectors.groupingBy(Ranking::club));
-
-    var allAdults = new ArrayList<Ranking>();
-    allAdults.addAll(
-        rankingRepository.findByDateAndAgeGroupAndClubContaining(quarter, AGE_GROUP_M00, searchTerm));
-    allAdults.addAll(
-        rankingRepository.findByDateAndAgeGroupAndClubContaining(quarter, AGE_GROUP_W00, searchTerm));
-    var adultByClub = allAdults.stream().collect(Collectors.groupingBy(Ranking::club));
+    var all = rankingRepository.findByDateAndAgeGroupsAndClubContaining(
+        quarter, List.of(AGE_GROUP_OVERALL, AGE_GROUP_M00, AGE_GROUP_W00), searchTerm);
+    var youthByClub = all.stream()
+        .filter(r -> AGE_GROUP_OVERALL.equals(r.ageGroup()))
+        .collect(Collectors.groupingBy(Ranking::club));
+    var adultByClub = all.stream()
+        .filter(r -> !AGE_GROUP_OVERALL.equals(r.ageGroup()))
+        .collect(Collectors.groupingBy(Ranking::club));
 
     return Stream.concat(youthByClub.keySet().stream(), adultByClub.keySet().stream())
         .distinct()
@@ -95,28 +90,24 @@ public class ClubService {
   /// @param clubId club name to match exactly (case-insensitive)
   /// @return rows grouped by category/age-group label; empty if no ranking data is available
   public Map<String, List<PlayerSummaryRow>> getClubDetail(String clubId) {
-    var quarter = rankingRepository.findDistinctDatesDesc().stream().findFirst().orElse(null);
+    var quarter = rankingRepository.findLatestDate();
     var players = new LinkedHashMap<String, List<PlayerSummaryRow>>();
     if (quarter == null) return players;
 
+    var all = rankingRepository.findByDateAndAgeGroupsAndClubContaining(
+        quarter, List.of(AGE_GROUP_OVERALL, AGE_GROUP_M00, AGE_GROUP_W00), clubId)
+        .stream()
+        .filter(r -> r.club().equalsIgnoreCase(clubId))
+        .toList();
+
     for (var entry : ADULT_LABELS.entrySet()) {
-      var adults =
-          rankingRepository
-              .findByDateAndAgeGroupAndClubContaining(quarter, entry.getKey(), clubId)
-              .stream()
-              .filter(r -> r.club().equalsIgnoreCase(clubId))
-              .toList();
+      var adults = all.stream().filter(r -> r.ageGroup().equals(entry.getKey())).toList();
       if (!adults.isEmpty()) {
         players.put(entry.getValue(), toPlayerSummaryRows(adults, null));
       }
     }
 
-    var youth =
-        rankingRepository
-            .findByDateAndAgeGroupAndClubContaining(quarter, AGE_GROUP_OVERALL, clubId)
-            .stream()
-            .filter(r -> r.club().equalsIgnoreCase(clubId))
-            .toList();
+    var youth = all.stream().filter(r -> AGE_GROUP_OVERALL.equals(r.ageGroup())).toList();
 
     var dtbIds = youth.stream().map(Ranking::dtbId).distinct().toList();
     if (!dtbIds.isEmpty()) {

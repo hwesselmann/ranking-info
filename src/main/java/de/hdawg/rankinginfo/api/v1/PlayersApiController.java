@@ -57,12 +57,18 @@ public class PlayersApiController {
                   HttpStatus.BAD_REQUEST, "lastname parameter required"));
     }
 
+    if (!yob.isBlank() && yob.length() != 4) {
+      return ResponseEntity.badRequest()
+          .body(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "yob must be a 4-digit year"));
+    }
+
+    int yy = yob.isBlank() ? 0 : Integer.parseInt(yob.substring(2, 4));
     var players =
         (!yob.isBlank())
             ? playerService.findPlayersByLastnameAndYob(
                 lastname,
-                Integer.parseInt(yob.substring(2, 4)) + RankingCoding.GENDER_FACTOR_JUNIOREN,
-                Integer.parseInt(yob.substring(2, 4)) + RankingCoding.GENDER_FACTOR_JUNIORINNEN)
+                yy + RankingCoding.GENDER_FACTOR_JUNIOREN,
+                yy + RankingCoding.GENDER_FACTOR_JUNIORINNEN)
             : playerService.findPlayersByLastname(lastname);
 
     if (players.isEmpty()) {

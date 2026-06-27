@@ -65,7 +65,7 @@ public class FederationService {
   ///     count; empty if no ranking data is available yet
   @Cacheable("federation_stats")
   public Map<String, Map<String, Integer>> buildFederationData() {
-    var quarter = rankingRepository.findDistinctDatesDesc().stream().findFirst().orElse(null);
+    var quarter = rankingRepository.findLatestDate();
     var federations = new LinkedHashMap<String, Map<String, Integer>>();
     if (quarter == null) return federations;
 

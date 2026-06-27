@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -121,12 +122,17 @@ public class RankingRepository {
     return jdbc.queryDistinctDatesDesc(LocalDate.now(ZoneOffset.UTC));
   }
 
+  @Nullable
+  public LocalDate findLatestDate() {
+    var dates = findDistinctDatesDesc();
+    return dates.isEmpty() ? null : dates.getFirst();
+  }
+
   @Cacheable("player_counts")
   public long countDistinctDtbIdInRange(int dtbIdStart, int dtbIdEnd) {
     return jdbc.countDistinctDtbIdInRange(dtbIdStart, dtbIdEnd);
   }
 
-  @Cacheable("federations")
   public List<String> findDistinctFederations() {
     return jdbc.queryDistinctFederations();
   }
@@ -189,6 +195,15 @@ public class RankingRepository {
       LocalDate date, String ageGroup, String club) {
     return jdbc
         .findByDateAgeGroupAndClub(date, ageGroup, "%" + club.toLowerCase(Locale.ROOT) + "%")
+        .stream()
+        .map(RankingEntity::toDomain)
+        .toList();
+  }
+
+  public List<Ranking> findByDateAndAgeGroupsAndClubContaining(
+      LocalDate date, List<String> ageGroups, String club) {
+    return jdbc
+        .findByDateAgeGroupsAndClub(date, ageGroups, "%" + club.toLowerCase(Locale.ROOT) + "%")
         .stream()
         .map(RankingEntity::toDomain)
         .toList();
