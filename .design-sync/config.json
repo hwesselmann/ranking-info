@@ -1,0 +1,9 @@
+{
+  "projectId": "4097a38a-e993-4bbd-9e18-8d2e3e257a1a",
+  "pkg": "ranking-info",
+  "shape": "package",
+  "entry": "./index.js",
+  "cssEntry": "src/main/resources/static/css/application.css",
+  "runtimeFontPrefixes": ["Inter"],
+  "readmeHeader": ".design-sync/conventions.md"
+}

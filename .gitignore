@@ -46,3 +46,10 @@ node_modules
 
 ### jte compiled templates (dev-mode hot-reload artefacts) ###
 jte-classes/
+
+### design-sync (claude.ai/design) ###
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
