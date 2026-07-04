@@ -43,4 +43,9 @@
     <Field name="updatedAt"/>
   </Match>
 
+  <!-- Generated protobuf/gRPC stub code -->
+  <Match>
+    <Package name="de.hdawg.rankinginfo.grpc.v1"/>
+  </Match>
+
 </FindBugsFilter>

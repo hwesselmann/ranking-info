@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package rankinginfo.v1;
+
+option java_package = "de.hdawg.rankinginfo.grpc.v1";
+option java_multiple_files = true;
+
+message PageInfo {
+  int32 page = 1;
+  int32 per_page = 2;
+  int64 total_count = 3;
+}
