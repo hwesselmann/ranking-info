@@ -11,5 +11,11 @@ api:
   tokens:
     - test-api-token
 
+grpc:
+  server:
+    port: 9095
+    reflection-service-enabled: true
+    health-service-enabled: true
+
 import:
   schedule: "-"
