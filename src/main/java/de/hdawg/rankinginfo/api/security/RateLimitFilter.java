@@ -1,7 +1,6 @@
 package de.hdawg.rankinginfo.api.security;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Map;
 
 import jakarta.servlet.FilterChain;
@@ -9,10 +8,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import io.github.bucket4j.Bandwidth;
-import io.github.bucket4j.Bucket;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,11 +15,11 @@ import tools.jackson.databind.ObjectMapper;
 
 public class RateLimitFilter extends OncePerRequestFilter {
 
+  private final RequestRateLimiter rateLimiter;
   private final ObjectMapper objectMapper;
-  private final Cache<String, Bucket> buckets =
-      Caffeine.newBuilder().expireAfterAccess(Duration.ofHours(2)).build();
 
-  public RateLimitFilter(ObjectMapper objectMapper) {
+  public RateLimitFilter(RequestRateLimiter rateLimiter, ObjectMapper objectMapper) {
+    this.rateLimiter = rateLimiter;
     this.objectMapper = objectMapper;
   }
 
@@ -39,21 +34,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     var auth = request.getHeader("Authorization");
     var key = auth != null ? auth : request.getRemoteAddr();
-    var bucket = buckets.get(key, k -> createBucket());
 
-    if (bucket.tryConsume(1)) {
+    if (rateLimiter.tryConsume(key)) {
       filterChain.doFilter(request, response);
     } else {
       response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       objectMapper.writeValue(response.getWriter(), Map.of("error", "Too Many Requests"));
     }
-  }
-
-  private static Bucket createBucket() {
-    return Bucket.builder()
-        .addLimit(
-            Bandwidth.builder().capacity(1000).refillGreedy(1000, Duration.ofHours(1)).build())
-        .build();
   }
 }
