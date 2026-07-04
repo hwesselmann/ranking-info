@@ -41,8 +41,8 @@ class GrpcServerSmokeTest {
   }
 
   @Test
-  @DisplayName("a business RPC without a token is rejected as UNAUTHENTICATED")
-  void businessRpcWithoutTokenIsRejected() {
+  @DisplayName("health check succeeds even with a bad API token (allow-list bypass)")
+  void healthCheckSucceedsEvenWithBadToken() {
     // RankingService doesn't exist yet (Task 8); this test intentionally targets the
     // reflection service's own descriptor RPC instead, which IS on the public-services
     // allow-list, to only prove the server + interceptor wiring is live before any
