@@ -24,8 +24,12 @@ class GrpcRateLimitInterceptorTest {
   private final RequestRateLimiter rateLimiter = new RequestRateLimiter();
   private final GrpcRateLimitInterceptor interceptor = new GrpcRateLimitInterceptor(rateLimiter);
 
-  @SuppressWarnings("unchecked")
   private ServerCall<Object, Object> mockCall() {
+    return mockCall(12345);
+  }
+
+  @SuppressWarnings("unchecked")
+  private ServerCall<Object, Object> mockCall(int remotePort) {
     var call = (ServerCall<Object, Object>) mock(ServerCall.class);
     var method =
         MethodDescriptor.newBuilder(mock(MethodDescriptor.Marshaller.class), mock(MethodDescriptor.Marshaller.class))
@@ -35,7 +39,7 @@ class GrpcRateLimitInterceptorTest {
     when(call.getMethodDescriptor()).thenReturn((MethodDescriptor) method);
     var attributes =
         Attributes.newBuilder()
-            .set(Grpc.TRANSPORT_ATTR_REMOTE_ADDR, new InetSocketAddress("127.0.0.1", 12345))
+            .set(Grpc.TRANSPORT_ATTR_REMOTE_ADDR, new InetSocketAddress("127.0.0.1", remotePort))
             .build();
     when(call.getAttributes()).thenReturn(attributes);
     return call;
@@ -89,6 +93,20 @@ class GrpcRateLimitInterceptorTest {
     interceptor.interceptCall(call, headers, handlerReturning(called));
 
     assertTrue(called.get());
+  }
+
+  @Test
+  void sameIpDifferentPortsShareRateLimitBucket() {
+    var headers = new Metadata();
+
+    for (int i = 0; i < 1000; i++) {
+      interceptor.interceptCall(mockCall(20000 + i), headers, handlerReturning(new AtomicBoolean()));
+    }
+
+    var called = new AtomicBoolean(false);
+    interceptor.interceptCall(mockCall(54321), headers, handlerReturning(called));
+
+    assertFalse(called.get());
   }
 
   @Test

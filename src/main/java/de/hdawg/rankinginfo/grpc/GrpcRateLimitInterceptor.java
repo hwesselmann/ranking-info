@@ -1,5 +1,6 @@
 package de.hdawg.rankinginfo.grpc;
 
+import java.net.InetSocketAddress;
 import java.util.Set;
 
 import io.grpc.Grpc;
@@ -37,7 +38,12 @@ public class GrpcRateLimitInterceptor implements ServerInterceptor {
 
     var authHeader = headers.get(GrpcAuthInterceptor.AUTHORIZATION_KEY);
     var remoteAddr = call.getAttributes().get(Grpc.TRANSPORT_ATTR_REMOTE_ADDR);
-    var key = authHeader != null ? authHeader : String.valueOf(remoteAddr);
+    var key =
+        authHeader != null
+            ? authHeader
+            : remoteAddr instanceof InetSocketAddress inetAddr
+                ? inetAddr.getAddress().getHostAddress()
+                : String.valueOf(remoteAddr);
 
     if (rateLimiter.tryConsume(key)) {
       return next.startCall(call, headers);
