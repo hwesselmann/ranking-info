@@ -11,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import tools.jackson.databind.ObjectMapper;
 
+import de.hdawg.rankinginfo.api.security.ApiTokenValidator;
 import de.hdawg.rankinginfo.api.security.BearerTokenFilter;
 import de.hdawg.rankinginfo.api.security.RateLimitFilter;
 
@@ -22,9 +23,10 @@ public class SecurityConfig {
   @Bean
   @Order(1)
   public SecurityFilterChain apiSecurityFilterChain(
-      HttpSecurity http, ApiProperties apiProperties, ObjectMapper objectMapper) throws Exception {
+      HttpSecurity http, ApiTokenValidator tokenValidator, ObjectMapper objectMapper)
+      throws Exception {
     var rateLimitFilter = new RateLimitFilter(objectMapper);
-    var bearerFilter = new BearerTokenFilter(apiProperties.tokens(), objectMapper);
+    var bearerFilter = new BearerTokenFilter(tokenValidator, objectMapper);
 
     return http.securityMatcher("/api/v1/**")
         .csrf(AbstractHttpConfigurer::disable)
