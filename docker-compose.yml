@@ -3,6 +3,7 @@ services:
     build: .
     ports:
       - "8080:8080"
+      - "9090:9090"
     environment:
       SPRING_PROFILES_ACTIVE: prod
       DB_HOST: postgres
@@ -36,7 +37,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1280m
+          memory: 1536m
           cpus: "1.0"
     restart: unless-stopped
 
