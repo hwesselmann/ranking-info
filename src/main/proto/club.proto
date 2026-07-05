@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package rankinginfo.v1;
+
+option java_package = "de.hdawg.rankinginfo.grpc.v1";
+option java_multiple_files = true;
+
+service ClubService {
+  rpc SearchClubs(SearchClubsRequest) returns (SearchClubsResponse);
+  rpc GetClub(GetClubRequest) returns (GetClubResponse);
+}
+
+message SearchClubsRequest {
+  string name = 1;
+}
+
+message SearchClubsResponse {
+  SearchClubsRequest request = 1;
+  repeated ClubSearchItem items = 2;
+  int32 total_count = 3;
+}
+
+message ClubSearchItem {
+  string name = 1;
+  int32 youth_count = 2;
+  int32 adult_count = 3;
+}
+
+message GetClubRequest {
+  string id = 1;
+}
+
+message GetClubResponse {
+  string name = 1;
+  repeated ClubGroup groups = 2;
+}
+
+message ClubGroup {
+  string group = 1;
+  repeated ClubPlayerItem players = 2;
+}
+
+message ClubPlayerItem {
+  int32 dtb_id = 1;
+  string lastname = 2;
+  string firstname = 3;
+  int32 rank = 4;
+  string score = 5;
+}

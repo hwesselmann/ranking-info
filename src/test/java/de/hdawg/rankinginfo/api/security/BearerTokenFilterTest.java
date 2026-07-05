@@ -21,6 +21,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import tools.jackson.databind.ObjectMapper;
 
+import de.hdawg.rankinginfo.config.ApiProperties;
+
 class BearerTokenFilterTest {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -41,7 +43,7 @@ class BearerTokenFilterTest {
   }
 
   private BearerTokenFilter filter(List<String> tokens) {
-    return new BearerTokenFilter(tokens, objectMapper);
+    return new BearerTokenFilter(new ApiTokenValidator(new ApiProperties(tokens)), objectMapper);
   }
 
   @Test
@@ -83,7 +85,8 @@ class BearerTokenFilterTest {
   @Test
   @DisplayName("accepts token from configured tokens list")
   void acceptsTokenFromConfiguredTokensList() throws Exception {
-    var filterWithToken = new BearerTokenFilter(List.of("env-token"), objectMapper);
+    var filterWithToken =
+        new BearerTokenFilter(new ApiTokenValidator(new ApiProperties(List.of("env-token"))), objectMapper);
     var request = new MockHttpServletRequest();
     request.addHeader("Authorization", "Bearer env-token");
     var response = new MockHttpServletResponse();

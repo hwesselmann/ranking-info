@@ -22,6 +22,12 @@ server:
 api:
   tokens: []
 
+grpc:
+  server:
+    port: 9090
+    reflection-service-enabled: true
+    health-service-enabled: true
+
 import:
   folder: ${IMPORT_FOLDER:${user.home}/ranking-import}
   schedule: "${IMPORT_SCHEDULE:0 0 12 * * ?}"

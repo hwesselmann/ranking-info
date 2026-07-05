@@ -23,7 +23,7 @@ COPY --from=builder /app/newrelic/newrelic.jar newrelic/newrelic.jar
 COPY newrelic/newrelic.yml newrelic/newrelic.yml
 RUN chown -R appuser:appuser app.jar newrelic/
 USER appuser
-EXPOSE 8080
+EXPOSE 8080 9090
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD wget -q --spider http://localhost:8080/actuator/health || exit 1
 ENTRYPOINT ["java", \
