@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import de.hdawg.rankinginfo.config.ApiProperties;
 
 @Component
-public class ApiTokenValidator {
+public final class ApiTokenValidator {
 
   private final Set<String> validTokens;
 
