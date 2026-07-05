@@ -26,7 +26,8 @@ public class RankingGrpcService extends RankingServiceGrpc.RankingServiceImplBas
   @Override
   public void listListings(
       ListListingsRequest request, StreamObserver<ListListingsResponse> responseObserver) {
-    var cappedPerPage = Math.min(request.getPerPage(), MAX_PER_PAGE);
+    var page = request.getPage() < 1 ? 1 : request.getPage();
+    var cappedPerPage = request.getPerPage() < 1 ? 25 : Math.min(request.getPerPage(), MAX_PER_PAGE);
     var filter =
         new RankingFilter(
             request.getQuarter(),
@@ -36,7 +37,7 @@ public class RankingGrpcService extends RankingServiceGrpc.RankingServiceImplBas
             request.getClub().isBlank() ? null : request.getClub(),
             request.getYearEnd());
 
-    var rankings = rankingService.findFilteredRankings(filter, request.getPage(), cappedPerPage);
+    var rankings = rankingService.findFilteredRankings(filter, page, cappedPerPage);
     var dtbIds = rankings.getContent().stream().map(Ranking::dtbId).toList();
     var prevPositions = rankingService.findPreviousPositions(filter, dtbIds);
 
@@ -50,7 +51,7 @@ public class RankingGrpcService extends RankingServiceGrpc.RankingServiceImplBas
             .setFederation(request.getFederation())
             .setClub(request.getClub())
             .setYearEnd(request.getYearEnd())
-            .setPage(request.getPage())
+            .setPage(page)
             .setPerPage(cappedPerPage)
             .build();
 
@@ -60,7 +61,7 @@ public class RankingGrpcService extends RankingServiceGrpc.RankingServiceImplBas
             .addAllItems(items)
             .setPageInfo(
                 PageInfo.newBuilder()
-                    .setPage(request.getPage())
+                    .setPage(page)
                     .setPerPage(cappedPerPage)
                     .setTotalCount(rankings.getTotalElements())
                     .build())

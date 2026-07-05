@@ -29,6 +29,8 @@ import de.hdawg.rankinginfo.repository.RankingRepository;
 @SpringBootTest
 class RankingGrpcServiceTest {
 
+  private static final int GRPC_TEST_PORT = 9095;
+
   @Autowired RankingRepository rankingRepository;
   @Autowired ImportHistoryRepository importHistoryRepository;
   @Autowired CacheManager cacheManager;
@@ -54,7 +56,7 @@ class RankingGrpcServiceTest {
       cache.clear();
     }
 
-    channel = ManagedChannelBuilder.forAddress("localhost", 9095).usePlaintext().build();
+    channel = ManagedChannelBuilder.forAddress("localhost", GRPC_TEST_PORT).usePlaintext().build();
     unauthedStub = RankingServiceGrpc.newBlockingStub(channel);
     var metadata = new Metadata();
     metadata.put(GrpcAuthInterceptor.AUTHORIZATION_KEY, "Bearer test-api-token");
@@ -96,5 +98,17 @@ class RankingGrpcServiceTest {
     assertEquals(2, mueller.getPositionChange());
     var schmidt = response.getItemsList().stream().filter(i -> i.getDtbId() == 10_002_002).findFirst().orElseThrow();
     assertEquals(false, schmidt.hasPositionChange());
+  }
+
+  @Test
+  @DisplayName("defaults to page 1 / per_page 25 when omitted, matching REST behavior")
+  void defaultsPaginationWhenOmitted() {
+    var request = ListListingsRequest.newBuilder().setQuarter(quarter).setAgeGroupSlug("m00").build();
+
+    var response = authedStub.listListings(request);
+
+    assertEquals(2, response.getItemsCount());
+    assertEquals(1, response.getPageInfo().getPage());
+    assertEquals(25, response.getPageInfo().getPerPage());
   }
 }
