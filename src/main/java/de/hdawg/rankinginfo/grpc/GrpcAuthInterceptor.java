@@ -1,7 +1,5 @@
 package de.hdawg.rankinginfo.grpc;
 
-import java.util.Set;
-
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
@@ -21,9 +19,6 @@ public class GrpcAuthInterceptor implements ServerInterceptor {
   static final Metadata.Key<String> AUTHORIZATION_KEY =
       Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
 
-  private static final Set<String> PUBLIC_SERVICES =
-      Set.of("grpc.health.v1.Health", "grpc.reflection.v1alpha.ServerReflection", "grpc.reflection.v1.ServerReflection");
-
   private final ApiTokenValidator tokenValidator;
 
   public GrpcAuthInterceptor(ApiTokenValidator tokenValidator) {
@@ -33,7 +28,7 @@ public class GrpcAuthInterceptor implements ServerInterceptor {
   @Override
   public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
       ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
-    if (PUBLIC_SERVICES.contains(call.getMethodDescriptor().getServiceName())) {
+    if (GrpcPublicServices.NAMES.contains(call.getMethodDescriptor().getServiceName())) {
       return next.startCall(call, headers);
     }
 
