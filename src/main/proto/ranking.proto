@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package rankinginfo.v1;
+
+option java_package = "de.hdawg.rankinginfo.grpc.v1";
+option java_multiple_files = true;
+
+import "common.proto";
+
+service RankingService {
+  rpc ListListings(ListListingsRequest) returns (ListListingsResponse);
+}
+
+message ListListingsRequest {
+  string quarter = 1;
+  string age_group_slug = 2;
+  int32 page = 3;
+  int32 per_page = 4;
+  string federation = 5;
+  string club = 6;
+  string age_group_options = 7;
+  bool year_end = 8;
+}
+
+message ListListingsResponse {
+  ListListingsRequest request = 1;
+  repeated ListingItem items = 2;
+  rankinginfo.v1.PageInfo page_info = 3;
+}
+
+message ListingItem {
+  int32 dtb_id = 1;
+  int32 ranking_position = 2;
+  string lastname = 3;
+  string firstname = 4;
+  string nationality = 5;
+  string club = 6;
+  string federation = 7;
+  string score = 8;
+  optional int32 position_change = 9;
+}
