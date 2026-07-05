@@ -89,7 +89,7 @@ The test suite uses an in-memory H2 database and the fixture CSV files in `src/t
 
 ## API
 
-All API endpoints are under `/api/v1` and require Bearer token authentication.
+All API endpoints are under `/api/v1` and require Bearer token authentication. A gRPC equivalent (`RankingService`, `PlayerService`, `ClubService`) is also available on port 9090 — see `CLAUDE.md` for details.
 
 ### Authentication
 
