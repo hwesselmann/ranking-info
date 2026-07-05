@@ -30,6 +30,8 @@ import de.hdawg.rankinginfo.repository.RankingRepository;
 @SpringBootTest
 class ClubGrpcServiceTest {
 
+  private static final int GRPC_TEST_PORT = 9095;
+
   @Autowired RankingRepository rankingRepository;
   @Autowired ImportHistoryRepository importHistoryRepository;
   @Autowired CacheManager cacheManager;
@@ -48,7 +50,7 @@ class ClubGrpcServiceTest {
       cache.clear();
     }
 
-    channel = ManagedChannelBuilder.forAddress("localhost", 9095).usePlaintext().build();
+    channel = ManagedChannelBuilder.forAddress("localhost", GRPC_TEST_PORT).usePlaintext().build();
     var metadata = new Metadata();
     metadata.put(GrpcAuthInterceptor.AUTHORIZATION_KEY, "Bearer test-api-token");
     authedStub =

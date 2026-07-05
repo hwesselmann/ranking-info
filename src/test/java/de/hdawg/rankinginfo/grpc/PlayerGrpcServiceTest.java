@@ -29,6 +29,8 @@ import de.hdawg.rankinginfo.repository.RankingRepository;
 @SpringBootTest
 class PlayerGrpcServiceTest {
 
+  private static final int GRPC_TEST_PORT = 9095;
+
   @Autowired RankingRepository rankingRepository;
   @Autowired ImportHistoryRepository importHistoryRepository;
 
@@ -41,7 +43,7 @@ class PlayerGrpcServiceTest {
         List.of(
             new Ranking(0, 10_001_001, "Mueller", "Hans", "GER", "m00", LocalDate.parse("2026-04-01"), 1, "500", "TC Test", "WTV", false, false, false)));
 
-    channel = ManagedChannelBuilder.forAddress("localhost", 9095).usePlaintext().build();
+    channel = ManagedChannelBuilder.forAddress("localhost", GRPC_TEST_PORT).usePlaintext().build();
     var metadata = new Metadata();
     metadata.put(GrpcAuthInterceptor.AUTHORIZATION_KEY, "Bearer test-api-token");
     authedStub =

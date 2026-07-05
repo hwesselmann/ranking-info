@@ -18,11 +18,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class GrpcServerSmokeTest {
 
+  private static final int GRPC_TEST_PORT = 9095;
+
   private ManagedChannel channel;
 
   @BeforeEach
   void setUp() {
-    channel = ManagedChannelBuilder.forAddress("localhost", 9095).usePlaintext().build();
+    channel = ManagedChannelBuilder.forAddress("localhost", GRPC_TEST_PORT).usePlaintext().build();
   }
 
   @AfterEach

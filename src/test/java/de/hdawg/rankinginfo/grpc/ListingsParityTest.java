@@ -31,6 +31,8 @@ import de.hdawg.rankinginfo.repository.RankingRepository;
 @AutoConfigureMockMvc
 class ListingsParityTest {
 
+  private static final int GRPC_TEST_PORT = 9095;
+
   @Autowired MockMvc mockMvc;
   @Autowired RankingRepository rankingRepository;
   @Autowired ImportHistoryRepository importHistoryRepository;
@@ -52,7 +54,7 @@ class ListingsParityTest {
       cache.clear();
     }
 
-    channel = ManagedChannelBuilder.forAddress("localhost", 9095).usePlaintext().build();
+    channel = ManagedChannelBuilder.forAddress("localhost", GRPC_TEST_PORT).usePlaintext().build();
     var metadata = new Metadata();
     metadata.put(GrpcAuthInterceptor.AUTHORIZATION_KEY, "Bearer test-api-token");
     grpcStub =
@@ -90,6 +92,10 @@ class ListingsParityTest {
       assertEquals(restItem.get("dtb_id").asInt(), grpcItem.getDtbId());
       assertEquals(restItem.get("ranking_position").asInt(), grpcItem.getRankingPosition());
       assertEquals(restItem.get("lastname").asText(), grpcItem.getLastname());
+      assertEquals(restItem.get("firstname").asText(), grpcItem.getFirstname());
+      assertEquals(restItem.get("nationality").asText(), grpcItem.getNationality());
+      assertEquals(restItem.get("club").asText(), grpcItem.getClub());
+      assertEquals(restItem.get("federation").asText(), grpcItem.getFederation());
       assertEquals(restItem.get("score").asText(), grpcItem.getScore());
     }
   }
