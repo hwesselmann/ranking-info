@@ -190,6 +190,42 @@
         <version>${os-maven-plugin.version}</version>
       </extension>
     </extensions>
+    <pluginManagement>
+      <plugins>
+        <!-- m2e (VSCode/Eclipse embedded Maven): the os-maven-plugin extension that resolves
+             os.detected.classifier isn't reliably re-initialized on every incremental auto-build,
+             which leaves the property unsubstituted and protoc resolution failing. Run protoc
+             codegen on project import/full build only; command-line `./mvnw` builds are unaffected. -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.xolstice.maven.plugins</groupId>
+                    <artifactId>protobuf-maven-plugin</artifactId>
+                    <versionRange>[0.0,)</versionRange>
+                    <goals>
+                      <goal>compile</goal>
+                      <goal>compile-custom</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute>
+                      <runOnIncremental>false</runOnIncremental>
+                      <runOnConfiguration>true</runOnConfiguration>
+                    </execute>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
 
       <!-- Enforcer: require Maven 3.9.16+ and Java 25 -->
