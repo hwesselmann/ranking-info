@@ -33,7 +33,14 @@ public class ClubController {
     model.addAttribute("searchParams", params);
 
     if (commit != null && club != null && !club.isBlank()) {
-      model.addAttribute("clubs", clubService.searchClubs(club));
+      // Guard here rather than letting ClubService throw: a too-short term is normal typing, not
+      // an error worth redirecting the user away from the search form for.
+      if (club.trim().length() < ClubService.MIN_SEARCH_TERM_LENGTH) {
+        model.addAttribute(
+            "danger", "Bitte mindestens " + ClubService.MIN_SEARCH_TERM_LENGTH + " Zeichen eingeben.");
+      } else {
+        model.addAttribute("clubs", clubService.searchClubs(club));
+      }
     }
     return htmxRequest ? "clubs/results" : "clubs/index";
   }

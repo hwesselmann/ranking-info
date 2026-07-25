@@ -9,13 +9,12 @@ import de.hdawg.rankinginfo.grpc.v1.ListListingsResponse;
 import de.hdawg.rankinginfo.grpc.v1.ListingItem;
 import de.hdawg.rankinginfo.grpc.v1.PageInfo;
 import de.hdawg.rankinginfo.grpc.v1.RankingServiceGrpc;
+import de.hdawg.rankinginfo.service.Pagination;
 import de.hdawg.rankinginfo.service.RankingFilter;
 import de.hdawg.rankinginfo.service.RankingService;
 
 @GrpcService
 public class RankingGrpcService extends RankingServiceGrpc.RankingServiceImplBase {
-
-  private static final int MAX_PER_PAGE = 100;
 
   private final RankingService rankingService;
 
@@ -26,8 +25,7 @@ public class RankingGrpcService extends RankingServiceGrpc.RankingServiceImplBas
   @Override
   public void listListings(
       ListListingsRequest request, StreamObserver<ListListingsResponse> responseObserver) {
-    var page = request.getPage() < 1 ? 1 : request.getPage();
-    var cappedPerPage = request.getPerPage() < 1 ? 25 : Math.min(request.getPerPage(), MAX_PER_PAGE);
+    var pagination = Pagination.of(request.getPage(), request.getPerPage());
     var filter =
         new RankingFilter(
             request.getQuarter(),
@@ -37,7 +35,8 @@ public class RankingGrpcService extends RankingServiceGrpc.RankingServiceImplBas
             request.getClub().isBlank() ? null : request.getClub(),
             request.getYearEnd());
 
-    var rankings = rankingService.findFilteredRankings(filter, page, cappedPerPage);
+    var rankings =
+        rankingService.findFilteredRankings(filter, pagination.page(), pagination.perPage());
     var dtbIds = rankings.getContent().stream().map(Ranking::dtbId).toList();
     var prevPositions = rankingService.findPreviousPositions(filter, dtbIds);
 
@@ -51,8 +50,8 @@ public class RankingGrpcService extends RankingServiceGrpc.RankingServiceImplBas
             .setFederation(request.getFederation())
             .setClub(request.getClub())
             .setYearEnd(request.getYearEnd())
-            .setPage(page)
-            .setPerPage(cappedPerPage)
+            .setPage(pagination.page())
+            .setPerPage(pagination.perPage())
             .build();
 
     var response =
@@ -61,8 +60,8 @@ public class RankingGrpcService extends RankingServiceGrpc.RankingServiceImplBas
             .addAllItems(items)
             .setPageInfo(
                 PageInfo.newBuilder()
-                    .setPage(page)
-                    .setPerPage(cappedPerPage)
+                    .setPage(pagination.page())
+                    .setPerPage(pagination.perPage())
                     .setTotalCount(rankings.getTotalElements())
                     .build())
             .build();

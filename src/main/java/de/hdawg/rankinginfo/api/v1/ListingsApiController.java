@@ -20,6 +20,7 @@ import de.hdawg.rankinginfo.api.v1.dto.ListingRequest;
 import de.hdawg.rankinginfo.api.v1.dto.ListingResponse;
 import de.hdawg.rankinginfo.api.v1.dto.PlayerLink;
 import de.hdawg.rankinginfo.domain.Ranking;
+import de.hdawg.rankinginfo.service.Pagination;
 import de.hdawg.rankinginfo.service.RankingFilter;
 import de.hdawg.rankinginfo.service.RankingService;
 
@@ -27,8 +28,6 @@ import de.hdawg.rankinginfo.service.RankingService;
 @RequestMapping("/api/v1/listings")
 @SecurityRequirement(name = "bearerAuth")
 public class ListingsApiController {
-
-  private static final int MAX_PER_PAGE = 100;
 
   private final RankingService rankingService;
 
@@ -50,7 +49,7 @@ public class ListingsApiController {
       HttpServletRequest request) {
 
     var filter = new RankingFilter(quarter, ageGroupSlug, ageGroupOptions, federation, club, yearEnd);
-    int cappedPerPage = Math.min(perPage, MAX_PER_PAGE);
+    var pagination = Pagination.of(page, perPage);
 
     var maxImportedAt = rankingService.maxImportedAt();
     var etagSource =
@@ -63,15 +62,16 @@ public class ListingsApiController {
                 federation,
                 club,
                 yearEnd,
-                page,
-                cappedPerPage);
+                pagination.page(),
+                pagination.perPage());
     var etag = "\"" + sha256(etagSource) + "\"";
     var ifNoneMatch = request.getHeader("If-None-Match");
     if (etag.equals(ifNoneMatch)) {
       return ResponseEntity.status(304).build();
     }
 
-    var rankings = rankingService.findFilteredRankings(filter, page, cappedPerPage);
+    var rankings =
+        rankingService.findFilteredRankings(filter, pagination.page(), pagination.perPage());
     var dtbIds = rankings.getContent().stream().map(Ranking::dtbId).toList();
     var prevPositions = rankingService.findPreviousPositions(filter, dtbIds);
 
@@ -104,8 +104,8 @@ public class ListingsApiController {
                 federation,
                 club,
                 yearEnd,
-                page,
-                cappedPerPage,
+                pagination.page(),
+                pagination.perPage(),
                 rankings.getTotalElements()),
             data);
 

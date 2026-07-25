@@ -51,6 +51,13 @@ public class ClubsApiController {
       return ResponseEntity.badRequest()
           .body(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "name parameter required"));
     }
+    if (name.trim().length() < ClubService.MIN_SEARCH_TERM_LENGTH) {
+      return ResponseEntity.badRequest()
+          .body(
+              ProblemDetail.forStatusAndDetail(
+                  HttpStatus.BAD_REQUEST,
+                  "name must be at least " + ClubService.MIN_SEARCH_TERM_LENGTH + " characters"));
+    }
 
     var clubs = clubService.searchClubs(name);
     if (clubs.isEmpty()) {

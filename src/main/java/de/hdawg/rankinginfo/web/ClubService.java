@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,13 @@ import de.hdawg.rankinginfo.web.viewmodel.PlayerSummaryRow;
 @Transactional(readOnly = true)
 public class ClubService {
 
+  /// Shortest club-search term accepted. A single character matches almost every club, which
+  /// would turn one request into a scan of the whole quarter.
+  public static final int MIN_SEARCH_TERM_LENGTH = 2;
+
+  private static final String TOO_SHORT_MESSAGE =
+      "Bitte mindestens " + MIN_SEARCH_TERM_LENGTH + " Zeichen eingeben.";
+
   private static final String AGE_GROUP_OVERALL = "overall";
   private static final String AGE_GROUP_M00 = "m00";
   private static final String AGE_GROUP_W00 = "w00";
@@ -48,31 +54,26 @@ public class ClubService {
   /// - the number of youth players (`age_group = "overall"`)
   /// - the number of adult players (`age_group = "m00"` or `"w00"`)
   ///
+  /// Counting happens in the database. A very broad term therefore costs one row per club rather
+  /// than one row per player; `searchTerm` must still be at least [#MIN_SEARCH_TERM_LENGTH]
+  /// characters long so a single character cannot scan the whole quarter.
+  ///
   /// @param searchTerm substring to match against club names
   /// @return matching clubs sorted by name, with youth/adult player counts; empty if no ranking
   ///     data is available yet
+  /// @throws IllegalArgumentException if `searchTerm` is shorter than [#MIN_SEARCH_TERM_LENGTH]
+  ///     characters after trimming
   public List<ClubSummary> searchClubs(String searchTerm) {
+    var term = searchTerm == null ? "" : searchTerm.trim();
+    if (term.length() < MIN_SEARCH_TERM_LENGTH) {
+      throw new IllegalArgumentException(TOO_SHORT_MESSAGE);
+    }
+
     var quarter = rankingRepository.findLatestDate();
     if (quarter == null) return List.of();
 
-    var all = rankingRepository.findByDateAndAgeGroupsAndClubContaining(
-        quarter, List.of(AGE_GROUP_OVERALL, AGE_GROUP_M00, AGE_GROUP_W00), searchTerm);
-    var youthByClub = all.stream()
-        .filter(r -> AGE_GROUP_OVERALL.equals(r.ageGroup()))
-        .collect(Collectors.groupingBy(Ranking::club));
-    var adultByClub = all.stream()
-        .filter(r -> !AGE_GROUP_OVERALL.equals(r.ageGroup()))
-        .collect(Collectors.groupingBy(Ranking::club));
-
-    return Stream.concat(youthByClub.keySet().stream(), adultByClub.keySet().stream())
-        .distinct()
-        .sorted()
-        .map(
-            name ->
-                new ClubSummary(
-                    name,
-                    youthByClub.getOrDefault(name, List.of()).size(),
-                    adultByClub.getOrDefault(name, List.of()).size()))
+    return rankingRepository.countPlayersByClubContaining(quarter, term).stream()
+        .map(c -> new ClubSummary(c.club(), (int) c.youthCount(), (int) c.adultCount()))
         .toList();
   }
 
@@ -94,11 +95,8 @@ public class ClubService {
     var players = new LinkedHashMap<String, List<PlayerSummaryRow>>();
     if (quarter == null) return players;
 
-    var all = rankingRepository.findByDateAndAgeGroupsAndClubContaining(
-        quarter, List.of(AGE_GROUP_OVERALL, AGE_GROUP_M00, AGE_GROUP_W00), clubId)
-        .stream()
-        .filter(r -> r.club().equalsIgnoreCase(clubId))
-        .toList();
+    var all = rankingRepository.findByDateAndAgeGroupsAndExactClub(
+        quarter, List.of(AGE_GROUP_OVERALL, AGE_GROUP_M00, AGE_GROUP_W00), clubId);
 
     for (var entry : ADULT_LABELS.entrySet()) {
       var adults = all.stream().filter(r -> r.ageGroup().equals(entry.getKey())).toList();

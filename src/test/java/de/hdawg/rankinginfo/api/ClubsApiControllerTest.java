@@ -81,6 +81,15 @@ class ClubsApiControllerTest {
   }
 
   @Test
+  @DisplayName("search returns 400 when name is shorter than the minimum length")
+  void searchReturns400WhenNameTooShort() throws Exception {
+    mockMvc
+        .perform(get("/api/v1/clubs?name=E").header("Authorization", auth))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.detail").value("name must be at least 2 characters"));
+  }
+
+  @Test
   @DisplayName("search returns 404 when no club matches")
   void searchReturns404WhenNoClubMatches() throws Exception {
     mockMvc
