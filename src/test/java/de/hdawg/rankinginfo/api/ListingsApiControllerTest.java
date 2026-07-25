@@ -182,6 +182,44 @@ class ListingsApiControllerTest {
   }
 
   @Test
+  @DisplayName("page below one is clamped to the first page")
+  void pageBelowOneIsClampedToFirstPage() throws Exception {
+    for (var page : List.of("0", "-5")) {
+      mockMvc
+          .perform(
+              get("/api/v1/listings/" + quarter + "/m00?page=" + page)
+                  .header("Authorization", auth))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.request.page").value(1))
+          .andExpect(jsonPath("$.data.length()").value(3));
+    }
+  }
+
+  @Test
+  @DisplayName("per_page below one falls back to the default page size")
+  void perPageBelowOneFallsBackToDefault() throws Exception {
+    for (var perPage : List.of("0", "-3")) {
+      mockMvc
+          .perform(
+              get("/api/v1/listings/" + quarter + "/m00?per_page=" + perPage)
+                  .header("Authorization", auth))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.request.per_page").value(25));
+    }
+  }
+
+  @Test
+  @DisplayName("a page beyond the last one returns an empty result rather than failing")
+  void pageBeyondLastReturnsEmptyResult() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/v1/listings/" + quarter + "/m00?page=1000000").header("Authorization", auth))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data.length()").value(0))
+        .andExpect(jsonPath("$.request.total_count").value(3));
+  }
+
+  @Test
   @DisplayName("total_count reflects all records regardless of page size")
   void totalCountReflectsAllRecordsRegardlessOfPageSize() throws Exception {
     mockMvc
