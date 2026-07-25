@@ -200,13 +200,31 @@ public class RankingRepository {
         .toList();
   }
 
-  public List<Ranking> findByDateAndAgeGroupsAndClubContaining(
+  /// Loads the rankings of the club whose name matches `club` exactly, ignoring case.
+  ///
+  /// @param date the ranking date to query
+  /// @param ageGroups the age groups to include
+  /// @param club the full club name; matched case-insensitively, not as a substring
+  /// @return the matching rankings ordered by ranking position
+  public List<Ranking> findByDateAndAgeGroupsAndExactClub(
       LocalDate date, List<String> ageGroups, String club) {
     return jdbc
-        .findByDateAgeGroupsAndClub(date, ageGroups, "%" + club.toLowerCase(Locale.ROOT) + "%")
+        .findByDateAgeGroupsAndExactClub(date, ageGroups, club.toLowerCase(Locale.ROOT))
         .stream()
         .map(RankingEntity::toDomain)
         .toList();
+  }
+
+  /// Counts youth and adult players per club for clubs whose name contains `club`.
+  ///
+  /// Aggregation happens in the database, so a broad search term returns one small row per club
+  /// instead of every matching ranking row.
+  ///
+  /// @param date the ranking date to query
+  /// @param club substring to match against club names, case-insensitively
+  /// @return per-club youth/adult counts, ordered by club name
+  public List<ClubPlayerCount> countPlayersByClubContaining(LocalDate date, String club) {
+    return jdbc.countPlayersByClub(date, "%" + club.toLowerCase(Locale.ROOT) + "%");
   }
 
   public List<Ranking> findAgeGroupRankingsByDateAndDtbIds(LocalDate date, List<Integer> dtbIds) {

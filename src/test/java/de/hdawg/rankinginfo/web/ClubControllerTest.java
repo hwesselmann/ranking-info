@@ -1,6 +1,7 @@
 package de.hdawg.rankinginfo.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -29,6 +30,17 @@ class ClubControllerTest extends WebControllerTestBase {
     mockMvc
         .perform(get("/clubs").param("club", "XYZNOTEXIST").param("commit", "1"))
         .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("GET clubs with a too-short search term shows a hint instead of searching")
+  void getClubsWithTooShortTermShowsHint() throws Exception {
+    mockMvc
+        .perform(get("/clubs").param("club", "T").param("commit", "1"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("clubs/index"))
+        .andExpect(model().attributeDoesNotExist("clubs"))
+        .andExpect(model().attributeExists("danger"));
   }
 
   @Test

@@ -114,11 +114,24 @@ interface RankingEntityRepository extends ListCrudRepository<RankingEntity, Long
 
   @Query(
       "SELECT * FROM rankings WHERE date = :date AND age_group IN (:ageGroups)"
-          + " AND LOWER(club) LIKE :clubPattern ORDER BY ranking_position ASC")
-  List<RankingEntity> findByDateAgeGroupsAndClub(
+          + " AND LOWER(club) = :club ORDER BY ranking_position ASC")
+  List<RankingEntity> findByDateAgeGroupsAndExactClub(
       @Param("date") LocalDate date,
       @Param("ageGroups") List<String> ageGroups,
-      @Param("clubPattern") String clubPattern);
+      @Param("club") String club);
+
+  // Aggregates in SQL so club search never materializes the matching ranking rows.
+  // SUM(CASE ...) rather than COUNT(*) FILTER (...) to stay portable across PostgreSQL and H2.
+  @Query(
+      "SELECT club,"
+          + " SUM(CASE WHEN age_group = 'overall' THEN 1 ELSE 0 END) AS youth_count,"
+          + " SUM(CASE WHEN age_group IN ('m00', 'w00') THEN 1 ELSE 0 END) AS adult_count"
+          + " FROM rankings"
+          + " WHERE date = :date AND age_group IN ('overall', 'm00', 'w00')"
+          + " AND LOWER(club) LIKE :clubPattern"
+          + " GROUP BY club ORDER BY club ASC")
+  List<ClubPlayerCount> countPlayersByClub(
+      @Param("date") LocalDate date, @Param("clubPattern") String clubPattern);
 
   @Query(
       "SELECT * FROM rankings"

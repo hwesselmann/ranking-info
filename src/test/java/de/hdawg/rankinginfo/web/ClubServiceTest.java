@@ -2,6 +2,7 @@ package de.hdawg.rankinginfo.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
@@ -45,6 +46,48 @@ class ClubServiceTest extends WebControllerTestBase {
   @DisplayName("getClubDetail for unknown club returns empty map")
   void getClubDetailUnknownClub() {
     var detail = clubService.getClubDetail("XYZNOTEXIST");
+    assertTrue(detail.isEmpty());
+  }
+
+  @Test
+  @DisplayName("searchClubs counts youth and adult players per club")
+  void searchClubsCountsPlayersPerClub() {
+    var results = clubService.searchClubs("TC");
+
+    assertEquals(2, results.size());
+
+    var baden = results.get(0);
+    assertEquals("TC Baden", baden.name());
+    assertEquals(1, baden.youthCount());
+    assertEquals(2, baden.adultCount());
+
+    var other = results.get(1);
+    assertEquals("TC Other", other.name());
+    assertEquals(0, other.youthCount());
+    assertEquals(1, other.adultCount());
+  }
+
+  @Test
+  @DisplayName("searchClubs rejects search terms shorter than the minimum length")
+  void searchClubsRejectsTooShortTerm() {
+    assertThrows(IllegalArgumentException.class, () -> clubService.searchClubs("T"));
+    assertThrows(IllegalArgumentException.class, () -> clubService.searchClubs(" "));
+    assertThrows(IllegalArgumentException.class, () -> clubService.searchClubs(""));
+  }
+
+  @Test
+  @DisplayName("getClubDetail matches the club name exactly, ignoring case")
+  void getClubDetailMatchesExactlyIgnoringCase() {
+    var detail = clubService.getClubDetail("tc baden");
+
+    assertFalse(detail.isEmpty());
+  }
+
+  @Test
+  @DisplayName("getClubDetail does not match clubs that merely contain the given name")
+  void getClubDetailDoesNotMatchOnSubstring() {
+    var detail = clubService.getClubDetail("TC");
+
     assertTrue(detail.isEmpty());
   }
 
