@@ -21,6 +21,10 @@ server:
 
 api:
   tokens: []
+  rate-limit:
+    # Caps how many per-key buckets the rate limiter holds. Callers are rate-limited before they
+    # are authenticated, so this bounds memory against clients rotating their Authorization header.
+    max-buckets: ${RATE_LIMIT_MAX_BUCKETS:10000}
 
 grpc:
   server:

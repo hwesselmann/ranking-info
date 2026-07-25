@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.grpc.Attributes;
@@ -18,10 +19,12 @@ import io.grpc.ServerCallHandler;
 import org.junit.jupiter.api.Test;
 
 import de.hdawg.rankinginfo.api.security.RequestRateLimiter;
+import de.hdawg.rankinginfo.config.ApiProperties;
 
 class GrpcRateLimitInterceptorTest {
 
-  private final RequestRateLimiter rateLimiter = new RequestRateLimiter();
+  private final RequestRateLimiter rateLimiter =
+      new RequestRateLimiter(new ApiProperties(List.of()));
   private final GrpcRateLimitInterceptor interceptor = new GrpcRateLimitInterceptor(rateLimiter);
 
   private ServerCall<Object, Object> mockCall() {
